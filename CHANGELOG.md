@@ -1,5 +1,5 @@
 ### 0.2.0
-*
+* Add l10n support, with en and id locales
 
 ### 0.1.10
 * Add discover command timeout after 5 seconds

@@ -1,0 +1,20 @@
+{
+  "ABORTED": "BATAL",
+  "DISABLED": "NON AKTIF",
+  "FAIL": "GAGAL",
+  "NOTBUILT": "TAK DIBANGUN",
+  "OK": "SUKSES",
+  "UNKNOWN": "TAK DIKETAHUI",
+  "WARN": "PERHATIAN",
+  "Jenkins ver. %s": "Jenkins versi %s",
+  "Jenkins ver. %s is running on %s": "Jenkins versi %s di %s",
+  "Job %s was stopped successfully": "Pekerjaan %s dihentikan dengan sukses",
+  "Job %s was started successfully": "Pekerjaan %s dimulai dengan sukses",
+  "Jobless Jenkins": "Tidak ada pekerjaan",
+  "No executor found": "Tidak ada eksekutor",
+  "Password: ": "Sandi: ",
+  "Username: ": "Pengguna: ",
+  "Queue is empty": "Antrean kosong",
+  "idle": "diam",
+  " stuck!": " berhenti!"
+}

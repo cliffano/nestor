@@ -2,9 +2,13 @@ var bag = require('bagofcli'),
   buster = require('buster'),
   BuildLight = require('../lib/notifiers/buildlight'),
   cli = require('../lib/cli'),
+  i18n = require('i18n'),
   irc = require('../lib/irc'),
   Jenkins = new require('../lib/jenkins'),
-  NinjaBlocks = require('../lib/notifiers/ninjablocks');
+  NinjaBlocks = require('../lib/notifiers/ninjablocks'),
+  util = require('util');
+
+i18n.setLocale('en');
 
 buster.testCase('cli - exec', {
   'should contain commands with actions': function (done) {
@@ -415,9 +419,10 @@ buster.testCase('cli - ver', {
     this.stub(bag, 'command', function (base, actions) {
       actions.commands.ver.action();
     });
+    this.stub(process, 'env', 'en_AU.UTF-8');
   },
   'should log version when exec ver is called and version exists': function () {
-    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s', '1.2.3');
+    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. 1.2.3');
     this.mockProcess.expects('exit').once().withExactArgs(0);
     this.stub(Jenkins.prototype, 'version', function (cb) {
       cb(null, '1.2.3');
