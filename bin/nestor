@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+
+var DEFAULT_URL = 'http://localhost:8080',
+    nomnom = require('nomnom'),
+    Nestor = require('../lib/nestor').Nestor,
+    Service = require('../lib/service').Service,
+    service = new Service(process.env.JENKINS_URL || DEFAULT_URL),
+    nestor = new Nestor(service),
+    args, opts;
+
+opts = {};
+
+nomnom.scriptName('nestor');
+nomnom.globalOpts(opts);
+nomnom.command('build').callback(function (args) { nestor.build(args._[1], args._[2]); });
+nomnom.command('queue').callback(function (args) { nestor.queue(); });
+nomnom.command('version').callback(function (args) { nestor.version(); });
+nomnom.parseArgs();

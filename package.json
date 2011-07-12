@@ -1,0 +1,15 @@
+{
+    "name": "nestor",
+    "description": "Jenkins client for NodeJS",
+    "keywords": ["jenkins", "ci"],
+    "version": "0.0.1",
+    "homepage" : "http://github.com/cliffano/nestor",
+    "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
+    "bin": { "nestor": "./bin/nestor" },
+    "repository": { "type": "git", "url": "http://github.com/cliffano/nestor.git" },
+    "bugs": { "web": "http://github.com/cliffano/nestor/issues" },
+    "directories": { "bin": "./bin", "lib": "./lib" },
+    "dependencies": { "nomnom": "0.6.0" },
+    "engines": { "node": ">= 0.4.0" },
+    "licenses" : [{ "type" : "MIT", "url" : "http://github.com/cliffano/nestor/raw/master/LICENSE" } ]
+}
