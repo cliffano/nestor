@@ -53,7 +53,7 @@ vows.describe('Nestor').addBatch({
             assert.equal(messages.length, 1);
             assert.equal(messages[0], 'nestor: Queue is empty');
         },
-        'should log error message when status code is not 200': function (topic) {
+        'should log error message when status code is an error': function (topic) {
             var _path, _method,
                 messages = [],
                 console = {
@@ -65,7 +65,7 @@ vows.describe('Nestor').addBatch({
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
-                        successCb(500, null, '{"items":[]}');
+                        successCb(400, null, '{"items":[]}');
                     }
                 },
                 nestor = new Nestor(service, console);
@@ -73,7 +73,7 @@ vows.describe('Nestor').addBatch({
             assert.equal(_path, '/queue/api/json');
             assert.equal(_method, 'GET');
             assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'nestor: Unexpected status code 500');
+            assert.equal(messages[0], 'nestor: Unexpected status code 400');
         }
     },
     'version': {
@@ -123,7 +123,7 @@ vows.describe('Nestor').addBatch({
             assert.equal(messages.length, 1);
             assert.equal(messages[0], 'nestor: Not a Jenkins server');
         },
-        'should log error message when status code is not 200': function (topic) {
+        'should log error message when status code is an error': function (topic) {
             var _path, _method,
                 messages = [],
                 console = {
