@@ -5,8 +5,9 @@ var assert = require('assert'),
 vows.describe('Service').addBatch({
     'send': {
         'should call success callback when there is no error': function (topic) {
-            var _headers, _data, _options, _reqOnCount = 0, _reqEndCount = 0,
-                successCb = function (headers, data) {
+            var _statusCode, _headers, _data, _options, _reqOnCount = 0, _reqEndCount = 0,
+                successCb = function (statusCode, headers, data) {
+                    _statusCode = statusCode;
                     _headers = headers;
                     _data = data;
                 },
@@ -44,61 +45,19 @@ vows.describe('Service').addBatch({
                         return req;
                     }
                 },
-                service = new Service('http://localhost:8080', http);
+                service = new Service('http://user:pass@localhost:8080', http);
             service.send('/api/json', 'GET', successCb, errorCb);
             assert.equal(_options.host, 'localhost');
             assert.equal(_options.port, 8080);
             assert.equal(_options.path, '/api/json');
             assert.equal(_options.method, 'GET');
+            assert.equal(_options.headers.Authorization, 'Basic dXNlcjpwYXNz');
             assert.equal(_reqOnCount, 1);
             assert.equal(_reqEndCount, 1);
             assert.equal(_encoding, 'utf8');
+            assert.equal(_statusCode, 200);
             assert.equal(_headers.headerfield, 'headervalue');
             assert.equal(_data, '{"datafield":"datavalue"}');
-        },
-        'should call error callback when response status code is not 200': function (topic) {
-            var _err, _options, _reqOnCount = 0, _reqEndCount = 0,
-                successCb = function (headers, data) {
-                    assert.fail('Success callback should not have been called.');
-                },
-                errorCb = function (err) {
-                    _err = err;
-                },
-                req = {
-                    on: function (event, cb) {
-                        if (event === 'error') {
-                            _reqOnCount++;
-                        }
-                    },
-                    end: function () {
-                        _reqEndCount++;
-                    }
-                },
-                res = {
-                    statusCode: 400,
-                    setEncoding: function (encoding) {
-                        assert.fail('Response setEncoding should not have been called.');
-                    },
-                    on: function (event, cb) {
-                        assert.fail('Response on callback should not have been called.');
-                    }
-                },
-                http = {
-                    request: function (options, cb) {
-                        _options = options;
-                        cb(res);
-                        return req;
-                    }
-                },
-                service = new Service('http://localhost:8080', http);
-            service.send('/api/json', 'GET', successCb, errorCb);
-            assert.equal(_options.host, 'localhost');
-            assert.equal(_options.port, 8080);
-            assert.equal(_options.path, '/api/json');
-            assert.equal(_options.method, 'GET');
-            assert.equal(_reqOnCount, 1);
-            assert.equal(_reqEndCount, 1);
-            assert.equal(_err.message, 'Unexpected status code: 400');
         },
         'should call error callback when there is an error on request': function (topic) {
             var _err, _options, _reqEndCount = 0,
