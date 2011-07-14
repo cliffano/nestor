@@ -5,7 +5,7 @@ var assert = require('assert'),
 vows.describe('Service').addBatch({
     'send': {
         'should call success callback when there is no error': function (topic) {
-            var _statusCode, _headers, _data, _options, _reqOnCount = 0, _reqEndCount = 0,
+            var _statusCode, _headers, _data, _options, _encoding, _reqOnCount = 0, _reqEndCount = 0,
                 successCb = function (statusCode, headers, data) {
                     _statusCode = statusCode;
                     _headers = headers;
@@ -17,11 +17,11 @@ vows.describe('Service').addBatch({
                 req = {
                     on: function (event, cb) {
                         if (event === 'error') {
-                            _reqOnCount++;
+                            _reqOnCount += 1;
                         }
                     },
                     end: function () {
-                        _reqEndCount++;
+                        _reqEndCount += 1;
                     }
                 },
                 res = {
@@ -74,7 +74,7 @@ vows.describe('Service').addBatch({
                         }
                     },
                     end: function () {
-                        _reqEndCount++;
+                        _reqEndCount += 1;
                     }
                 },
                 http = {
