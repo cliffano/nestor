@@ -51,7 +51,7 @@ vows.describe('Nestor').addBatch({
             assert.equal(_path, '/queue/api/json');
             assert.equal(_method, 'GET');
             assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'nestor: Queue is empty');
+            assert.equal(messages[0], 'Queue is empty');
         },
         'should log error message when status code is an error': function (topic) {
             var _path, _method,
@@ -73,7 +73,7 @@ vows.describe('Nestor').addBatch({
             assert.equal(_path, '/queue/api/json');
             assert.equal(_method, 'GET');
             assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'nestor: Unexpected status code 400');
+            assert.equal(messages[0], 'Unexpected status code 400');
         }
     },
     'version': {
@@ -121,7 +121,7 @@ vows.describe('Nestor').addBatch({
             assert.equal(_path, '/');
             assert.equal(_method, 'HEAD');
             assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'nestor: Not a Jenkins server');
+            assert.equal(messages[0], 'Not a Jenkins server');
         },
         'should log error message when status code is an error': function (topic) {
             var _path, _method,
@@ -144,7 +144,7 @@ vows.describe('Nestor').addBatch({
             assert.equal(_path, '/');
             assert.equal(_method, 'HEAD');
             assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'nestor: Unexpected status code 500');
+            assert.equal(messages[0], 'Unexpected status code 500');
         }
     }
 }).export(module);
