@@ -3,6 +3,74 @@ var assert = require('assert'),
     vows = require('vows');
 
 vows.describe('Nestor').addBatch({
+    'build': {
+        'should log success message if status is ok': function (topic) {
+            var _path, _method,
+                messages = [],
+                console = {
+                    log: function (message) {
+                        messages.push(message);
+                    }
+                },
+                service = {
+                    send: function (path, method, successCb, errorCb) {
+                        _path = path;
+                        _method = method;
+                        successCb(200, null, '');
+                    }
+                },
+                nestor = new Nestor(service, console);
+            nestor.build('dummyjob', 'firstname=Archibald&surname=Haddock');
+            assert.equal(_path, '/job/dummyjob/build?token=nestor&json={"parameter":[{"name":"firstname","value":"Archibald"},{"name":"surname","value":"Haddock"}]}');
+            assert.equal(_method, 'POST');
+            assert.equal(messages.length, 1);
+            assert.equal(messages[0], 'Job was started successfully');
+        },
+        'should log username password required error if status code is 401': function (topic) {
+            var _path, _method,
+                messages = [],
+                console = {
+                    error: function (message) {
+                        messages.push(message);
+                    }
+                },
+                service = {
+                    send: function (path, method, successCb, errorCb) {
+                        _path = path;
+                        _method = method;
+                        successCb(401, null, '');
+                    }
+                },
+                nestor = new Nestor(service, console);
+            nestor.build('dummyjob');
+            assert.equal(_path, '/job/dummyjob/build?token=nestor&json={"parameter":[]}');
+            assert.equal(_method, 'POST');
+            assert.equal(messages.length, 1);
+            assert.equal(messages[0], 'Username and password are required');
+        },
+        'should log job not found error if status code is 404': function (topic) {
+            var _path, _method,
+                messages = [],
+                console = {
+                    error: function (message) {
+                        messages.push(message);
+                    }
+                },
+                service = {
+                    send: function (path, method, successCb, errorCb) {
+                        _path = path;
+                        _method = method;
+                        successCb(404, null, '');
+                    }
+                },
+                nestor = new Nestor(service, console);
+            nestor.build('dummyjob');
+            assert.equal(_path, '/job/dummyjob/build?token=nestor&json={"parameter":[]}');
+            assert.equal(_method, 'POST');
+            assert.equal(messages.length, 1);
+            assert.equal(messages[0], 'Job does not exist');
+        }
+    },
     'queue': {
         'should log item task name in the queue': function (topic) {
             var _path, _method,
