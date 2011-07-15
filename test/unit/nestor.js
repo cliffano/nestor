@@ -3,6 +3,60 @@ var assert = require('assert'),
     vows = require('vows');
 
 vows.describe('Nestor').addBatch({
+    'dashboard': {
+        'should log jobs status when there are jobs': function (topic) {
+            var _path, _method,
+                messages = [],
+                console = {
+                    log: function (message) {
+                        messages.push(message);
+                    }
+                },
+                service = {
+                    send: function (path, method, successCb, errorCb) {
+                        _path = path;
+                        _method = method;
+                        var result = '{"assignedLabels":[{}],"mode":"NORMAL","nodeDescription":"the master Jenkins node","nodeName":"","numExecutors":2,"description":null,' +
+                            '"jobs":[{"name":"red-rackham","url":"http://localhost:8080/job/red-rackham/","color":"red"},' +
+                            '{"name":"golden-claw","url":"http://localhost:8080/job/golden-claw/","color":"blue"}],' +
+                            '"overallLoad":{},"primaryView":{"name":"All","url":"http://localhost:8080/"},"slaveAgentPort":0,"useCrumbs":false,"useSecurity":false,"views":[{"name":"All","url":"http://localhost:8080/"}]}';
+                        successCb(200, null, result);
+                    }
+                },
+                nestor = new Nestor(service, console);
+            nestor.dashboard();
+            assert.equal(_path, '/api/json');
+            assert.equal(_method, 'GET');
+            assert.equal(messages.length, 2);
+            assert.equal(messages[0], 'FAIL\tred-rackham');
+            assert.equal(messages[1], 'OK\tgolden-claw');
+        },
+        'should log no job message when there is no job': function (topic) {
+            var _path, _method,
+                messages = [],
+                console = {
+                    log: function (message) {
+                        messages.push(message);
+                    }
+                },
+                service = {
+                    send: function (path, method, successCb, errorCb) {
+                        _path = path;
+                        _method = method;
+                        var result = '{"assignedLabels":[{}],"mode":"NORMAL","nodeDescription":"the master Jenkins node","nodeName":"","numExecutors":2,"description":null,' +
+                            '"jobs":[],' +
+                            '"overallLoad":{},"primaryView":{"name":"All","url":"http://localhost:8080/"},"slaveAgentPort":0,"useCrumbs":false,"useSecurity":false,"views":[{"name":"All","url":"http://localhost:8080/"}]}';
+                        successCb(200, null, result);
+                    }
+                },
+                nestor = new Nestor(service, console);
+            nestor.dashboard();
+            assert.equal(_path, '/api/json');
+            assert.equal(_method, 'GET');
+            assert.equal(messages.length, 1);
+            assert.equal(messages[0], 'Jobless Jenkins');
+        }
+    },
     'build': {
         'should log success message if status is ok': function (topic) {
             var _path, _method,
