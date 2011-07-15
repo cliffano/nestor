@@ -57,6 +57,60 @@ vows.describe('Nestor').addBatch({
             assert.equal(messages[0], 'Jobless Jenkins');
         }
     },
+    'job': {
+        'should display job info when job exists': function (topic) {
+            var _path, _method,
+                messages = [],
+                console = {
+                    log: function (message) {
+                        messages.push(message);
+                    }
+                },
+                service = {
+                    send: function (path, method, successCb, errorCb) {
+                        _path = path;
+                        _method = method;
+                        var result = '{"actions":[{"parameterDefinitions":[{"defaultParameterValue":{"value":"default-blah"},"description":"","name":"BLAH","type":"StringParameterDefinition"},{"defaultParameterValue":{"value":"Cutts"},"description":"","name":"BLUH","type":"StringParameterDefinition"}]},{}],' +
+                            '"description":"","displayName":"blah-sleep","name":"blah-sleep","url":"http://localhost:8080/job/blah-sleep/","buildable":true,"builds":[{"number":42,"url":"http://localhost:8080/job/blah-sleep/42/"},{"number":41,"url":"http://localhost:8080/job/blah-sleep/41/"}],' +
+                            '"color":"blue","firstBuild":{"number":1,"url":"http://localhost:8080/job/blah-sleep/1/"},"healthReport":[{"description":"Build stability: No recent builds failed.","iconUrl":"health-80plus.png","score":100}],"inQueue":false,"keepDependencies":false,' +
+                            '"lastBuild":{"number":42,"url":"http://localhost:8080/job/blah-sleep/42/"},"lastCompletedBuild":{"number":42,"url":"http://localhost:8080/job/blah-sleep/42/"},"lastFailedBuild":null,"lastStableBuild":{"number":42,"url":"http://localhost:8080/job/blah-sleep/42/"},' +
+                            '"lastSuccessfulBuild":{"number":42,"url":"http://localhost:8080/job/blah-sleep/42/"},"lastUnstableBuild":null,"lastUnsuccessfulBuild":{"number":18,"url":"http://localhost:8080/job/blah-sleep/18/"},"nextBuildNumber":43,' +
+                            '"property":[{},{"parameterDefinitions":[{"defaultParameterValue":{"name":"BLAH","value":"default-blah"},"description":"","name":"BLAH","type":"StringParameterDefinition"},{"defaultParameterValue":{"name":"BLUH","value":"Cutts"},' +
+                            '"description":"","name":"BLUH","type":"StringParameterDefinition"}]},{}],"queueItem":null,"concurrentBuild":false,"downstreamProjects":[],"scm":{},"upstreamProjects":[]}';
+                        successCb(200, null, result);
+                    }
+                },
+                nestor = new Nestor(service, console);
+            nestor.job('dummyjob');
+            assert.equal(_path, '/job/dummyjob/api/json');
+            assert.equal(_method, 'GET');
+            assert.equal(messages.length, 2);
+            assert.equal(messages[0], 'Status: OK');
+            assert.equal(messages[1], 'Build stability: No recent builds failed.');
+        },
+        'should log job not found error if status code is 404': function (topic) {
+            var _path, _method,
+                messages = [],
+                console = {
+                    error: function (message) {
+                        messages.push(message);
+                    }
+                },
+                service = {
+                    send: function (path, method, successCb, errorCb) {
+                        _path = path;
+                        _method = method;
+                        successCb(404, null, null);
+                    }
+                },
+                nestor = new Nestor(service, console);
+            nestor.job('dummyjob');
+            assert.equal(_path, '/job/dummyjob/api/json');
+            assert.equal(_method, 'GET');
+            assert.equal(messages.length, 1);
+            assert.equal(messages[0], 'Job does not exist');
+        }
+    },
     'build': {
         'should log success message if status is ok': function (topic) {
             var _path, _method,

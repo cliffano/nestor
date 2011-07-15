@@ -13,6 +13,7 @@ opts = {};
 nomnom.scriptName('nestor');
 nomnom.globalOpts(opts);
 nomnom.command('dashboard').callback(function (args) { nestor.dashboard(); });
+nomnom.command('job').callback(function (args) { nestor.job(args._[1]); });
 nomnom.command('build').callback(function (args) { nestor.build(args._[1], args._[2]); });
 nomnom.command('executor').callback(function (args) { nestor.executor(); });
 nomnom.command('queue').callback(function (args) { nestor.queue(); });
