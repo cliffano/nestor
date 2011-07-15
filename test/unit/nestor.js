@@ -198,6 +198,68 @@ vows.describe('Nestor').addBatch({
             assert.equal(messages[0], 'Unexpected status code 400');
         }
     },
+    'executor': {
+        'should log progress and job name when it is not idle': function (topic) {
+            var _path, _method,
+                messages = [],
+                console = {
+                    log: function (message) {
+                        messages.push(message);
+                    }
+                },
+                service = {
+                    send: function (path, method, successCb, errorCb) {
+                        _path = path;
+                        _method = method;
+                        var result = '{"busyExecutors":2,"computer":[{"actions":[],"displayName":"master",' +
+                            '"executors":[{"currentExecutable":{"number":39,"url":"http://localhost:8080/job/red-rackham/39/"},"currentWorkUnit":{},"idle":false,"likelyStuck":false,"number":0,"progress":31},{"currentExecutable":{"number":12,"url":"http://localhost:8080/job/golden-claw/12/"},' +
+                            '"currentWorkUnit":{},"idle":false,"likelyStuck":false,"number":1,"progress":28}],"icon":"computer.png","idle":false,"jnlpAgent":false,"launchSupported":true,"loadStatistics":{"busyExecutors":{},"queueLength":{},"totalExecutors":{}},"manualLaunchAllowed":true,' +
+                            '"monitorData":{"hudson.node_monitors.SwapSpaceMonitor":{"availablePhysicalMemory":169869312,"availableSwapSpace":124780544,"totalPhysicalMemory":2146435072,"totalSwapSpace":133726208},"hudson.node_monitors.ArchitectureMonitor":"Mac OS X (x86_64)",' +
+                            '"hudson.node_monitors.TemporarySpaceMonitor":{"size":98938888192},"hudson.node_monitors.ResponseTimeMonitor":{"average":145},"hudson.node_monitors.DiskSpaceMonitor":{"size":98938888192},"hudson.node_monitors.ClockMonitor":{"diff":0}},"numExecutors":2,' +
+                            '"offline":false,"offlineCause":null,"oneOffExecutors":[],"temporarilyOffline":false}],"displayName":"nodes","totalExecutors":2}';
+                        successCb(200, null, result);
+                    }
+                },
+                nestor = new Nestor(service, console);
+            nestor.executor();
+            assert.equal(_path, '/computer/api/json?depth=1');
+            assert.equal(_method, 'GET');
+            assert.equal(messages.length, 3);
+            assert.equal(messages[0], '* master');
+            assert.equal(messages[1], '31%\tred-rackham');
+            assert.equal(messages[2], '28%\tgolden-claw');
+        },
+        'should log idle when job is not idle': function (topic) {
+            var _path, _method,
+                messages = [],
+                console = {
+                    log: function (message) {
+                        messages.push(message);
+                    }
+                },
+                service = {
+                    send: function (path, method, successCb, errorCb) {
+                        _path = path;
+                        _method = method;
+                        var result = '{"busyExecutors":0,"computer":[{"actions":[],"displayName":"master",' +
+                            '"executors":[{"currentExecutable":null,"currentWorkUnit":null,"idle":true,"likelyStuck":false,"number":0,"progress":-1},{"currentExecutable":null,"currentWorkUnit":null,"idle":true,"likelyStuck":false,"number":1,"progress":-1}],' +
+                            '"icon":"computer.png","idle":true,"jnlpAgent":false,"launchSupported":true,"loadStatistics":{"busyExecutors":{},"queueLength":{},"totalExecutors":{}},"manualLaunchAllowed":true,' +
+                            '"monitorData":{"hudson.node_monitors.SwapSpaceMonitor":{"availablePhysicalMemory":83886080,"availableSwapSpace":239075328,"totalPhysicalMemory":2146435072,"totalSwapSpace":268435456},"hudson.node_monitors.ArchitectureMonitor":"Mac OS X (x86_64)",' +
+                            '"hudson.node_monitors.TemporarySpaceMonitor":{"size":98799357952},"hudson.node_monitors.ResponseTimeMonitor":{"average":72},"hudson.node_monitors.DiskSpaceMonitor":{"size":98799357952},"hudson.node_monitors.ClockMonitor":{"diff":0}},"numExecutors":2,' +
+                            '"offline":false,"offlineCause":null,"oneOffExecutors":[],"temporarilyOffline":false}],"displayName":"nodes","totalExecutors":2}';
+                        successCb(200, null, result);
+                    }
+                },
+                nestor = new Nestor(service, console);
+            nestor.executor();
+            assert.equal(_path, '/computer/api/json?depth=1');
+            assert.equal(_method, 'GET');
+            assert.equal(messages.length, 3);
+            assert.equal(messages[0], '* master');
+            assert.equal(messages[1], 'idle');
+            assert.equal(messages[2], 'idle');
+        }
+    },
     'version': {
         'should log header x-jenkins when it exists': function (topic) {
             var _path, _method,
