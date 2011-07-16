@@ -4,68 +4,61 @@ var assert = require('assert'),
 
 vows.describe('Nestor').addBatch({
     'dashboard': {
-        'should log jobs status when there are jobs': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    log: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return jobs status and name when there are jobs': function (topic) {
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
-                        var result = '{"assignedLabels":[{}],"mode":"NORMAL","nodeDescription":"the master Jenkins node","nodeName":"","numExecutors":2,"description":null,' +
+                        var result = '{"assignedLabels":[{}],"mode":"NORMAL","nodeDescription":"the master Nestor node","nodeName":"","numExecutors":2,"description":null,' +
                             '"jobs":[{"name":"red-rackham","url":"http://localhost:8080/job/red-rackham/","color":"red"},' +
                             '{"name":"golden-claw","url":"http://localhost:8080/job/golden-claw/","color":"blue"}],' +
                             '"overallLoad":{},"primaryView":{"name":"All","url":"http://localhost:8080/"},"slaveAgentPort":0,"useCrumbs":false,"useSecurity":false,"views":[{"name":"All","url":"http://localhost:8080/"}]}';
                         successCb(200, null, result);
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.dashboard();
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.dashboard(cb);
             assert.equal(_path, '/api/json');
             assert.equal(_method, 'GET');
-            assert.equal(messages.length, 2);
-            assert.equal(messages[0], 'FAIL\tred-rackham');
-            assert.equal(messages[1], 'OK\tgolden-claw');
+            assert.isUndefined(_err);
+            assert.equal(_result.length, 2);
+            assert.equal(_result[0].status, 'FAIL');
+            assert.equal(_result[0].name, 'red-rackham');
+            assert.equal(_result[1].status, 'OK');
+            assert.equal(_result[1].name, 'golden-claw');
         },
-        'should log no job message when there is no job': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    log: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return empty array when there is no job': function (topic) {
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
-                        var result = '{"assignedLabels":[{}],"mode":"NORMAL","nodeDescription":"the master Jenkins node","nodeName":"","numExecutors":2,"description":null,' +
+                        var result = '{"assignedLabels":[{}],"mode":"NORMAL","nodeDescription":"the master Nestor node","nodeName":"","numExecutors":2,"description":null,' +
                             '"jobs":[],' +
                             '"overallLoad":{},"primaryView":{"name":"All","url":"http://localhost:8080/"},"slaveAgentPort":0,"useCrumbs":false,"useSecurity":false,"views":[{"name":"All","url":"http://localhost:8080/"}]}';
                         successCb(200, null, result);
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.dashboard();
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.dashboard(cb);
             assert.equal(_path, '/api/json');
             assert.equal(_method, 'GET');
-            assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'Jobless Jenkins');
+            assert.isUndefined(_err);
+            assert.equal(_result.length, 0);
         }
     },
     'job': {
         'should display job info when job exists': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    log: function (message) {
-                        messages.push(message);
-                    }
-                },
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
@@ -80,22 +73,21 @@ vows.describe('Nestor').addBatch({
                         successCb(200, null, result);
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.job('dummyjob');
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.job('dummyjob', cb);
             assert.equal(_path, '/job/dummyjob/api/json');
             assert.equal(_method, 'GET');
-            assert.equal(messages.length, 2);
-            assert.equal(messages[0], 'Status: OK');
-            assert.equal(messages[1], 'Build stability: No recent builds failed.');
+            assert.isUndefined(_err);
+            assert.equal(_result.status, 'OK');
+            assert.equal(_result.reports.length, 1);
+            assert.equal(_result.reports[0], 'Build stability: No recent builds failed.');
         },
-        'should log job not found error if status code is 404': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    error: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return job not found error if status code is 404': function (topic) {
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
@@ -103,23 +95,21 @@ vows.describe('Nestor').addBatch({
                         successCb(404, null, null);
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.job('dummyjob');
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.job('dummyjob', cb);
             assert.equal(_path, '/job/dummyjob/api/json');
             assert.equal(_method, 'GET');
-            assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'Job does not exist');
+            assert.equal(_err.message, 'Job does not exist');
+            assert.isUndefined(_result);
         }
     },
     'build': {
-        'should log success message if status is ok': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    log: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return ok status when there is no error': function (topic) {
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
@@ -127,21 +117,19 @@ vows.describe('Nestor').addBatch({
                         successCb(200, null, '');
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.build('dummyjob', 'firstname=Archibald&surname=Haddock');
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.build('dummyjob', 'firstname=Archibald&surname=Haddock', cb);
             assert.equal(_path, '/job/dummyjob/build?token=nestor&json={"parameter":[{"name":"firstname","value":"Archibald"},{"name":"surname","value":"Haddock"}]}');
             assert.equal(_method, 'POST');
-            assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'Job was started successfully');
+            assert.isUndefined(_err);
+            assert.equal(_result.status, 'ok');
         },
-        'should log username password required error if status code is 401': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    error: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return username password required error if status code is 401': function (topic) {
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
@@ -149,21 +137,19 @@ vows.describe('Nestor').addBatch({
                         successCb(401, null, '');
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.build('dummyjob');
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.build('dummyjob', null, cb);
             assert.equal(_path, '/job/dummyjob/build?token=nestor&json={"parameter":[]}');
             assert.equal(_method, 'POST');
-            assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'Username and password are required');
+            assert.equal(_err.message, 'Username and password are required');
+            assert.isUndefined(_result);
         },
-        'should log job not found error if status code is 404': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    error: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return job not found error if status code is 404': function (topic) {
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
@@ -171,23 +157,21 @@ vows.describe('Nestor').addBatch({
                         successCb(404, null, '');
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.build('dummyjob');
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.build('dummyjob', undefined, cb);
             assert.equal(_path, '/job/dummyjob/build?token=nestor&json={"parameter":[]}');
             assert.equal(_method, 'POST');
-            assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'Job does not exist');
+            assert.equal(_err.message, 'Job does not exist');
+            assert.isUndefined(_result);
         }
     },
     'queue': {
-        'should log item task name in the queue': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    log: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return item task name in the queue': function (topic) {
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
@@ -199,22 +183,21 @@ vows.describe('Nestor').addBatch({
                             ']}');
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.queue();
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.queue(cb);
             assert.equal(_path, '/queue/api/json');
             assert.equal(_method, 'GET');
-            assert.equal(messages.length, 2);
-            assert.equal(messages[0], 'blah-sleep1');
-            assert.equal(messages[1], 'blah-sleep2');
+            assert.isUndefined(_err);
+            assert.equal(_result.length, 2);
+            assert.equal(_result[0], 'blah-sleep1');
+            assert.equal(_result[1], 'blah-sleep2');
         },
-        'should log empty queue message when there is nothing in the queue': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    log: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return no item when there is nothing in the queue': function (topic) {
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
@@ -222,21 +205,18 @@ vows.describe('Nestor').addBatch({
                         successCb(200, null, '{"items":[]}');
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.queue();
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.queue(cb);
             assert.equal(_path, '/queue/api/json');
             assert.equal(_method, 'GET');
-            assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'Queue is empty');
+            assert.equal(_result.length, 0);
         },
         'should log error message when status code is an error': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    error: function (message) {
-                        messages.push(message);
-                    }
-                },
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
@@ -244,23 +224,21 @@ vows.describe('Nestor').addBatch({
                         successCb(400, null, '{"items":[]}');
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.queue();
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.queue(cb);
             assert.equal(_path, '/queue/api/json');
             assert.equal(_method, 'GET');
-            assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'Unexpected status code 400');
+            assert.equal(_err.message, 'Unexpected status code 400');
+            assert.isUndefined(_result);
         }
     },
     'executor': {
-        'should log progress and job name when it is not idle': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    log: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return progress and job name when it is not idle': function (topic) {
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
@@ -274,23 +252,25 @@ vows.describe('Nestor').addBatch({
                         successCb(200, null, result);
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.executor();
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.executor(cb);
             assert.equal(_path, '/computer/api/json?depth=1');
             assert.equal(_method, 'GET');
-            assert.equal(messages.length, 3);
-            assert.equal(messages[0], '* master');
-            assert.equal(messages[1], '31%\tred-rackham');
-            assert.equal(messages[2], '28%\tgolden-claw');
+            assert.isUndefined(_err);
+            assert.equal(_result['master'].length, 2);
+            assert.isFalse(_result['master'][0].idle);
+            assert.equal(_result['master'][0].progress, '31');
+            assert.equal(_result['master'][0].name, 'red-rackham');
+            assert.isFalse(_result['master'][1].idle);
+            assert.equal(_result['master'][1].progress, '28');
+            assert.equal(_result['master'][1].name, 'golden-claw');
         },
-        'should log idle when job is not idle': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    log: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return idle true when job is idle': function (topic) {
+            var _path, _method, _err, _result,
                 service = {
                     send: function (path, method, successCb, errorCb) {
                         _path = path;
@@ -304,25 +284,23 @@ vows.describe('Nestor').addBatch({
                         successCb(200, null, result);
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.executor();
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.executor(cb);
             assert.equal(_path, '/computer/api/json?depth=1');
             assert.equal(_method, 'GET');
-            assert.equal(messages.length, 3);
-            assert.equal(messages[0], '* master');
-            assert.equal(messages[1], 'idle');
-            assert.equal(messages[2], 'idle');
+            assert.isUndefined(_err);
+            assert.equal(_result['master'].length, 2);
+            assert.isTrue(_result['master'][0].idle);
+            assert.isTrue(_result['master'][1].idle);
         }
     },
     'version': {
-        'should log header x-jenkins when it exists': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    log: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return header x-jenkins when it exists': function (topic) {
+            var _path, _method, _err, _result,
                 headers = { 'x-jenkins': '0.88' },
                 service = {
                     send: function (path, method, successCb, errorCb) {
@@ -331,21 +309,19 @@ vows.describe('Nestor').addBatch({
                         successCb(200, headers, null);
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.version();
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.version(cb);
             assert.equal(_path, '/');
             assert.equal(_method, 'HEAD');
-            assert.equal(messages.length, 1);
-            assert.equal(messages[0], '0.88');
+            assert.isUndefined(_err);
+            assert.equal(_result, '0.88');
         },
-        'should log error message when header x-jenkins does not exist': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    error: function (message) {
-                        messages.push(message);
-                    }
-                },
+        'should return error when header x-jenkins does not exist': function (topic) {
+            var _path, _method, _err, _result,
                 headers = {},
                 service = {
                     send: function (path, method, successCb, errorCb) {
@@ -354,21 +330,19 @@ vows.describe('Nestor').addBatch({
                         successCb(200, headers, null);
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.version();
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.version(cb);
             assert.equal(_path, '/');
             assert.equal(_method, 'HEAD');
-            assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'Not a Jenkins server');
+            assert.equal(_err.message, 'Not a Jenkins server');
+            assert.isUndefined(_result);
         },
         'should log error message when status code is an error': function (topic) {
-            var _path, _method,
-                messages = [],
-                console = {
-                    error: function (message) {
-                        messages.push(message);
-                    }
-                },
+            var _path, _method, _err, _result,
                 headers = {},
                 service = {
                     send: function (path, method, successCb, errorCb) {
@@ -377,12 +351,16 @@ vows.describe('Nestor').addBatch({
                         successCb(500, headers, null);
                     }
                 },
-                nestor = new Nestor(service, console);
-            nestor.version();
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.version(cb);
             assert.equal(_path, '/');
             assert.equal(_method, 'HEAD');
-            assert.equal(messages.length, 1);
-            assert.equal(messages[0], 'Unexpected status code 500');
+            assert.equal(_err.message, 'Unexpected status code 500');
+            assert.isUndefined(_result);
         }
     }
 }).export(module);
