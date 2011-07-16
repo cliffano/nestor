@@ -1,6 +1,6 @@
 {
     "name": "nestor",
-    "description": "Jenkins CI NodeJS client",
+    "description": "Jenkins NodeJS client",
     "keywords": ["jenkins", "ci"],
     "version": "0.0.1",
     "homepage" : "http://github.com/cliffano/nestor",
