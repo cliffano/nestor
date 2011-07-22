@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    Service = require('../../lib/service').Service,
+    Service = require('../lib/service').Service,
     vows = require('vows');
 
 vows.describe('Service').addBatch({

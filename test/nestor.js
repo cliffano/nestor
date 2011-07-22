@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    Nestor = require('../../lib/nestor').Nestor,
+    Nestor = require('../lib/nestor').Nestor,
     vows = require('vows');
 
 vows.describe('Nestor').addBatch({
