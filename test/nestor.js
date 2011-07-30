@@ -261,13 +261,13 @@ vows.describe('Nestor').addBatch({
             assert.equal(_path, '/computer/api/json?depth=1');
             assert.equal(_method, 'GET');
             assert.isUndefined(_err);
-            assert.equal(_result['master'].length, 2);
-            assert.isFalse(_result['master'][0].idle);
-            assert.equal(_result['master'][0].progress, '31');
-            assert.equal(_result['master'][0].name, 'red-rackham');
-            assert.isFalse(_result['master'][1].idle);
-            assert.equal(_result['master'][1].progress, '28');
-            assert.equal(_result['master'][1].name, 'golden-claw');
+            assert.equal(_result.master.length, 2);
+            assert.isFalse(_result.master[0].idle);
+            assert.equal(_result.master[0].progress, '31');
+            assert.equal(_result.master[0].name, 'red-rackham');
+            assert.isFalse(_result.master[1].idle);
+            assert.equal(_result.master[1].progress, '28');
+            assert.equal(_result.master[1].name, 'golden-claw');
         },
         'should return idle true when job is idle': function (topic) {
             var _path, _method, _err, _result,
@@ -293,9 +293,9 @@ vows.describe('Nestor').addBatch({
             assert.equal(_path, '/computer/api/json?depth=1');
             assert.equal(_method, 'GET');
             assert.isUndefined(_err);
-            assert.equal(_result['master'].length, 2);
-            assert.isTrue(_result['master'][0].idle);
-            assert.isTrue(_result['master'][1].idle);
+            assert.equal(_result.master.length, 2);
+            assert.isTrue(_result.master[0].idle);
+            assert.isTrue(_result.master[1].idle);
         }
     },
     'version': {
