@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 var DEFAULT_URL = 'http://localhost:8080',
+    fs = require('fs'),
     nomnom = require('nomnom'),
+    path = require('path'),
     Nestor = require('../lib/nestor').Nestor,
     Service = require('../lib/service').Service,
     service = new Service(process.env.JENKINS_URL || DEFAULT_URL),
@@ -10,7 +12,15 @@ var DEFAULT_URL = 'http://localhost:8080',
     }),
     args, opts;
 
-opts = {};
+opts = {
+    version: {
+        abbr: 'v',
+        help: 'nestor version number',
+        callback: function () {
+            return JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'))).version;
+        }
+    }
+}
 
 nomnom.scriptName('nestor');
 nomnom.globalOpts(opts);
