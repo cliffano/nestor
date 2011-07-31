@@ -7,7 +7,7 @@ vows.describe('Nestor').addBatch({
         'should return jobs status and name when there are jobs': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         var result = '{"assignedLabels":[{}],"mode":"NORMAL","nodeDescription":"the master Nestor node","nodeName":"","numExecutors":2,"description":null,' +
@@ -35,7 +35,7 @@ vows.describe('Nestor').addBatch({
         'should return empty array when there is no job': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         var result = '{"assignedLabels":[{}],"mode":"NORMAL","nodeDescription":"the master Nestor node","nodeName":"","numExecutors":2,"description":null,' +
@@ -60,7 +60,7 @@ vows.describe('Nestor').addBatch({
         'should display job info when job exists': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         var result = '{"actions":[{"parameterDefinitions":[{"defaultParameterValue":{"value":"default-blah"},"description":"","name":"BLAH","type":"StringParameterDefinition"},{"defaultParameterValue":{"value":"Cutts"},"description":"","name":"BLUH","type":"StringParameterDefinition"}]},{}],' +
@@ -89,7 +89,7 @@ vows.describe('Nestor').addBatch({
         'should return job not found error if status code is 404': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         successCb(404, null, null);
@@ -111,7 +111,7 @@ vows.describe('Nestor').addBatch({
         'should return ok status when there is no error': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         successCb(200, null, '');
@@ -131,7 +131,7 @@ vows.describe('Nestor').addBatch({
         'should return username password required error if status code is 401': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         successCb(401, null, '');
@@ -151,7 +151,7 @@ vows.describe('Nestor').addBatch({
         'should return job not found error if status code is 404': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         successCb(404, null, '');
@@ -173,7 +173,7 @@ vows.describe('Nestor').addBatch({
         'should return item task name in the queue': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         successCb(200, null,
@@ -199,7 +199,7 @@ vows.describe('Nestor').addBatch({
         'should return no item when there is nothing in the queue': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         successCb(200, null, '{"items":[]}');
@@ -218,7 +218,7 @@ vows.describe('Nestor').addBatch({
         'should log error message when status code is an error': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         successCb(400, null, '{"items":[]}');
@@ -240,7 +240,7 @@ vows.describe('Nestor').addBatch({
         'should return progress and job name when it is not idle': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         var result = '{"busyExecutors":2,"computer":[{"actions":[],"displayName":"master",' +
@@ -272,7 +272,7 @@ vows.describe('Nestor').addBatch({
         'should return idle true when job is idle': function (topic) {
             var _path, _method, _err, _result,
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         var result = '{"busyExecutors":0,"computer":[{"actions":[],"displayName":"master",' +
@@ -298,12 +298,66 @@ vows.describe('Nestor').addBatch({
             assert.isTrue(_result.master[1].idle);
         }
     },
+    'discover': {
+        'should return json data when there is a discoverable jenkins instance': function (topic) {
+            var _err, _result, _message, _host, _port,
+                service = {
+                    sendUdp: function (message, host, port, successCb, errorCb) {
+                        _message = message;
+                        _host = host;
+                        _port = port;
+                        successCb({
+                            'server-id': '6ff95df5e7e248d51186e6d96085f42a',
+                            'slave-port': '50802',
+                            url: 'http://localhost:8080/',
+                            version: '1.414'
+                        });
+                    }
+                },
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                }
+                nestor = new Nestor(service);
+            nestor.discover('somehost', cb);
+            assert.equal(_message, 'Long live Jenkins');
+            assert.equal(_host, 'somehost');
+            assert.equal(_port, 33848);
+            assert.isNull(_err);
+            assert.equal(_result['server-id'], '6ff95df5e7e248d51186e6d96085f42a');
+            assert.equal(_result['slave-port'], '50802');
+            assert.equal(_result.url, 'http://localhost:8080/');
+            assert.equal(_result.version, '1.414');
+        },
+        'should return error when an error occurs': function (topic) {
+            var _err, _result, _message, _host, _port,
+                service = {
+                    sendUdp: function (message, host, port, successCb, errorCb) {
+                        _message = message;
+                        _host = host;
+                        _port = port;
+                        errorCb(new Error('dummy error'));
+                    }
+                },
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                }
+                nestor = new Nestor(service);
+            nestor.discover('somehost', cb);
+            assert.equal(_message, 'Long live Jenkins');
+            assert.equal(_host, 'somehost');
+            assert.equal(_port, 33848);
+            assert.isUndefined(_result);
+            assert.equal(_err.message, 'dummy error');
+        }
+    },
     'version': {
         'should return header x-jenkins when it exists': function (topic) {
             var _path, _method, _err, _result,
                 headers = { 'x-jenkins': '0.88' },
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         successCb(200, headers, null);
@@ -324,7 +378,7 @@ vows.describe('Nestor').addBatch({
             var _path, _method, _err, _result,
                 headers = {},
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         successCb(200, headers, null);
@@ -345,7 +399,7 @@ vows.describe('Nestor').addBatch({
             var _path, _method, _err, _result,
                 headers = {},
                 service = {
-                    send: function (path, method, successCb, errorCb) {
+                    sendHttp: function (path, method, successCb, errorCb) {
                         _path = path;
                         _method = method;
                         successCb(500, headers, null);

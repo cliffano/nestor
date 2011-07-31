@@ -93,6 +93,15 @@ nomnom.command('executor').callback(function (args) {
         }
     });
 });
+nomnom.command('discover').callback(function (args) {
+    nestor.discover(args._[1], function (err, result) {
+        if (err) {
+            console.error(err.message);
+        } else {
+            console.log('Jenkins ' + result.version + ' running at ' + result.url);
+        }
+    });
+});
 nomnom.command('version').callback(function (args) {
     nestor.version(function (err, result) {
         if (err) {

@@ -48,6 +48,10 @@ View the build queue.
 View the executors' activity (running builds) .
 
     nestor executor
+    
+Discover Jenkins instance running on a host
+
+    nestor discover hostname
 
 View Jenkins version number.
 
