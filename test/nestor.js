@@ -148,6 +148,26 @@ vows.describe('Nestor').addBatch({
             assert.equal(_err.message, 'Username and password are required');
             assert.isUndefined(_result);
         },
+        'should return username password required error if status code is 403': function (topic) {
+            var _path, _method, _err, _result,
+                service = {
+                    sendHttp: function (path, method, successCb, errorCb) {
+                        _path = path;
+                        _method = method;
+                        successCb(403, null, '');
+                    }
+                },
+                cb = function (err, result) {
+                    _err = err;
+                    _result = result;
+                },
+                nestor = new Nestor(service);
+            nestor.build('dummyjob', null, cb);
+            assert.equal(_path, '/job/dummyjob/build?token=nestor&json={"parameter":[]}');
+            assert.equal(_method, 'POST');
+            assert.equal(_err.message, 'Username and password are required');
+            assert.isUndefined(_result);
+        },
         'should return job not found error if status code is 404': function (topic) {
             var _path, _method, _err, _result,
                 service = {
