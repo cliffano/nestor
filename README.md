@@ -1,12 +1,12 @@
 Nestor
 ------
 
-Jenkins NodeJS CLI
+Jenkins Node.js CLI
 
 Overview
 --------
 
-Nestor is a Jenkins command-line interface written in NodeJS.
+Nestor is a Jenkins command-line interface written in Node.js .
 
 Installation
 ------------
