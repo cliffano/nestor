@@ -14,7 +14,8 @@ var DEFAULT_URL = 'http://localhost:8080',
 
 opts = {
     version: {
-        abbr: 'v',
+        string: '-v',
+        flag: true,
         help: 'nestor version number',
         callback: function () {
             return JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'))).version;
