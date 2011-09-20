@@ -29,9 +29,9 @@ View status of all jobs.
 
     nestor dashboard
 
-View job status.
+View jobs status.
 
-    nestor job jobname
+    nestor job jobname1 jobname2 ...
 
 Trigger a build.
 
