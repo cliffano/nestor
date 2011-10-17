@@ -10,9 +10,9 @@ var DEFAULT_URL = 'http://localhost:8080',
     nestor = new Nestor(service, function (err) {
         console.error(err.message);
     }),
-    args, opts;
+    args, scriptOpts;
 
-opts = {
+scriptOpts = {
     version: {
         string: '-v',
         flag: true,
@@ -23,8 +23,7 @@ opts = {
     }
 }
 
-nomnom.scriptName('nestor');
-nomnom.globalOpts(opts);
+nomnom.scriptName('nestor').opts(scriptOpts);
 nomnom.command('dashboard').callback(function (args) {
     nestor.dashboard(function (err, result) {
         if (err) {
@@ -38,18 +37,24 @@ nomnom.command('dashboard').callback(function (args) {
         }
     });
 });
-nomnom.command('job').callback(function (args) {
-    nestor.job(args._[1], function (err, result) {
-        if (err) {
-            console.error(err.message);
-        } else {
-            console.log('Status: ' + result.status);
-            result.reports.forEach(function (report) {
-                console.log(report);
+nomnom.command('job')
+    .opts({
+        jobnames: { position: 1, required: true, list: true }
+    })
+    .callback(function (args) {
+        args.jobnames.forEach(function (jobname) {        
+            nestor.job(jobname, function (err, result) {
+                if (err) {
+                    console.error(jobname + ' - ' + err.message);
+                } else {
+                    console.log(jobname + ' - ' + 'Status: ' + result.status);
+                    result.reports.forEach(function (report) {
+                        console.log(jobname + ' - ' + report);
+                    });
+                }
             });
-        }
+        });
     });
-});
 nomnom.command('build').callback(function (args) {
     nestor.build(args._[1], args._[2], function (err, result) {
         if (err) {
