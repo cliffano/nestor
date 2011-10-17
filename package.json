@@ -7,7 +7,7 @@
     "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
     "bin": { "nestor": "./bin/nestor" },
     "repository": { "type": "git", "url": "http://github.com/cliffano/nestor.git" },
-    "bugs": { "web": "http://github.com/cliffano/nestor/issues" },
+    "bugs": { "url": "http://github.com/cliffano/nestor/issues" },
     "directories": { "bin": "./bin", "lib": "./lib", "test": "./test" },
     "dependencies": { "nomnom": "1.0.0", "xml2js": "0.1.9" },
     "devDependencies": { "vows": "0.5.9" },
