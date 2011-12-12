@@ -1,16 +1,47 @@
 {
-    "name": "nestor",
-    "description": "Jenkins NodeJS CLI",
-    "keywords": ["jenkins", "ci", "command line"],
-    "version": "0.0.2",
-    "homepage" : "http://github.com/cliffano/nestor",
-    "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
-    "bin": { "nestor": "./bin/nestor" },
-    "repository": { "type": "git", "url": "http://github.com/cliffano/nestor.git" },
-    "bugs": { "url": "http://github.com/cliffano/nestor/issues" },
-    "directories": { "bin": "./bin", "lib": "./lib", "test": "./test" },
-    "dependencies": { "nomnom": "1.0.0", "xml2js": "0.1.9" },
-    "devDependencies": { "vows": "0.5.9" },
-    "engines": { "node": ">= 0.4.0" },
-    "licenses" : [{ "type" : "MIT", "url" : "http://github.com/cliffano/nestor/raw/master/LICENSE" } ]
+  "name": "nestor",
+  "description": "Node.js Jenkins CLI",
+  "keywords": [
+    "jenkins",
+    "ci",
+    "command line"
+  ],
+  "version": "0.0.3",
+  "homepage": "http://github.com/cliffano/nestor",
+  "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
+  "bin": {
+    "nestor": "./bin/nestor"
+  },
+  "scripts": {
+    "test": "vows --spec `find test -name \"*.js\"`"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/cliffano/nestor.git"
+  },
+  "bugs": {
+    "url": "http://github.com/cliffano/nestor/issues"
+  },
+  "directories": {
+    "bin": "./bin",
+    "lib": "./lib",
+    "test": "./test"
+  },
+  "dependencies": {
+    "nomnom": "1.5.1",
+    "xml2js": "0.1.9"
+  },
+  "devDependencies": {
+    "sandboxed-module": "0.1.2",
+    "vows": "0.5.9"
+  },
+  "engines": {
+    "node": ">= 0.4.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/cliffano/nestor/raw/master/LICENSE"
+    }
+  ]
 }
