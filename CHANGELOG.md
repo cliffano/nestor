@@ -1,4 +1,5 @@
 ### 0.0.3
+* Rewrite lib
 
 ### 0.0.2
 * Add Jenkins discovery feature

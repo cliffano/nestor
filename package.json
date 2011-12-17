@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "nomnom": "1.5.1",
+    "underscore": "1.2.3",
     "xml2js": "0.1.9"
   },
   "devDependencies": {
