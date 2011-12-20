@@ -1,22 +1,17 @@
-Nestor
+Nestor ![http://travis-ci.org/cliffano/nestor](https://secure.travis-ci.org/cliffano/nestor.png?branch=master)
 ------
 
-Jenkins Node.js CLI
-
-Overview
---------
-
-Nestor is a Jenkins command-line interface written in Node.js .
+Nestor is a Node.js Jenkins CLI.
 
 Installation
 ------------
 
     npm install -g nestor
 
-Config
-------
+Configuration
+-------------
 
-You can set Jenkins URL as an environment variable.
+Set Jenkins URL as an environment variable:
 
     export JENKINS_URL=http://user:pass@host:port/path
 
@@ -25,35 +20,39 @@ By default, Nestor uses http://localhost:8080 as the Jenkins URL.
 Usage
 -----
 
-View status of all jobs.
+View status of all jobs:
 
     nestor dashboard
 
-View jobs status.
+View job status:
 
-    nestor job jobname1 jobname2 ...
+    nestor job jobname
 
-Trigger a build.
+Trigger a build:
 
     nestor build jobname
 
-Trigger a parameterised build.
+Trigger a parameterised build:
 
     nestor build jobname "param1=value1&param2=value2"
 
-View the build queue.
+View the build queue:
 
     nestor queue
 
-View the executors' activity (running builds) .
+View the executors' activity (running builds):
 
     nestor executor
     
-Discover Jenkins instance running on a host
+Discover Jenkins instance running on a host:
 
     nestor discover hostname
 
-View Jenkins version number.
+View Jenkins version number:
 
     nestor version
     
+Colophon
+--------
+
+Follow [@cliffano](http://twitter.com/cliffano) on Twitter.
