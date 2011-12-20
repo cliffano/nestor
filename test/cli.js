@@ -3,7 +3,7 @@ var assert = require('assert'),
   vows = require('vows');
 
 vows.describe('cli').addBatch({
-  '': {
+  ' ': {
     topic: function () {
       return {};
     },
