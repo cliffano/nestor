@@ -24,7 +24,7 @@ vows.describe('cli').addBatch({
                       cb(mockErr, mockResult);
                     }
                   },
-                  discover: function (hsot, cb) {
+                  discover: function (host, cb) {
                     if (command === 'discover') {
                       cb(mockErr, mockResult);
                     }
@@ -104,7 +104,7 @@ vows.describe('cli').addBatch({
     },
     'should pass exit code 1 when build callback has an error': function (topic) {
       var checks = {},
-        cli = topic('build', { _: [ '', 'myjob', 'myparam=myvalue'] }, new Error('some error'), null, checks);
+        cli = topic('build', { _: ['', 'myjob', 'myparam=myvalue'] }, new Error('some error'), null, checks);
       cli.exec();
       assert.equal(checks.code, 1);
       assert.equal(checks.parseArgsCount, 1);
@@ -113,12 +113,144 @@ vows.describe('cli').addBatch({
     },
     'should pass exit code 0 when build callback has no error': function (topic) {
       var checks = {},
-        cli = topic('build', { _: [ '', 'myjob', 'myparam=myvalue'] }, null, { status: 'ok' }, checks);
+        cli = topic('build', { _: ['', 'myjob', 'myparam=myvalue'] }, null, { status: 'ok' }, checks);
       cli.exec();
       assert.equal(checks.code, 0);
       assert.equal(checks.parseArgsCount, 1);
       assert.equal(checks.messages.length, 1);
       assert.equal(checks.messages[0], 'Job was started successfully');
+    },
+    'should pass exit code 1 when dashboard callback has an error': function (topic) {
+      var checks = {},
+        cli = topic('dashboard', { _: [''] }, new Error('some error'), null, checks);
+      cli.exec();
+      assert.equal(checks.code, 1);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages[0], 'some error');
+    },
+    'should pass exit code 0 when dashboard callback has no error and display jobs status and name when they exist': function (topic) {
+      var checks = {},
+        cli = topic('dashboard', { _: [''] }, null, [{ status: 'OK', name: 'job1' }, { status: 'ABORT', name: 'job2' }], checks);
+      cli.exec();
+      assert.equal(checks.code, 0);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 2);
+      assert.equal(checks.messages[0], 'OK - job1');
+      assert.equal(checks.messages[1], 'ABORT - job2');
+    },
+    'should pass exit code 0 when dashboard callback has no error and display message when there is no job': function (topic) {
+      var checks = {},
+        cli = topic('dashboard', { _: [''] }, null, [], checks);
+      cli.exec();
+      assert.equal(checks.code, 0);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages[0], 'Jobless Jenkins');
+    },
+    'should pass exit code 1 when discover callback has an error': function (topic) {
+      var checks = {},
+        cli = topic('discover', { _: [''] }, new Error('some error'), null, checks);
+      cli.exec();
+      assert.equal(checks.code, 1);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages[0], 'some error');
+    },
+    'should pass exit code 0 when discover callback has no error and display jenkins details': function (topic) {
+      var checks = {},
+        cli = topic('discover', { _: [''] }, null, { version: '1.41', url: 'http://localhost:8888/jenkins' }, checks);
+      cli.exec();
+      assert.equal(checks.code, 0);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages[0], 'Jenkins 1.41 found, running at http://localhost:8888/jenkins');
+    },
+    'should pass exit code 1 when executor callback has an error': function (topic) {
+      var checks = {},
+        cli = topic('executor', { _: [''] }, new Error('some error'), null, checks);
+      cli.exec();
+      assert.equal(checks.code, 1);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages[0], 'some error');
+    },
+    'should pass exit code 0 when executor callback has no error and display jobs status': function (topic) {
+      var checks = {},
+        cli = topic('executor', { _: [''] }, null, { master: [{ idle: true }, { idle: false, progress: 23, name: 'job1' }]}, checks);
+      cli.exec();
+      assert.equal(checks.code, 0);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 3);
+      assert.equal(checks.messages[0], '+ master');
+      assert.equal(checks.messages[1], '  - idle');
+      assert.equal(checks.messages[2], '  - 23% job1');
+    },
+    'should pass exit code 1 when job callback has an error': function (topic) {
+      var checks = {},
+        cli = topic('job', { _: [''] }, new Error('some error'), null, checks);
+      cli.exec();
+      assert.equal(checks.code, 1);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages[0], 'some error');
+    },
+    'should pass exit code 0 when job callback has no error and display job status and reports': function (topic) {
+      var checks = {},
+        cli = topic('job', { _: [''] }, null, { status: 'OK', reports:  ['It is awesome', 'All good'] }, checks);
+      cli.exec();
+      assert.equal(checks.code, 0);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 3);
+      assert.equal(checks.messages[0], 'Status: OK');
+      assert.equal(checks.messages[1], 'It is awesome');
+      assert.equal(checks.messages[2], 'All good');
+    },
+    'should pass exit code 1 when queue callback has an error': function (topic) {
+      var checks = {},
+        cli = topic('queue', { _: [''] }, new Error('some error'), null, checks);
+      cli.exec();
+      assert.equal(checks.code, 1);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages[0], 'some error');
+    },
+    'should pass exit code 0 when queue callback has no error and display empty message when there is no queued job': function (topic) {
+      var checks = {},
+        cli = topic('queue', { _: [''] }, null, [], checks);
+      cli.exec();
+      assert.equal(checks.code, 0);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages[0], 'Queue is empty');
+    },
+    'should pass exit code 0 when queue callback has no error and display queued jobs': function (topic) {
+      var checks = {},
+        cli = topic('queue', { _: [''] }, null, ['job1', 'job2'], checks);
+      cli.exec();
+      assert.equal(checks.code, 0);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 2);
+      assert.equal(checks.messages[0], '- job1');
+      assert.equal(checks.messages[1], '- job2');
+    },
+    'should pass exit code 1 when version callback has an error': function (topic) {
+      var checks = {},
+        cli = topic('version', { _: [''] }, new Error('some error'), null, checks);
+      cli.exec();
+      assert.equal(checks.code, 1);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages[0], 'some error');
+    },
+    'should pass exit code 0 when version callback has no error and display version number': function (topic) {
+      var checks = {},
+        cli = topic('version', { _: [''] }, null, '1.431', checks);
+      cli.exec();
+      assert.equal(checks.code, 0);
+      assert.equal(checks.parseArgsCount, 1);
+      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages[0], '1.431');
     }
   }
 }).exportTo(module);
