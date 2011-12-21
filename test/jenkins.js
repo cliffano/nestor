@@ -4,7 +4,7 @@ var assert = require('assert'),
   vows = require('vows');
 
 vows.describe('jenkins').addBatch({
-  'http': {
+  'comm': {
     topic: function () {
       return function (mockErr, mockResult, checks) {
         return new (sandbox.require('../lib/jenkins', {
