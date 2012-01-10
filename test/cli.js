@@ -73,6 +73,9 @@ vows.describe('cli').addBatch({
               },
               parseArgs: function () {
                 checks.parseArgsCount = 1;
+              },
+              getUsage: function () {
+                return 'dummyusage instruction';
               }
             },
             fs: {
@@ -108,8 +111,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 1);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], 'some error');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     },
     'should pass exit code 0 when build callback has no error': function (topic) {
       var checks = {},
@@ -117,8 +121,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 0);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], 'Job was started successfully');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     },
     'should pass exit code 1 when dashboard callback has an error': function (topic) {
       var checks = {},
@@ -126,8 +131,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 1);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], 'some error');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     },
     'should pass exit code 0 when dashboard callback has no error and display jobs status and name when they exist': function (topic) {
       var checks = {},
@@ -135,9 +141,10 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 0);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 2);
+      assert.equal(checks.messages.length, 3);
       assert.equal(checks.messages[0], 'OK - job1');
       assert.equal(checks.messages[1], 'ABORT - job2');
+      assert.equal(checks.messages[2], 'dummyusage instruction');
     },
     'should pass exit code 0 when dashboard callback has no error and display message when there is no job': function (topic) {
       var checks = {},
@@ -145,8 +152,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 0);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], 'Jobless Jenkins');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     },
     'should pass exit code 1 when discover callback has an error': function (topic) {
       var checks = {},
@@ -154,8 +162,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 1);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], 'some error');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     },
     'should pass exit code 0 when discover callback has no error and display jenkins details': function (topic) {
       var checks = {},
@@ -163,8 +172,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 0);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], 'Jenkins 1.41 found, running at http://localhost:8888/jenkins');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     },
     'should pass exit code 1 when executor callback has an error': function (topic) {
       var checks = {},
@@ -172,8 +182,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 1);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], 'some error');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     },
     'should pass exit code 0 when executor callback has no error and display jobs status': function (topic) {
       var checks = {},
@@ -181,10 +192,11 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 0);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 3);
+      assert.equal(checks.messages.length, 4);
       assert.equal(checks.messages[0], '+ master');
       assert.equal(checks.messages[1], '  - idle');
       assert.equal(checks.messages[2], '  - 23% job1');
+      assert.equal(checks.messages[3], 'dummyusage instruction');
     },
     'should pass exit code 1 when job callback has an error': function (topic) {
       var checks = {},
@@ -192,8 +204,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 1);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], 'some error');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     },
     'should pass exit code 0 when job callback has no error and display job status and reports': function (topic) {
       var checks = {},
@@ -201,10 +214,11 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 0);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 3);
+      assert.equal(checks.messages.length, 4);
       assert.equal(checks.messages[0], 'Status: OK');
       assert.equal(checks.messages[1], 'It is awesome');
       assert.equal(checks.messages[2], 'All good');
+      assert.equal(checks.messages[3], 'dummyusage instruction');
     },
     'should pass exit code 1 when queue callback has an error': function (topic) {
       var checks = {},
@@ -212,8 +226,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 1);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], 'some error');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     },
     'should pass exit code 0 when queue callback has no error and display empty message when there is no queued job': function (topic) {
       var checks = {},
@@ -221,8 +236,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 0);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], 'Queue is empty');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     },
     'should pass exit code 0 when queue callback has no error and display queued jobs': function (topic) {
       var checks = {},
@@ -230,9 +246,10 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 0);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 2);
+      assert.equal(checks.messages.length, 3);
       assert.equal(checks.messages[0], '- job1');
       assert.equal(checks.messages[1], '- job2');
+      assert.equal(checks.messages[2], 'dummyusage instruction');
     },
     'should pass exit code 1 when version callback has an error': function (topic) {
       var checks = {},
@@ -240,8 +257,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 1);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], 'some error');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     },
     'should pass exit code 0 when version callback has no error and display version number': function (topic) {
       var checks = {},
@@ -249,8 +267,9 @@ vows.describe('cli').addBatch({
       cli.exec();
       assert.equal(checks.code, 0);
       assert.equal(checks.parseArgsCount, 1);
-      assert.equal(checks.messages.length, 1);
+      assert.equal(checks.messages.length, 2);
       assert.equal(checks.messages[0], '1.431');
+      assert.equal(checks.messages[1], 'dummyusage instruction');
     }
   }
 }).exportTo(module);

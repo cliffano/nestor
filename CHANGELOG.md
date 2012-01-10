@@ -1,3 +1,6 @@
+### 0.0.4
+* Display usage on arg-less comamand
+
 ### 0.0.3
 * Rewrite lib
 
