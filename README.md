@@ -1,4 +1,4 @@
-Nestor ![http://travis-ci.org/cliffano/nestor](https://secure.travis-ci.org/cliffano/nestor.png?branch=master)
+Nestor [![http://travis-ci.org/cliffano/nestor](https://secure.travis-ci.org/cliffano/nestor.png?branch=master)](http://travis-ci.org/cliffano/nestor)
 ------
 
 Nestor is Node.js [Jenkins](http://jenkins-ci.org) command-line interface.
