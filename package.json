@@ -13,7 +13,7 @@
     "nestor": "./bin/nestor"
   },
   "scripts": {
-    "test": "vows --spec `find test -name \"*.js\"`"
+    "test": "npm install -g bob; bob clean lint test;"
   },
   "repository": {
     "type": "git",
