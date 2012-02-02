@@ -1,4 +1,5 @@
 var assert = require('assert'),
+  jscoverageHack = require('../lib/jenkins'),
   sandbox = require('sandboxed-module'),
   url = require('url'),
   vows = require('vows');

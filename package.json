@@ -13,7 +13,7 @@
     "nestor": "./bin/nestor"
   },
   "scripts": {
-    "test": "npm install -g bob; bob clean lint test;"
+    "test": "npm install -g bob; bob clean lint test coverage;"
   },
   "repository": {
     "type": "git",
