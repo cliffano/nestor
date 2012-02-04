@@ -10,12 +10,17 @@ vows.describe('comm').addBatch({
         return sandbox.require('../lib/comm', mocks);
       };
     },
-    'when there is an error': {
+    'when there is an error and url contains username, password, and path': {
       topic: function (topic) {
         topic({
           requires: {
             http: {
               request: function (opts, cb) {
+                assert.equal(opts.path, '/jenkins/api/json');
+                assert.equal(opts.method, 'GET');
+                assert.equal(opts.host, 'localhost');
+                assert.equal(opts.port, 8080);
+                assert.equal(opts.headers.Authorization, 'Basic dXNlcjpwYXNz');
                 return {
                   on: function (event, cb) {
                     if (event === 'error') {
@@ -28,7 +33,7 @@ vows.describe('comm').addBatch({
               }
             }
           }
-        }).http('/api/json', 'GET', url.parse('http://user:pass@localhost:8080'), this.callback);
+        }).http('/api/json', 'GET', url.parse('http://user:pass@localhost:8080/jenkins'), this.callback);
       },
       'then the error should be passed via callback': function (err, result) {
         assert.equal(err.message, 'some error');
@@ -41,7 +46,11 @@ vows.describe('comm').addBatch({
           requires: {
             http: {
               request: function (opts, cb) {
-                // assert opts
+                assert.equal(opts.path, '/api/json');
+                assert.equal(opts.method, 'GET');
+                assert.equal(opts.host, 'localhost');
+                assert.equal(opts.port, 8080);
+                assert.isNull(opts.headers);
                 return {
                   on: function (event, cb) {
                   },
@@ -65,7 +74,7 @@ vows.describe('comm').addBatch({
               }
             }
           }
-        }).http('/api/json', 'GET', url.parse('http://user:pass@localhost:8080'), this.callback);
+        }).http('/api/json', 'GET', url.parse('http://localhost:8080'), this.callback);
       },
       'then the result should be passed via callback': function (err, result) {
         assert.equal(result.statusCode, 200);

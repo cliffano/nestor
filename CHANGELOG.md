@@ -1,5 +1,6 @@
 ### 0.0.4
 * Display usage on arg-less comamand
+* Add support for Jenkins URL containing path e.g. http://host:port/path
 
 ### 0.0.3
 * Rewrite lib
