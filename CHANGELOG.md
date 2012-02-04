@@ -1,3 +1,6 @@
+### 0.0.5 (SNAPSHOT)
+*
+
 ### 0.0.4
 * Display usage on arg-less comamand
 * Add support for Jenkins URL containing path e.g. http://host:port/path
