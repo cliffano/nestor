@@ -5,7 +5,7 @@ var assert = require('assert'),
   vows = require('vows');
 
 vows.describe('jenkins').addBatch({
-  'comm': {
+  'jenkins': {
     topic: function () {
       return function (mockErr, mockResult, checks) {
         return new (sandbox.require('../lib/jenkins', {
@@ -127,7 +127,7 @@ vows.describe('jenkins').addBatch({
       },
       'then an error should be passed via callback': function (err, result) {
         assert.equal(err.message, 'some error');
-        assert.isUndefined(result);
+        assert.isNull(result);
       }
     },
     'when jenkins has in-progress executors': {
