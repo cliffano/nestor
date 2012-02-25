@@ -12,9 +12,6 @@
   "bin": {
     "nestor": "./bin/nestor"
   },
-  "scripts": {
-    "test": "npm install -g bob; bob clean lint test coverage;"
-  },
   "repository": {
     "type": "git",
     "url": "http://github.com/cliffano/nestor.git"
@@ -37,7 +34,7 @@
     "vows": "0.6.1"
   },
   "engines": {
-    "node": ">= 0.4.0"
+    "node": ">= 0.4.0 < 0.7.0"
   },
   "licenses": [
     {
