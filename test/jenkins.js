@@ -1,3 +1,164 @@
+var bag = require('bagofholding'),
+  sandbox = require('sandboxed-module'),
+  should = require('should'),
+  checks, mocks,
+  jenkins;
+
+describe('jenkins', function () {
+
+  function create(checks, mocks) {
+    return sandbox.require('../lib/jenkins', {
+      requires: mocks ? mocks.requires : {},
+      globals: {}
+    });
+  }
+
+  beforeEach(function () {
+    checks = {};
+    mocks = {};
+  });
+
+  describe('jenkins', function () {
+
+    it('should pass error to callback when an error occurs while sending request', function (done) {
+      mocks.request_err = new Error('someerror');
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))();
+      jenkins.dashboard(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      checks.jenkins_dashboard_cb_args[0].message.should.equal('someerror');
+      should.not.exist(checks.jenkins_dashboard_cb_args[1]);
+    });
+
+    it('should pass authentication error to callback when result has status code 401', function (done) {
+      mocks.request_result = { statusCode: 401 };
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))();
+      jenkins.dashboard(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      checks.jenkins_dashboard_cb_args[0].message.should.equal('Jenkins requires authentication - set username and password in JENKINS_URL');
+      should.not.exist(checks.jenkins_dashboard_cb_args[1]);
+    });
+
+    it('should pass authentication error to callback when result has status code 403', function (done) {
+      mocks.request_result = { statusCode: 403 };
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))();
+      jenkins.dashboard(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      checks.jenkins_dashboard_cb_args[0].message.should.equal('Jenkins requires authentication - set username and password in JENKINS_URL');
+      should.not.exist(checks.jenkins_dashboard_cb_args[1]);
+    });
+  });
+
+  describe('dashboard', function () {
+
+    it('should return empty data when dashboard has no job', function (done) {
+      mocks.request_result = { statusCode: 200, body: '{ "jobs": [] }'};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.dashboard(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
+      checks.jenkins_dashboard_cb_args[1].length.should.equal(0);
+    });
+
+    it('should return statuses when dashboard has jobs with known color value', function (done) {
+      mocks.request_result = { statusCode: 200, body: JSON.stringify(
+        { jobs: [
+          { name: 'job1', color: 'blue' },
+          { name: 'job2', color: 'green' },
+          { name: 'job3', color: 'grey' },
+          { name: 'job4', color: 'red' },
+          { name: 'job5', color: 'yellow' }
+        ]}
+      )};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.dashboard(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
+      var jobs = checks.jenkins_dashboard_cb_args[1];
+      jobs.length.should.equal(5);
+      jobs[0].name.should.equal('job1');
+      jobs[0].status.should.equal('OK');
+      jobs[1].name.should.equal('job2');
+      jobs[1].status.should.equal('OK');
+      jobs[2].name.should.equal('job3');
+      jobs[2].status.should.equal('ABORTED');
+      jobs[3].name.should.equal('job4');
+      jobs[3].status.should.equal('FAIL');
+      jobs[4].name.should.equal('job5');
+      jobs[4].status.should.equal('WARN');
+    });
+
+    it('should return statuses when dashboard has running jobs with animated color value', function (done) {
+      mocks.request_result = { statusCode: 200, body: JSON.stringify(
+        { jobs: [
+          { name: 'job1', color: 'grey_anime' },
+          { name: 'job2', color: 'red_anime' }
+        ]}
+      )};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.dashboard(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
+      var jobs = checks.jenkins_dashboard_cb_args[1];
+      jobs.length.should.equal(2);
+      jobs[0].name.should.equal('job1');
+      jobs[0].status.should.equal('ABORTED');
+      jobs[1].name.should.equal('job2');
+      jobs[1].status.should.equal('FAIL');
+    });
+
+    it('should return statuses when dashboard has jobs with unknown color value', function (done) {
+      mocks.request_result = { statusCode: 200, body: JSON.stringify(
+        { jobs: [
+          { name: 'job1', color: 'disabled' }
+        ]}
+      )};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.dashboard(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
+      var jobs = checks.jenkins_dashboard_cb_args[1];
+      jobs.length.should.equal(1);
+      jobs[0].name.should.equal('job1');
+      jobs[0].status.should.equal('DISABLED');
+    });
+  });
+});
+/*
 var assert = require('assert'),
   jscoverageHack = require('../lib/jenkins'),
   sandbox = require('sandboxed-module'),
@@ -277,3 +438,4 @@ vows.describe('jenkins').addBatch({
     }
   }
 }).exportTo(module);
+*/

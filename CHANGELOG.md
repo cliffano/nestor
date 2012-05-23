@@ -1,5 +1,6 @@
 ### 0.0.5 (SNAPSHOT)
-*
+* Another rewrite lib (bagofholding FTW)
+* Fix undefined job status display
 
 ### 0.0.4
 * Display usage on arg-less comamand
