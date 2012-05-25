@@ -172,6 +172,39 @@ describe('jenkins', function () {
       jobs[0].status.should.equal('DISABLED');
     });
   });
+
+  describe('version', function () {
+
+    it('should pass error to callback when headers do not contain x-jenkins', function (done) {
+      mocks.request_result = { statusCode: 200, headers: {}};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.version(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      should.not.exist(checks.jenkins_dashboard_cb_args[1]);
+      var err = checks.jenkins_dashboard_cb_args[0];
+      err.message.should.equal('Not a Jenkins server');
+    });
+
+    it('should pass version to callback when headers contain x-jenkins', function (done) {
+      mocks.request_result = { statusCode: 200, headers: { 'x-jenkins': '1.464' }};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.version(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
+      var version = checks.jenkins_dashboard_cb_args[1];
+      version.should.equal('1.464');
+    });
+  });
 });
 /*
 var assert = require('assert'),
