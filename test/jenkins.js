@@ -62,7 +62,7 @@ describe('jenkins', function () {
       should.not.exist(checks.jenkins_dashboard_cb_args[1]);
     });
 
-    it('should pass error with status code and body to callback when request responds with unexpected status code', function () {
+    it('should pass error with status code and body to callback when request responds with unexpected status code', function (done) {
       mocks.request_result = { statusCode: 503, body: 'unexpectedbody' };
       mocks.requires = {
         request: bag.mock.request(checks, mocks)
@@ -70,7 +70,7 @@ describe('jenkins', function () {
       jenkins = new (create(checks, mocks))('http://localhost:8080');
       jenkins.dashboard(function cb(err, result) {
         checks.jenkins_dashboard_cb_args = cb['arguments'];
-//        done();
+        done();
       });
       var err = checks.jenkins_dashboard_cb_args[0];
       err.message.should.equal('Unexpected status code 503 from Jenkins\nResponse body:\nunexpectedbody');
