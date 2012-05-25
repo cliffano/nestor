@@ -1,3 +1,121 @@
+var bag = require('bagofholding'),
+  sandbox = require('sandboxed-module'),
+  should = require('should'),
+  checks, mocks,
+  cli;
+
+describe('cli', function () {
+
+  function create(checks, mocks) {
+    return sandbox.require('../lib/cli', {
+      requires: {
+        bagofholding: {
+          cli: {
+            exitCb: function (errorCb, successCb) {
+              // TODO: investigate why bag.mock.exitCb does not have the mock globals (console and process)
+              if (!errorCb) {
+                errorCb = function (err) {
+                  bag.mock.console(checks).error(err.message);
+                }
+              }
+              return function (err, result) {
+                if (err) {
+                  errorCb(err);
+                } else {
+                  successCb(result);
+                }
+              };
+            },
+            parse: function (commands, dir) {
+              checks.bag_parse_commands = commands;
+              checks.bag_parse_dir = dir;
+            }
+          }
+        },
+        './jenkins': function (url) {
+          checks.jenkins_url = url;
+          function _cb(cb) {
+            cb(mocks.jenkins_dashboard_err, mocks.jenkins_dashboard_result);
+          }
+          return {
+            dashboard: _cb,
+            version: _cb
+          }
+        }
+      },
+      globals: {
+        console: bag.mock.console(checks),
+        process: bag.mock.process(checks, mocks)
+      },
+      locals: {
+        __dirname: '/somedir/nestor/lib'
+      }
+    });
+  }
+
+  beforeEach(function () {
+    checks = {};
+    mocks = {};
+  });
+
+  describe('exec', function () {
+
+    beforeEach(function () {
+      mocks.process_env = { JENKINS_URL: 'http://ci.jenkins-ci.org' };
+    });
+
+    afterEach(function () {
+      checks.bag_parse_dir.should.equal('/somedir/nestor/lib');
+      checks.jenkins_url.should.equal('http://ci.jenkins-ci.org');
+    });
+
+    it('should log jobs status and name when exec dashboard is called and jenkins result has jobs', function () {
+      mocks.jenkins_dashboard_result = [
+        { status: 'OK', name: 'job1' },
+        { status: 'FAIL', name: 'job2' }
+      ];
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.dashboard.desc.should.equal('View status of all jobs');
+      checks.bag_parse_commands.dashboard.action();
+      checks.console_log_messages.length.should.equal(2);
+      checks.console_log_messages[0].should.equal('OK - job1');
+      checks.console_log_messages[1].should.equal('FAIL - job2');
+    });
+
+    it('should log no job when exec dashboard is called and jenkins result has no job', function () {
+      mocks.jenkins_dashboard_result = [];
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.dashboard.desc.should.equal('View status of all jobs');
+      checks.bag_parse_commands.dashboard.action();
+      checks.console_log_messages.length.should.equal(1);
+      checks.console_log_messages[0].should.equal('Jobless Jenkins');
+    });
+
+    it('should log version when exec ver is called and version exists', function () {
+      mocks.jenkins_dashboard_result = '1.2.3';
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.ver.desc.should.equal('View Jenkins version number');
+      checks.bag_parse_commands.ver.action();
+      checks.console_log_messages.length.should.equal(1);
+      checks.console_log_messages[0].should.equal('Jenkins ver. 1.2.3');
+    });
+
+    it('should log error when exec ver is called and version does not exist', function () {
+      mocks.jenkins_dashboard_err = new Error('someerror');
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.ver.desc.should.equal('View Jenkins version number');
+      checks.bag_parse_commands.ver.action();
+      checks.console_error_messages.length.should.equal(1);
+      checks.console_error_messages[0].should.equal('someerror');
+    });
+  });
+});
+ 
+/*
 var assert = require('assert'),
   sandbox = require('sandboxed-module'),
   vows = require('vows');
@@ -273,3 +391,4 @@ vows.describe('cli').addBatch({
     }
   }
 }).exportTo(module);
+*/
