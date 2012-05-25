@@ -1,0 +1,9 @@
+{
+  "test": {
+    "type": "mocha"
+  },
+  "coverage": {
+    "type": "mocha"
+  }
+}
+
