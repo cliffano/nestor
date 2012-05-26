@@ -35,15 +35,15 @@ describe('cli', function () {
         './jenkins': function (url) {
           checks.jenkins_url = url;
           function _cb(cb) {
-            cb(mocks.jenkins_dashboard_err, mocks.jenkins_dashboard_result);
+            cb(mocks.jenkins_action_err, mocks.jenkins_action_result);
           }
           return {
             dashboard: _cb,
             discover: function (host, cb) {
-              console.log(host);
               checks.discover_host = host;
               _cb(cb);
             },
+            queue: _cb,
             version: _cb
           };
         }
@@ -75,7 +75,7 @@ describe('cli', function () {
     });
 
     it('should log jobs status and name when exec dashboard is called and Jenkins result has jobs', function () {
-      mocks.jenkins_dashboard_result = [
+      mocks.jenkins_action_result = [
         { status: 'OK', name: 'job1' },
         { status: 'FAIL', name: 'job2' }
       ];
@@ -89,7 +89,7 @@ describe('cli', function () {
     });
 
     it('should log no job when exec dashboard is called and Jenkins result has no job', function () {
-      mocks.jenkins_dashboard_result = [];
+      mocks.jenkins_action_result = [];
       cli = create(checks, mocks);
       cli.exec();
       checks.bag_parse_commands.dashboard.desc.should.equal('View status of all jobs');
@@ -98,8 +98,29 @@ describe('cli', function () {
       checks.console_log_messages[0].should.equal('Jobless Jenkins');
     });
 
+    it('should log queued job names when exec queue is called and there are some queued jobs', function () {
+      mocks.jenkins_action_result = ['job1', 'job2'];
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.queue.desc.should.equal('View queued jobs');
+      checks.bag_parse_commands.queue.action();
+      checks.console_log_messages.length.should.equal(2);
+      checks.console_log_messages[0].should.equal('- job1');
+      checks.console_log_messages[1].should.equal('- job2');
+    });
+
+    it('should log queue empty message when exec queue is called and there is no queued job', function () {
+      mocks.jenkins_action_result = [];
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.queue.desc.should.equal('View queued jobs');
+      checks.bag_parse_commands.queue.action();
+      checks.console_log_messages.length.should.equal(1);
+      checks.console_log_messages[0].should.equal('Queue is empty');
+    });
+
     it('should log version and host when exec discover is called and there is a running Jenkins instance', function () {
-      mocks.jenkins_dashboard_result = {
+      mocks.jenkins_action_result = {
         version: '1.2.3',
         url: 'http://localhost:8080/',
         'server-id': '362f249fc053c1ede86a218587d100ce',
@@ -115,7 +136,7 @@ describe('cli', function () {
     });
 
     it('should log version when exec ver is called and version exists', function () {
-      mocks.jenkins_dashboard_result = '1.2.3';
+      mocks.jenkins_action_result = '1.2.3';
       cli = create(checks, mocks);
       cli.exec();
       checks.bag_parse_commands.ver.desc.should.equal('View Jenkins version number');
@@ -125,7 +146,7 @@ describe('cli', function () {
     });
 
     it('should log error when exec ver is called and version does not exist', function () {
-      mocks.jenkins_dashboard_err = new Error('someerror');
+      mocks.jenkins_action_err = new Error('someerror');
       cli = create(checks, mocks);
       cli.exec();
       checks.bag_parse_commands.ver.desc.should.equal('View Jenkins version number');

@@ -236,6 +236,50 @@ describe('jenkins', function () {
     });
   });
 
+  describe('queue', function () {
+
+    it('should pass job names when queue is not empty', function (done) {
+      mocks.request_result = { statusCode: 200, body: JSON.stringify({
+        items: [
+          { task: { name: 'job1' }},
+          { task: { name: 'job2' }}
+        ]
+      })};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.queue(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      checks.request_opts.method.should.equal('get');
+      checks.request_opts.uri.should.equal('http://localhost:8080/queue/api/json');
+      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
+      checks.jenkins_dashboard_cb_args[1].length.should.equal(2);
+      checks.jenkins_dashboard_cb_args[1][0].should.equal('job1');
+      checks.jenkins_dashboard_cb_args[1][1].should.equal('job2');
+    });
+
+    it('should pass empty job names when queue is empty', function (done) {
+      mocks.request_result = { statusCode: 200, body: JSON.stringify({
+        items: []
+      })};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.queue(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      checks.request_opts.method.should.equal('get');
+      checks.request_opts.uri.should.equal('http://localhost:8080/queue/api/json');
+      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
+      checks.jenkins_dashboard_cb_args[1].length.should.equal(0);
+    });
+  });
+
   describe('version', function () {
 
     it('should pass error to callback when headers do not contain x-jenkins', function (done) {
