@@ -43,6 +43,7 @@ describe('cli', function () {
               checks.discover_host = host;
               _cb(cb);
             },
+            executor: _cb,
             queue: _cb,
             version: _cb
           };
@@ -98,6 +99,57 @@ describe('cli', function () {
       checks.console_log_messages[0].should.equal('Jobless Jenkins');
     });
 
+    it('should log version and host when exec discover is called and there is a running Jenkins instance', function () {
+      mocks.jenkins_action_result = {
+        version: '1.2.3',
+        url: 'http://localhost:8080/',
+        'server-id': '362f249fc053c1ede86a218587d100ce',
+        'slave-port': '55325'
+      };
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.discover.desc.should.equal('Discover Jenkins instance running on a specified host');
+      checks.bag_parse_commands.discover.action('localhost');
+      checks.discover_host.should.equal('localhost');
+      checks.console_log_messages.length.should.equal(1);
+      checks.console_log_messages[0].should.equal('Jenkins ver. 1.2.3 is running on http://localhost:8080/');
+    });
+
+
+    it('should log executor status when exec executor is called and there are some executors', function () {
+      mocks.jenkins_action_result = {
+        master: [
+          { idle: true },
+          { idle: false, name: 'job1', progress: 5 },
+          { idle: false, progress: 33 }
+        ],
+        slave: [
+          { idle: false, stuck: true, name: 'job2' , progress: 11 }
+        ]
+      };
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.executor.desc.should.equal('View executors\' status (running builds)');
+      checks.bag_parse_commands.executor.action();
+      checks.console_log_messages.length.should.equal(6);
+      checks.console_log_messages[0].should.equal('+ master');
+      checks.console_log_messages[1].should.equal('  - idle');
+      checks.console_log_messages[2].should.equal('  - job1 | 5%');
+      checks.console_log_messages[3].should.equal('  - undefined | 33%');
+      checks.console_log_messages[4].should.equal('+ slave');
+      checks.console_log_messages[5].should.equal('  - job2 | 11% stuck!');
+    });
+/*
+    it('should log nothing when exec executor is called and there is no executor', function () {
+      mocks.jenkins_action_result = [];
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.executor.desc.should.equal('View executors\' status (running builds)');
+      checks.bag_parse_commands.executor.action();
+      checks.console_log_messages.length.should.equal(1);
+      checks.console_log_messages[0].should.equal('Queue is empty');
+    });
+*/
     it('should log queued job names when exec queue is called and there are some queued jobs', function () {
       mocks.jenkins_action_result = ['job1', 'job2'];
       cli = create(checks, mocks);
@@ -117,22 +169,6 @@ describe('cli', function () {
       checks.bag_parse_commands.queue.action();
       checks.console_log_messages.length.should.equal(1);
       checks.console_log_messages[0].should.equal('Queue is empty');
-    });
-
-    it('should log version and host when exec discover is called and there is a running Jenkins instance', function () {
-      mocks.jenkins_action_result = {
-        version: '1.2.3',
-        url: 'http://localhost:8080/',
-        'server-id': '362f249fc053c1ede86a218587d100ce',
-        'slave-port': '55325'
-      };
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.discover.desc.should.equal('Discover Jenkins instance running on a specified host');
-      checks.bag_parse_commands.discover.action('localhost');
-      checks.discover_host.should.equal('localhost');
-      checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Jenkins ver. 1.2.3 is running on http://localhost:8080/');
     });
 
     it('should log version when exec ver is called and version exists', function () {

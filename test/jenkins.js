@@ -236,6 +236,69 @@ describe('jenkins', function () {
     });
   });
 
+  describe('executor', function () {
+
+    beforeEach(function () {
+      mocks.request_result = { statusCode: 200, body: JSON.stringify({
+        computer: [
+          {
+            displayName: 'master',
+            executors: [
+              { idle: false, likelyStuck: false, progress: 88, currentExecutable: { url: 'http://localhost:8080/job/job1/19/' } },
+              { idle: true, likelyStuck: false, progress: 0 }
+            ]
+          },
+          {
+            displayName: 'slave',
+            executors: [
+              { idle: false, likelyStuck: true, progress: 88, currentExecutable: { url: 'http://localhost:8080/job/job2/30/' } }
+            ]
+          }
+        ]
+      })};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.executor(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+      });
+    });
+
+    afterEach(function () {
+      checks.request_opts.method.should.equal('get');
+      checks.request_opts.uri.should.equal('http://localhost:8080/computer/api/json?depth=1');
+      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
+    });
+
+    it('should pass executor idle, stuck, and progress status when executor has them', function () {
+      var data = checks.jenkins_dashboard_cb_args[1];
+      data.master[0].progress.should.equal(88);
+      data.master[0].stuck.should.equal(false);
+      data.master[0].idle.should.equal(false);
+      data.master[1].progress.should.equal(0);
+      data.master[1].stuck.should.equal(false);
+      data.master[1].idle.should.equal(true);
+      data.slave[0].progress.should.equal(88);
+      data.slave[0].stuck.should.equal(true);
+      data.slave[0].idle.should.equal(false);
+    });
+
+    it('should leave executor name undefined when executor is idle', function () {
+      var data = checks.jenkins_dashboard_cb_args[1];
+      data.master[1].idle.should.equal(true);
+      should.not.exist(data.master[1].name);
+    });
+
+    it('should pass executor name when executor is not idle', function () {
+      var data = checks.jenkins_dashboard_cb_args[1];
+      data.master[0].idle.should.equal(false);
+      data.master[0].name.should.equal('job1');
+      data.slave[0].idle.should.equal(false);
+      data.slave[0].name.should.equal('job2');
+    });
+  });
+
   describe('queue', function () {
 
     it('should pass job names when queue is not empty', function (done) {
