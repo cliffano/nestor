@@ -39,6 +39,11 @@ describe('cli', function () {
           }
           return {
             dashboard: _cb,
+            discover: function (host, cb) {
+              console.log(host)
+              checks.discover_host = host;
+              _cb(cb);
+            },
             version: _cb
           }
         }
@@ -69,7 +74,7 @@ describe('cli', function () {
       checks.jenkins_url.should.equal('http://ci.jenkins-ci.org');
     });
 
-    it('should log jobs status and name when exec dashboard is called and jenkins result has jobs', function () {
+    it('should log jobs status and name when exec dashboard is called and Jenkins result has jobs', function () {
       mocks.jenkins_dashboard_result = [
         { status: 'OK', name: 'job1' },
         { status: 'FAIL', name: 'job2' }
@@ -83,7 +88,7 @@ describe('cli', function () {
       checks.console_log_messages[1].should.equal('FAIL - job2');
     });
 
-    it('should log no job when exec dashboard is called and jenkins result has no job', function () {
+    it('should log no job when exec dashboard is called and Jenkins result has no job', function () {
       mocks.jenkins_dashboard_result = [];
       cli = create(checks, mocks);
       cli.exec();
@@ -91,6 +96,22 @@ describe('cli', function () {
       checks.bag_parse_commands.dashboard.action();
       checks.console_log_messages.length.should.equal(1);
       checks.console_log_messages[0].should.equal('Jobless Jenkins');
+    });
+
+    it('should log version and host when exec discover is called and there is a running Jenkins instance', function () {
+      mocks.jenkins_dashboard_result = {
+        version: '1.2.3',
+        url: 'http://localhost:8080/',
+        'server-id': '362f249fc053c1ede86a218587d100ce',
+        'slave-port': '55325'
+      };
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.discover.desc.should.equal('Discover Jenkins instance running on a specified host');
+      checks.bag_parse_commands.discover.action('localhost');
+      checks.discover_host.should.equal('localhost');
+      checks.console_log_messages.length.should.equal(1);
+      checks.console_log_messages[0].should.equal('Jenkins ver. 1.2.3 is running on http://localhost:8080/');
     });
 
     it('should log version when exec ver is called and version exists', function () {

@@ -1,4 +1,5 @@
 var bag = require('bagofholding'),
+  _jscov = require('../lib/jenkins'),
   sandbox = require('sandboxed-module'),
   should = require('should'),
   checks, mocks,
@@ -170,6 +171,68 @@ describe('jenkins', function () {
       jobs.length.should.equal(1);
       jobs[0].name.should.equal('job1');
       jobs[0].status.should.equal('DISABLED');
+    });
+  });
+
+  describe('discover', function () {
+
+    beforeEach(function () {
+      mocks.requires = {
+        dgram: {
+          createSocket: function (type) {
+            type.should.equal('udp4');
+            return bag.mock.socket(checks, mocks);
+          }
+        }
+      };
+    });
+
+    afterEach(function () {
+      checks.socket_send__args[0].toString().should.equal('Long live Jenkins!');
+      checks.socket_send__args[1].should.equal(0);
+      checks.socket_send__args[2].should.equal(18);
+      checks.socket_send__args[3].should.equal(33848);
+      checks.socket_send__args[4].should.equal('somehost');
+      (typeof checks.socket_send__args[5]).should.equal('function');
+    });
+
+    it('should close socket and pass error to callback when socket emits error event', function (done) {
+      mocks.socket_on_error = [new Error('someerror')];
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.discover('somehost', function cb(err, result) {
+        checks.jenkins_discover_cb_args = cb['arguments'];
+        done();
+      });
+      checks.socket_close__count.should.equal(1);
+      checks.socket_on_error__args[0].should.equal('error');
+      (typeof checks.socket_on_error__args[1]).should.equal('function');
+      checks.jenkins_discover_cb_args[0].message.should.equal('someerror');
+    });
+
+    it('should close socket and pass result to callback when socket emits message event', function (done) {
+      mocks.socket_on_message = ['<hudson><version>1.431</version><url>http://localhost:8080/</url><server-id>362f249fc053c1ede86a218587d100ce</server-id><slave-port>55328</slave-port></hudson>'];
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.discover('somehost', function cb(err, result) {
+        checks.jenkins_discover_cb_args = cb['arguments'];
+        done();
+      });
+      checks.socket_close__count.should.equal(1);
+      checks.socket_on_message__args[0].should.equal('message');
+      (typeof checks.socket_on_message__args[1]).should.equal('function');
+      should.not.exist(checks.jenkins_discover_cb_args[0]);
+      checks.jenkins_discover_cb_args[1].version.should.equal('1.431');
+      checks.jenkins_discover_cb_args[1].url.should.equal('http://localhost:8080/');
+    });
+
+    it('should close socket and pass error to callback when an error occurs while sending a message', function (done) {
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.discover('somehost', function cb(err, result) {
+        checks.jenkins_discover_cb_args = cb['arguments'];
+        done();
+      });
+      checks.socket_send__args[5](new Error('someerror'));
+      checks.socket_close__count.should.equal(1);
+      checks.jenkins_discover_cb_args[0].message.should.equal('someerror');
     });
   });
 
