@@ -16,7 +16,7 @@ describe('cli', function () {
               if (!errorCb) {
                 errorCb = function (err) {
                   bag.mock.console(checks).error(err.message);
-                }
+                };
               }
               return function (err, result) {
                 if (err) {
@@ -40,12 +40,12 @@ describe('cli', function () {
           return {
             dashboard: _cb,
             discover: function (host, cb) {
-              console.log(host)
+              console.log(host);
               checks.discover_host = host;
               _cb(cb);
             },
             version: _cb
-          }
+          };
         }
       },
       globals: {
