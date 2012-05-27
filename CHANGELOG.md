@@ -1,6 +1,7 @@
 ### 0.0.5 (SNAPSHOT)
-* Another rewrite lib (bagofholding FTW)
+* Another rewrite lib (move to bagofholding, mocha, request)
 * Fix undefined job status display
+* Replace version command with ver (version is reserved by visionmedia/commander.js)
 
 ### 0.0.4
 * Display usage on arg-less comamand
