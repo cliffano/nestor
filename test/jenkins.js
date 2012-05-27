@@ -21,6 +21,16 @@ describe('jenkins', function () {
 
   describe('jenkins', function () {
 
+    it('should set default URL when none is specified', function () {
+      jenkins = new (create(checks, mocks))();
+      jenkins.url.should.equal('http://localhost:8080');
+    });
+
+    it('should set URL as specified in constructor', function () {
+      jenkins = new (create(checks, mocks))('http://ci.jenkins-ci.org');
+      jenkins.url.should.equal('http://ci.jenkins-ci.org');
+    });
+
     it('should pass error to callback when an error occurs while sending request', function (done) {
       mocks.request_err = new Error('someerror');
       mocks.requires = {
