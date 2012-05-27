@@ -299,6 +299,51 @@ describe('jenkins', function () {
     });
   });
 
+  describe('job', function () {
+
+    it('should pass job status and results when job exists', function (done) {
+      mocks.request_result = { statusCode: 200, body: JSON.stringify({
+        color: 'blue',
+        healthReport: [
+          { description: 'Coverage is 100%' },
+          { description: 'All system is go!' }
+        ]
+      })};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.job('job1', function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      checks.request_opts.method.should.equal('get');
+      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/api/json');
+      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
+      var data = checks.jenkins_dashboard_cb_args[1];
+      data.status.should.equal('OK');
+      data.reports.length.should.equal(2);
+      data.reports[0].should.equal('Coverage is 100%');
+      data.reports[1].should.equal('All system is go!');
+    });
+
+    it('should pass error when job does not exist', function (done) {
+      mocks.request_result = { statusCode: 404, body: 'somenotfounderror'};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.job('job1', function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      checks.request_opts.method.should.equal('get');
+      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/api/json');
+      should.not.exist(checks.jenkins_dashboard_cb_args[1]);
+      checks.jenkins_dashboard_cb_args[0].message.should.equal('Job job1 does not exist');
+    });
+  });
+
   describe('queue', function () {
 
     it('should pass job names when queue is not empty', function (done) {

@@ -44,6 +44,10 @@ describe('cli', function () {
               _cb(cb);
             },
             executor: _cb,
+            job: function (jobName, cb) {
+              checks.job_jobName = jobName;
+              _cb(cb);
+            },
             queue: _cb,
             version: _cb
           };
@@ -139,17 +143,42 @@ describe('cli', function () {
       checks.console_log_messages[4].should.equal('+ slave');
       checks.console_log_messages[5].should.equal('  - job2 | 11% stuck!');
     });
-/*
-    it('should log nothing when exec executor is called and there is no executor', function () {
+
+    it('should log no executor found when exec executor is called and there is no executor', function () {
       mocks.jenkins_action_result = [];
       cli = create(checks, mocks);
       cli.exec();
       checks.bag_parse_commands.executor.desc.should.equal('View executors\' status (running builds)');
       checks.bag_parse_commands.executor.action();
       checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Queue is empty');
+      checks.console_log_messages[0].should.equal('No executor found');
     });
-*/
+
+    it('should log job name, status, and reports when job exists', function () {
+      mocks.jenkins_action_result = {
+        status: 'OK',
+        reports: ['Coverage 100%', 'All good!']
+      };
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.job.desc.should.equal('View job status reports');
+      checks.bag_parse_commands.job.action('job1');
+      checks.console_log_messages.length.should.equal(3);
+      checks.console_log_messages[0].should.equal('job1 | OK');
+      checks.console_log_messages[1].should.equal(' - Coverage 100%');
+      checks.console_log_messages[2].should.equal(' - All good!');
+    });
+
+    it('should log job not found error when job does not exist', function () {
+      mocks.jenkins_action_err = new Error('someerror');
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.job.desc.should.equal('View job status reports');
+      checks.bag_parse_commands.job.action('job1');
+      checks.console_error_messages.length.should.equal(1);
+      checks.console_error_messages[0].should.equal('someerror');
+    });
+
     it('should log queued job names when exec queue is called and there are some queued jobs', function () {
       mocks.jenkins_action_result = ['job1', 'job2'];
       cli = create(checks, mocks);
