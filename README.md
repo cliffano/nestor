@@ -3,7 +3,7 @@ Nestor [![http://travis-ci.org/cliffano/nestor](https://secure.travis-ci.org/cli
 
 [Jenkins](http://jenkins-ci.org) command-line interface in Node.js .
 
-This is a handy alternative to Jenkins Java CLI with shorter commands and faster execution, suitable for those who prefer to touchtype on the command line over GUI and mouse clicks.
+This is handy for those who prefer to touch type on the command line over GUI and mouse clicks on the browser. It also serves as an alternative to Jenkins Java CLI where Nestor has shorter commands and executes faster.
 
 Installation
 ------------
