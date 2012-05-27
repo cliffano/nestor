@@ -88,7 +88,7 @@ describe('cli', function () {
       mocks.jenkins_action_err = null;
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.build.desc.should.equal('Trigger build with optional parameters');
+      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters');
       checks.bag_parse_commands.build.action('job1', 'foo=bar&abc=xyz');
       checks.console_log_messages.length.should.equal(1);
       checks.console_log_messages[0].should.equal('Job job1 was started successfully');
@@ -98,7 +98,7 @@ describe('cli', function () {
       mocks.jenkins_action_err = new Error('Job not found');
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.build.desc.should.equal('Trigger build with optional parameters');
+      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters');
       checks.bag_parse_commands.build.action('job1');
       checks.console_error_messages.length.should.equal(1);
       checks.console_error_messages[0].should.equal('Job not found');
