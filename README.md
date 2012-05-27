@@ -51,7 +51,9 @@ Configuration
 Set Jenkins URL in JENKINS_URL environment variable (defaults to http://localhost:8080):
 
 (*nix)
+
     export JENKINS_URL=http://user:pass@host:port/path
 
 (Windows)
+
     set JENKINS_URL=http://user:pass@host:port/path
