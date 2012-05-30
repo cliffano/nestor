@@ -1,5 +1,6 @@
 ### 0.0.6 (SNAPSHOT)
 * Fix error message for status code 401 (authentication failed, instead of authentication required)
+* Add sample usage commands to help info nestor -h
 
 ### 0.0.5
 * Another rewrite lib (move to bagofholding, mocha, request)
