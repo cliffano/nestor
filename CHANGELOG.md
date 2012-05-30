@@ -1,4 +1,7 @@
-### 0.0.6 (SNAPSHOT)
+### 0.0.7 (SNAPSHOT)
+*
+
+### 0.0.6
 * Fix error message for status code 401 (authentication failed, instead of authentication required)
 * Add sample usage commands to help info nestor -h
 
