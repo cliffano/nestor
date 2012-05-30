@@ -88,7 +88,7 @@ describe('cli', function () {
       mocks.jenkins_action_err = null;
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters');
+      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters\n\tnestor build <jobname> ["param1=value1&param2=value2"]');
       checks.bag_parse_commands.build.action('job1', 'foo=bar&abc=xyz');
       checks.console_log_messages.length.should.equal(1);
       checks.console_log_messages[0].should.equal('Job job1 was started successfully');
@@ -98,7 +98,7 @@ describe('cli', function () {
       mocks.jenkins_action_err = new Error('Job not found');
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters');
+      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters\n\tnestor build <jobname> ["param1=value1&param2=value2"]');
       checks.bag_parse_commands.build.action('job1');
       checks.console_error_messages.length.should.equal(1);
       checks.console_error_messages[0].should.equal('Job not found');
@@ -111,7 +111,7 @@ describe('cli', function () {
       ];
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.dashboard.desc.should.equal('View status of all jobs');
+      checks.bag_parse_commands.dashboard.desc.should.equal('View status of all jobs\n\tnestor dashboard');
       checks.bag_parse_commands.dashboard.action();
       checks.console_log_messages.length.should.equal(2);
       checks.console_log_messages[0].should.equal('OK - job1');
@@ -122,7 +122,7 @@ describe('cli', function () {
       mocks.jenkins_action_result = [];
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.dashboard.desc.should.equal('View status of all jobs');
+      checks.bag_parse_commands.dashboard.desc.should.equal('View status of all jobs\n\tnestor dashboard');
       checks.bag_parse_commands.dashboard.action();
       checks.console_log_messages.length.should.equal(1);
       checks.console_log_messages[0].should.equal('Jobless Jenkins');
@@ -137,7 +137,7 @@ describe('cli', function () {
       };
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.discover.desc.should.equal('Discover Jenkins instance running on a specified host');
+      checks.bag_parse_commands.discover.desc.should.equal('Discover Jenkins instance running on a specified host\n\tnestor discover <hostname>');
       checks.bag_parse_commands.discover.action('localhost');
       checks.discover_host.should.equal('localhost');
       checks.console_log_messages.length.should.equal(1);
@@ -157,7 +157,7 @@ describe('cli', function () {
       };
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.executor.desc.should.equal('View executors\' status (running builds)');
+      checks.bag_parse_commands.executor.desc.should.equal('View executors\' status (running builds)\n\tnestor executor');
       checks.bag_parse_commands.executor.action();
       checks.console_log_messages.length.should.equal(6);
       checks.console_log_messages[0].should.equal('+ master');
@@ -172,7 +172,7 @@ describe('cli', function () {
       mocks.jenkins_action_result = [];
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.executor.desc.should.equal('View executors\' status (running builds)');
+      checks.bag_parse_commands.executor.desc.should.equal('View executors\' status (running builds)\n\tnestor executor');
       checks.bag_parse_commands.executor.action();
       checks.console_log_messages.length.should.equal(1);
       checks.console_log_messages[0].should.equal('No executor found');
@@ -185,7 +185,7 @@ describe('cli', function () {
       };
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.job.desc.should.equal('View job status reports');
+      checks.bag_parse_commands.job.desc.should.equal('View job status reports\n\tnestor job <jobname>');
       checks.bag_parse_commands.job.action('job1');
       checks.console_log_messages.length.should.equal(3);
       checks.console_log_messages[0].should.equal('job1 | OK');
@@ -197,7 +197,7 @@ describe('cli', function () {
       mocks.jenkins_action_err = new Error('someerror');
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.job.desc.should.equal('View job status reports');
+      checks.bag_parse_commands.job.desc.should.equal('View job status reports\n\tnestor job <jobname>');
       checks.bag_parse_commands.job.action('job1');
       checks.console_error_messages.length.should.equal(1);
       checks.console_error_messages[0].should.equal('someerror');
@@ -207,7 +207,7 @@ describe('cli', function () {
       mocks.jenkins_action_result = ['job1', 'job2'];
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.queue.desc.should.equal('View queued jobs');
+      checks.bag_parse_commands.queue.desc.should.equal('View queued jobs\n\tnestor queue');
       checks.bag_parse_commands.queue.action();
       checks.console_log_messages.length.should.equal(2);
       checks.console_log_messages[0].should.equal('- job1');
@@ -218,7 +218,7 @@ describe('cli', function () {
       mocks.jenkins_action_result = [];
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.queue.desc.should.equal('View queued jobs');
+      checks.bag_parse_commands.queue.desc.should.equal('View queued jobs\n\tnestor queue');
       checks.bag_parse_commands.queue.action();
       checks.console_log_messages.length.should.equal(1);
       checks.console_log_messages[0].should.equal('Queue is empty');
@@ -228,7 +228,7 @@ describe('cli', function () {
       mocks.jenkins_action_result = '1.2.3';
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.ver.desc.should.equal('View Jenkins version number');
+      checks.bag_parse_commands.ver.desc.should.equal('View Jenkins version number\n\tnestor ver');
       checks.bag_parse_commands.ver.action();
       checks.console_log_messages.length.should.equal(1);
       checks.console_log_messages[0].should.equal('Jenkins ver. 1.2.3');
@@ -238,7 +238,7 @@ describe('cli', function () {
       mocks.jenkins_action_err = new Error('someerror');
       cli = create(checks, mocks);
       cli.exec();
-      checks.bag_parse_commands.ver.desc.should.equal('View Jenkins version number');
+      checks.bag_parse_commands.ver.desc.should.equal('View Jenkins version number\n\tnestor ver');
       checks.bag_parse_commands.ver.action();
       checks.console_error_messages.length.should.equal(1);
       checks.console_error_messages[0].should.equal('someerror');
