@@ -15,11 +15,11 @@ Usage
 
 Trigger a build:
 
-    nestor build jobname
+    nestor build <jobname>
 
 Trigger a parameterised build:
 
-    nestor build jobname "param1=value1&param2=value2"
+    nestor build <jobname> ["param1=value1&param2=value2"]
 
 View status of all jobs:
 
@@ -27,7 +27,7 @@ View status of all jobs:
 
 View job status reports:
 
-    nestor job jobname
+    nestor job <jobname>
 
 View queued jobs:
 
@@ -39,7 +39,7 @@ View executors' status (running builds):
     
 Discover Jenkins instance running on a specified host:
 
-    nestor discover hostname
+    nestor discover <hostname>
 
 View Jenkins version number:
 
