@@ -1,5 +1,5 @@
 ### 0.0.6 (SNAPSHOT)
-*
+* Fix error message for status code 401 (authentication failed, instead of authentication required)
 
 ### 0.0.5
 * Another rewrite lib (move to bagofholding, mocha, request)

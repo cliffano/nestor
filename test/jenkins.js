@@ -45,7 +45,7 @@ describe('jenkins', function () {
       should.not.exist(checks.jenkins_dashboard_cb_args[1]);
     });
 
-    it('should pass authentication error to callback when result has status code 401', function (done) {
+    it('should pass authentication failed error to callback when result has status code 401', function (done) {
       mocks.request_result = { statusCode: 401 };
       mocks.requires = {
         request: bag.mock.request(checks, mocks)
@@ -55,11 +55,11 @@ describe('jenkins', function () {
         checks.jenkins_dashboard_cb_args = cb['arguments'];
         done();
       });
-      checks.jenkins_dashboard_cb_args[0].message.should.equal('Jenkins requires authentication - set username and password in JENKINS_URL');
+      checks.jenkins_dashboard_cb_args[0].message.should.equal('Authentication failed - incorrect username and/or password in JENKINS_URL');
       should.not.exist(checks.jenkins_dashboard_cb_args[1]);
     });
 
-    it('should pass authentication error to callback when result has status code 403', function (done) {
+    it('should pass authentication required error to callback when result has status code 403', function (done) {
       mocks.request_result = { statusCode: 403 };
       mocks.requires = {
         request: bag.mock.request(checks, mocks)
