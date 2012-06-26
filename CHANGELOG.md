@@ -1,5 +1,5 @@
 ### 0.0.7 (SNAPSHOT)
-*
+* Set max node engine to < 0.9.0
 
 ### 0.0.6
 * Fix error message for status code 401 (authentication failed, instead of authentication required)

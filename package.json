@@ -26,18 +26,18 @@
     "test": "./test"
   },
   "dependencies": {
-    "bagofholding": "0.0.8",
+    "bagofholding": "0.0.10",
     "request": "2.9.202",
     "underscore": "1.3.3",
     "xml2js": "0.1.14"
   },
   "devDependencies": {
-    "mocha": "1.0.3",
+    "mocha": "1.2.1",
     "sandboxed-module": "0.1.3",
     "should": "0.6.3"
   },
   "engines": {
-    "node": ">= 0.4.0 < 0.7.0"
+    "node": ">= 0.4.0 < 0.9.0"
   },
   "licenses": [
     {
