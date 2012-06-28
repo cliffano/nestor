@@ -1,4 +1,7 @@
-### 0.0.8 (SNAPSHOT)
+### 0.0.9 (SNAPSHOT)
+*
+
+### 0.0.8
 * Fix unexpected status code 405 on parameterised build
 * Display error message when parameterised build is triggered without parameters
 
