@@ -1,5 +1,6 @@
 ### 0.0.8 (SNAPSHOT)
-*
+* Fix unexpected status code 405 on parameterised build
+* Display error message when parameterised build is triggered without parameters
 
 ### 0.0.7
 * Set max node engine to < 0.9.0

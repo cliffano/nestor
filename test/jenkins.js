@@ -103,10 +103,46 @@ describe('jenkins', function () {
       });
       checks.jenkins_dashboard_cb_args[0].message.should.equal('Job job1 does not exist');
       checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/build?token=nestor&json={"parameter":[]}');
+      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/build');
+      checks.request_opts.qs.token.should.equal('nestor');
+      checks.request_opts.qs.json.should.equal('{"parameter":[]}');
     });
 
-    it('should pass no error when job exists', function (done) {
+    it('should pass error not allowed job requires build parameters', function (done) {
+      mocks.request_result = { statusCode: 405 };
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.build('job1', undefined, function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      checks.jenkins_dashboard_cb_args[0].message.should.equal('Job job1 requires build parameters');
+      checks.request_opts.method.should.equal('get');
+      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/build');
+      checks.request_opts.qs.token.should.equal('nestor');
+      checks.request_opts.qs.json.should.equal('{"parameter":[]}');
+    });
+
+    it('should use get method when job is not parameterised', function (done) {
+      mocks.request_result = { statusCode: 200 };
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.build('job1', undefined, function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
+      checks.request_opts.method.should.equal('get');
+      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/build');
+      checks.request_opts.qs.token.should.equal('nestor');
+      checks.request_opts.qs.json.should.equal('{"parameter":[]}');
+    });
+
+    it('should use post method when job is parameterised', function (done) {
       mocks.request_result = { statusCode: 200 };
       mocks.requires = {
         request: bag.mock.request(checks, mocks)
@@ -117,8 +153,10 @@ describe('jenkins', function () {
         done();
       });
       should.not.exist(checks.jenkins_dashboard_cb_args[0]);
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/build?token=nestor&json={"parameter":[{"name":"foo","value":"bar"},{"name":"abc","value":"xyz"}]}');
+      checks.request_opts.method.should.equal('post');
+      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/build');
+      checks.request_opts.qs.token.should.equal('nestor');
+      checks.request_opts.qs.json.should.equal('{"parameter":[{"name":"foo","value":"bar"},{"name":"abc","value":"xyz"}]}');
     });
   });
 
@@ -310,7 +348,8 @@ describe('jenkins', function () {
 
     afterEach(function () {
       checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/computer/api/json?depth=1');
+      checks.request_opts.uri.should.equal('http://localhost:8080/computer/api/json');
+      checks.request_opts.qs.depth.should.equal(1);
       should.not.exist(checks.jenkins_dashboard_cb_args[0]);
     });
 
