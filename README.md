@@ -57,3 +57,5 @@ Set Jenkins URL in JENKINS_URL environment variable (defaults to http://localhos
 (Windows)
 
     set JENKINS_URL=http://user:pass@host:port/path
+
+If http_proxy environment variable is set, then Nestor will automatically use it.

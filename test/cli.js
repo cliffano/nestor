@@ -32,8 +32,9 @@ describe('cli', function () {
             }
           }
         },
-        './jenkins': function (url) {
+        './jenkins': function (url, proxy) {
           checks.jenkins_url = url;
+          checks.jenkins_proxy = proxy;
           function _cb(cb) {
             cb(mocks.jenkins_action_err, mocks.jenkins_action_result);
           }
@@ -73,15 +74,19 @@ describe('cli', function () {
     mocks = {};
   });
 
-  describe('exec', function () {
+  describe('exec with environment variables set', function () {
 
     beforeEach(function () {
-      mocks.process_env = { JENKINS_URL: 'http://ci.jenkins-ci.org' };
+      mocks.process_env = {
+        JENKINS_URL: 'http://ci.jenkins-ci.org',
+        http_proxy: 'http://someproxy:8080'
+      };
     });
 
     afterEach(function () {
       checks.bag_parse_dir.should.equal('/somedir/nestor/lib');
       checks.jenkins_url.should.equal('http://ci.jenkins-ci.org');
+      checks.jenkins_proxy.should.equal('http://someproxy:8080');
     });
 
     it('should log job started successfully when exec build is called  and job exists', function () {
@@ -242,6 +247,17 @@ describe('cli', function () {
       checks.bag_parse_commands.ver.action();
       checks.console_error_messages.length.should.equal(1);
       checks.console_error_messages[0].should.equal('someerror');
+    });
+  });
+
+  describe('exec with environment variables unset', function () {
+
+    it('should not set Jenkins URL and http proxy when environment variables are not set', function () {
+      mocks.process_env = {};
+      cli = create(checks, mocks);
+      cli.exec();
+      should.not.exist(checks.jenkins_url);
+      should.not.exist(checks.jenkins_proxy);
     });
   });
 });

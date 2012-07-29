@@ -26,9 +26,16 @@ describe('jenkins', function () {
       jenkins.url.should.equal('http://localhost:8080');
     });
 
-    it('should set URL as specified in constructor', function () {
+    it('should set URL as specified in constructor but not proxy when it is not specified', function () {
       jenkins = new (create(checks, mocks))('http://ci.jenkins-ci.org');
       jenkins.url.should.equal('http://ci.jenkins-ci.org');
+      should.not.exist(jenkins.proxy);
+    });
+
+    it('should set URL and proxy as specified in constructor', function () {
+      jenkins = new (create(checks, mocks))('http://ci.jenkins-ci.org', 'http://someproxy:8080');
+      jenkins.url.should.equal('http://ci.jenkins-ci.org');
+      jenkins.proxy.should.equal('http://someproxy:8080');
     });
 
     it('should pass error to callback when an error occurs while sending request', function (done) {
@@ -86,6 +93,34 @@ describe('jenkins', function () {
       var err = checks.jenkins_dashboard_cb_args[0];
       err.message.should.equal('Unexpected status code 503 from Jenkins\nResponse body:\nunexpectedbody');
       should.not.exist(checks.jenkins_dashboard_cb_args[1]);
+    });
+
+    it('should pass proxy to http request when specified', function (done) {
+      mocks.request_result = { statusCode: 503, body: 'unexpectedbody' };
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.dashboard(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      checks.request_opts.uri.should.equal('http://localhost:8080/api/json');
+      should.not.exist(checks.request_opts.proxy);
+    });
+
+    it('should pass proxy to http request when specified', function (done) {
+      mocks.request_result = { statusCode: 503, body: 'unexpectedbody' };
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
+      jenkins.dashboard(function cb(err, result) {
+        checks.jenkins_dashboard_cb_args = cb['arguments'];
+        done();
+      });
+      checks.request_opts.uri.should.equal('http://localhost:8080/api/json');
+      checks.request_opts.proxy.should.equal('http://someproxy:8080');
     });
   });
 
