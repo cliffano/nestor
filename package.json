@@ -10,6 +10,10 @@
   "version": "0.0.9",
   "homepage": "http://github.com/cliffano/nestor",
   "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
+  "contributors": [
+    "All contributors (https://github.com/cliffano/nestor/graphs/contributors)"
+  ],
+  "main": "./lib/nestor",
   "bin": {
     "nestor": "./bin/nestor"
   },
@@ -26,18 +30,19 @@
     "test": "./test"
   },
   "dependencies": {
-    "bagofholding": "0.0.10",
-    "request": "2.9.202",
+    "bagofholding": "0.0.12",
+    "request": "2.10.0",
     "underscore": "1.3.3",
     "xml2js": "0.1.14"
   },
   "devDependencies": {
-    "mocha": "1.2.1",
+    "mocha": "1.3.2",
     "sandboxed-module": "0.1.3",
-    "should": "0.6.3"
+    "should": "1.1.0"
   },
+  "scripts": {},
   "engines": {
-    "node": ">= 0.4.0 < 0.9.0"
+    "node": ">= 0.4.0"
   },
   "licenses": [
     {
