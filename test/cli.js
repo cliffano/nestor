@@ -163,7 +163,7 @@ describe('cli', function () {
       checks.console_log_messages[0].should.equal('Jobless Jenkins');
     });
 
-    it('should log version and host when exec discover is called and there is a running Jenkins instance', function () {
+    it('should log version and url when exec discover is called and there is a running Jenkins instance', function () {
       mocks.jenkins_action_result = {
         hudson: {
           version: ['1.2.3'],
@@ -179,6 +179,23 @@ describe('cli', function () {
       checks.discover_host.should.equal('localhost');
       checks.console_log_messages.length.should.equal(1);
       checks.console_log_messages[0].should.equal('Jenkins ver. 1.2.3 is running on http://localhost:8080/');
+    });
+
+    it('should log host instead of url when exec discover result does not include any url', function () {
+      mocks.jenkins_action_result = {
+        hudson: {
+          version: ['1.2.3'],
+          'server-id': ['362f249fc053c1ede86a218587d100ce'],
+          'slave-port': ['55325']
+        }
+      };
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.discover.desc.should.equal('Discover Jenkins instance running on a specified host\n\tnestor discover <hostname>');
+      checks.bag_parse_commands.discover.action('localhost');
+      checks.discover_host.should.equal('localhost');
+      checks.console_log_messages.length.should.equal(1);
+      checks.console_log_messages[0].should.equal('Jenkins ver. 1.2.3 is running on localhost');
     });
 
     it('should log executor status when exec executor is called and there are some executors', function () {
