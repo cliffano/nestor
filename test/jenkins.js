@@ -212,7 +212,7 @@ describe('jenkins', function () {
       checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
     });
 
-    it('should display console output when there is no more text', function (done) {
+    it('should display a single console output when there is no more text', function (done) {
       mocks.request_result = { statusCode: 200, body: 'Job started by Foo', headers: { 'x-more-data': 'false' }};
       mocks.requires = {
         request: bag.mock.request(checks, mocks)
@@ -231,14 +231,23 @@ describe('jenkins', function () {
       checks.stream_write_strings[0].should.equal('Job started by Foo');
     });
 
-    it('should display console output when there is no more text', function (done) {
+    it('should display console output until there is no more text', function (done) {
       this.timeout(5000); // due to 1 sec timeout per chunk
+      checks.request_starts = [];
       var count = 0;
       mocks.requires = {
         request: function (opts, cb) {
           opts.proxy.should.equal('http://someproxy:8080');
+          checks.request_starts.push(opts.qs.start);
           count += 1;
-          cb(null, { statusCode: 200, body: 'Console output ' + count, headers: { 'x-more-data': (count < 3) ? 'true' : false }});
+          cb(
+              null,
+              {
+                statusCode: 200,
+                body: 'Console output ' + count,
+                headers: { 'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
+              }
+            );
         }
       };
       mocks.globals = {
@@ -252,15 +261,26 @@ describe('jenkins', function () {
       checks.stream_write_strings.length.should.equal(2);
       checks.stream_write_strings[0].should.equal('Console output 1');
       checks.stream_write_strings[1].should.equal('Console output 2');
+      checks.request_starts.length.should.equal(2);
+      checks.request_starts[0].should.equal(0);
+      checks.request_starts[1].should.equal(10);
     });
 
     it('should not display console output when result body is undefined', function (done) {
       this.timeout(5000); // due to 1 sec timeout per chunk
+      checks.request_starts = [];
       var count = 0;
       mocks.requires = {
         request: function (opts, cb) {
           count += 1;
-          cb(null, { statusCode: 200, body: (count === 2) ? undefined : 'Console output ' + count, headers: { 'x-more-data': (count < 3) ? 'true' : false }});
+          cb(
+              null,
+              {
+                statusCode: 200,
+                body: (count === 2) ? undefined : 'Console output ' + count,
+                headers: {'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
+              }
+            );
         }
       };
       mocks.globals = {
@@ -282,7 +302,14 @@ describe('jenkins', function () {
         request: function (opts, cb) {
           opts.proxy.should.equal('http://someproxy:8080');
           count += 1;
-          cb((count === 1) ? null : new Error('someerror'), { statusCode: 200, body: 'Console output ' + count, headers: { 'x-more-data': (count < 3) ? 'true' : false }});
+          cb(
+              (count === 1) ? null : new Error('someerror'),
+              {
+                statusCode: 200,
+                body: 'Console output ' + count,
+                headers: { 'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
+              }
+            );
         }
       };
       mocks.globals = {
