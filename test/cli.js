@@ -11,6 +11,13 @@ describe('cli', function () {
       requires: {
         bagofholding: {
           cli: {
+            exit: function (err, result) {
+              if (err) {
+                bag.mock.console(checks).error(err.message);
+              } else if (result) {
+                bag.mock.console(checks).log(result);
+              }
+            },
             exitCb: function (errorCb, successCb) {
               // TODO: investigate why bag.mock.exitCb does not have the mock globals (console and process)
               if (!errorCb) {
@@ -43,6 +50,10 @@ describe('cli', function () {
               checks.build_jobName = jobName;
               checks.build_params = params;
               _cb(cb);
+            },
+            console: function (jobName, cb) {
+              checks.build_jobName = jobName;
+              cb(mocks.jenkins_action_err, mocks.jenkins_action_result);
             },
             dashboard: _cb,
             discover: function (host, cb) {
@@ -109,6 +120,25 @@ describe('cli', function () {
       checks.console_error_messages[0].should.equal('Job not found');
     });
 
+    it('should pass job name when exec console is called', function () {
+      mocks.jenkins_action_err = null;
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.console.desc.should.equal('Display latest build console output\n\tnestor console <jobname>');
+      checks.bag_parse_commands.console.action('job1');
+      checks.build_jobName.should.equal('job1');
+    });
+
+    it('should log job not found error when exec console is called and job does not exist', function () {
+      mocks.jenkins_action_err = new Error('Job not found');
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.console.desc.should.equal('Display latest build console output\n\tnestor console <jobname>');
+      checks.bag_parse_commands.console.action('job1');
+      checks.console_error_messages.length.should.equal(1);
+      checks.console_error_messages[0].should.equal('Job not found');
+    });
+
     it('should log jobs status and name when exec dashboard is called and Jenkins result has jobs', function () {
       mocks.jenkins_action_result = [
         { status: 'OK', name: 'job1' },
@@ -135,10 +165,12 @@ describe('cli', function () {
 
     it('should log version and host when exec discover is called and there is a running Jenkins instance', function () {
       mocks.jenkins_action_result = {
-        version: '1.2.3',
-        url: 'http://localhost:8080/',
-        'server-id': '362f249fc053c1ede86a218587d100ce',
-        'slave-port': '55325'
+        hudson: {
+          version: ['1.2.3'],
+          url: ['http://localhost:8080/'],
+          'server-id': ['362f249fc053c1ede86a218587d100ce'],
+          'slave-port': ['55325']
+        }
       };
       cli = create(checks, mocks);
       cli.exec();

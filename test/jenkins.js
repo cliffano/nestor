@@ -336,8 +336,8 @@ describe('jenkins', function () {
       checks.socket_on_message__args[0].should.equal('message');
       (typeof checks.socket_on_message__args[1]).should.equal('function');
       should.not.exist(checks.jenkins_discover_cb_args[0]);
-      checks.jenkins_discover_cb_args[1].version.should.equal('1.431');
-      checks.jenkins_discover_cb_args[1].url.should.equal('http://localhost:8080/');
+      checks.jenkins_discover_cb_args[1].hudson.version[0].should.equal('1.431');
+      checks.jenkins_discover_cb_args[1].hudson.url[0].should.equal('http://localhost:8080/');
     });
 
     it('should close socket and pass error to callback when an error occurs while sending a message', function (done) {

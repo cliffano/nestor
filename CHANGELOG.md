@@ -1,5 +1,6 @@
 ### 0.0.9 (SNAPSHOT)
 * Add proxy support
+* Add console command
 
 ### 0.0.8
 * Fix unexpected status code 405 on parameterised build
