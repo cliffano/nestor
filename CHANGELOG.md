@@ -1,4 +1,7 @@
-### 0.0.9 (SNAPSHOT)
+### 0.0.10 (SNAPSHOT)
+*
+
+### 0.0.9
 * Add proxy support
 * Add console command
 
