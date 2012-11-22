@@ -231,6 +231,24 @@ describe('jenkins', function () {
       checks.stream_write_strings[0].should.equal('Job started by Foo');
     });
 
+    it('should not display anything if there is only a single console output with no value (e.g. build step sleeping for several seconds)', function (done) {
+      mocks.request_result = { statusCode: 200, body: undefined, headers: { 'x-more-data': 'false' }};
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      mocks.globals = {
+        process: bag.mock.process(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.console('job1', function cb(err, result) {
+        checks.jenkins_console_cb_args = cb['arguments'];
+        done();
+      });
+      checks.request_opts.method.should.equal('get');
+      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
+      checks.stream_write_strings.length.should.equal(0);
+    });
+
     it('should display console output until there is no more text', function (done) {
       this.timeout(5000); // due to 1 sec timeout per chunk
       checks.request_starts = [];
