@@ -250,7 +250,6 @@ describe('jenkins', function () {
     });
 
     it('should display console output until there is no more text', function (done) {
-      this.timeout(5000); // due to 1 sec timeout per chunk
       checks.request_starts = [];
       var count = 0;
       mocks.requires = {
@@ -272,6 +271,7 @@ describe('jenkins', function () {
         process: bag.mock.process(checks, mocks)
       };
       jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
+      jenkins.consoleTimeout = 1; // note that 0 is considered as falsey and console will default to 1000 ms timeout
       jenkins.console('job1', function cb(err, result) {
         checks.jenkins_console_cb_args = cb['arguments'];
         done();
@@ -285,7 +285,6 @@ describe('jenkins', function () {
     });
 
     it('should not display console output when result body is undefined', function (done) {
-      this.timeout(5000); // due to 1 sec timeout per chunk
       checks.request_starts = [];
       var count = 0;
       mocks.requires = {
@@ -305,6 +304,7 @@ describe('jenkins', function () {
         process: bag.mock.process(checks, mocks)
       };
       jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.consoleTimeout = 1;
       jenkins.console('job1', function cb(err, result) {
         checks.jenkins_console_cb_args = cb['arguments'];
         done();
@@ -314,7 +314,6 @@ describe('jenkins', function () {
     });
 
     it('should pass error while chunking console output', function (done) {
-      this.timeout(5000); // due to 1 sec timeout per chunk
       var count = 0;
       mocks.requires = {
         request: function (opts, cb) {
@@ -334,6 +333,7 @@ describe('jenkins', function () {
         process: bag.mock.process(checks, mocks)
       };
       jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
+      jenkins.consoleTimeout = 1;
       jenkins.console('job1', function cb(err, result) {
         err.message.should.equal('someerror');
         done();
