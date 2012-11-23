@@ -1,5 +1,5 @@
 ### 0.0.10 (SNAPSHOT)
-*
+* Add stop command
 
 ### 0.0.9
 * Add proxy support

@@ -342,7 +342,40 @@ describe('jenkins', function () {
       checks.stream_write_strings[0].should.equal('Console output 1');
     });
 
-   });
+  });
+
+  describe('build', function () {
+
+    it('should pass error not found when job does not exist', function (done) {
+      mocks.request_result = { statusCode: 404 };
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.stop('job1', function cb(err, result) {
+        checks.jenkins_stop_cb_args = cb['arguments'];
+        done();
+      });
+      checks.jenkins_stop_cb_args[0].message.should.equal('Job job1 does not exist');
+      checks.request_opts.method.should.equal('get');
+      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/lastBuild/stop');
+    });
+
+    it('should give status code 200 when there is no error', function (done) {
+      mocks.request_result = { statusCode: 200 };
+      mocks.requires = {
+        request: bag.mock.request(checks, mocks)
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.stop('job1', function cb(err, result) {
+        checks.jenkins_build_cb_args = cb['arguments'];
+        done();
+      });
+      should.not.exist(checks.jenkins_build_cb_args[0]);
+      checks.request_opts.method.should.equal('get');
+      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/lastBuild/stop');
+    });
+  });
 
   describe('dashboard', function () {
 

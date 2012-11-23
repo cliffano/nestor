@@ -25,6 +25,10 @@ Display latest build console output:
 
     nestor console <jobname>
 
+Stop currently running build:
+
+    nestor stop <jobname>
+
 View status of all jobs:
 
     nestor dashboard

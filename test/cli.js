@@ -55,6 +55,10 @@ describe('cli', function () {
               checks.build_jobName = jobName;
               cb(mocks.jenkins_action_err, mocks.jenkins_action_result);
             },
+            stop: function (jobName, cb) {
+              checks.build_jobName = jobName;
+              _cb(cb);
+            },
             dashboard: _cb,
             discover: function (host, cb) {
               checks.discover_host = host;
@@ -135,6 +139,26 @@ describe('cli', function () {
       cli.exec();
       checks.bag_parse_commands.console.desc.should.equal('Display latest build console output\n\tnestor console <jobname>');
       checks.bag_parse_commands.console.action('job1');
+      checks.console_error_messages.length.should.equal(1);
+      checks.console_error_messages[0].should.equal('Job not found');
+    });
+
+    it('should log job started successfully when exec stop is called  and job exists', function () {
+      mocks.jenkins_action_err = null;
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.stop.desc.should.equal('Stop the currently running build\n\tnestor stop <jobname>');
+      checks.bag_parse_commands.stop.action('job1');
+      checks.console_log_messages.length.should.equal(1);
+      checks.console_log_messages[0].should.equal('Job job1 was stopped successfully');
+    });
+
+    it('should log job not found error when exec stop is called and job does not exist', function () {
+      mocks.jenkins_action_err = new Error('Job not found');
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.stop.desc.should.equal('Stop the currently running build\n\tnestor stop <jobname>');
+      checks.bag_parse_commands.stop.action('job1');
       checks.console_error_messages.length.should.equal(1);
       checks.console_error_messages[0].should.equal('Job not found');
     });
