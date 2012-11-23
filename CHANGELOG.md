@@ -1,5 +1,6 @@
 ### 0.0.10 (SNAPSHOT)
 * Add stop command
+* Colourise build status display
 
 ### 0.0.9
 * Add proxy support

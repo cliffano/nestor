@@ -32,6 +32,7 @@
   "dependencies": {
     "async": "0.1.22",
     "bagofholding": "0.0.15",
+    "colors": "0.6.0-1",
     "request": "2.12.0",
     "underscore": "1.4.2",
     "xml2js": "0.2.2"
