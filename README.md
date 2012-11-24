@@ -21,6 +21,10 @@ Trigger a parameterised build:
 
     nestor build <jobname> ["param1=value1&param2=value2"]
 
+Trigger a build followed by console output:
+
+    nestor build --console  <jobname>
+
 Display latest build console output:
 
     nestor console <jobname>

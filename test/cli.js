@@ -52,11 +52,11 @@ describe('cli', function () {
               _cb(cb);
             },
             console: function (jobName, cb) {
-              checks.build_jobName = jobName;
+              checks.console_jobName = jobName;
               cb(mocks.jenkins_action_err, mocks.jenkins_action_result);
             },
             stop: function (jobName, cb) {
-              checks.build_jobName = jobName;
+              checks.stop_jobName = jobName;
               _cb(cb);
             },
             dashboard: _cb,
@@ -76,7 +76,11 @@ describe('cli', function () {
       },
       globals: {
         console: bag.mock.console(checks),
-        process: bag.mock.process(checks, mocks)
+        process: bag.mock.process(checks, mocks),
+        setTimeout: function (cb, timeout) {
+          should.exist(timeout);
+          cb();
+        }
       },
       locals: {
         __dirname: '/somedir/nestor/lib'
@@ -109,7 +113,11 @@ describe('cli', function () {
       cli = create(checks, mocks);
       cli.exec();
       checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters\n\tnestor build <jobname> ["param1=value1&param2=value2"]');
+      checks.bag_parse_commands.build.options[0].arg.should.equal('-c, --console');
+      checks.bag_parse_commands.build.options[0].desc.should.equal('Display console ouptput of the triggered build progress');
       checks.bag_parse_commands.build.action('job1', 'foo=bar&abc=xyz');
+      checks.build_jobName.should.equal('job1');
+      checks.build_params.should.equal('foo=bar&abc=xyz');
       checks.console_log_messages.length.should.equal(1);
       checks.console_log_messages[0].should.equal('Job job1 was started successfully');
     });
@@ -119,9 +127,38 @@ describe('cli', function () {
       cli = create(checks, mocks);
       cli.exec();
       checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters\n\tnestor build <jobname> ["param1=value1&param2=value2"]');
+      checks.bag_parse_commands.build.options[0].arg.should.equal('-c, --console');
+      checks.bag_parse_commands.build.options[0].desc.should.equal('Display console ouptput of the triggered build progress');
       checks.bag_parse_commands.build.action('job1');
       checks.console_error_messages.length.should.equal(1);
       checks.console_error_messages[0].should.equal('Job not found');
+    });
+
+    it('should follow build with console command when build is called with console flag', function () {
+      mocks.jenkins_action_err = null;
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters\n\tnestor build <jobname> ["param1=value1&param2=value2"]');
+      checks.bag_parse_commands.build.options[0].arg.should.equal('-c, --console');
+      checks.bag_parse_commands.build.options[0].desc.should.equal('Display console ouptput of the triggered build progress');
+      checks.bag_parse_commands.build.action('job1', { console: true });
+      should.not.exist(checks.build_params);
+      checks.console_log_messages.length.should.equal(1);
+      checks.console_log_messages[0].should.equal('Job job1 was started successfully');
+      checks.console_jobName.should.equal('job1');
+    });
+
+    it('should pass error when error occurs after build is called with console flag', function () {
+      mocks.jenkins_action_err = new Error('Job not found');
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters\n\tnestor build <jobname> ["param1=value1&param2=value2"]');
+      checks.bag_parse_commands.build.options[0].arg.should.equal('-c, --console');
+      checks.bag_parse_commands.build.options[0].desc.should.equal('Display console ouptput of the triggered build progress');
+      checks.bag_parse_commands.build.action('job1', { console: true });
+      should.not.exist(checks.build_params);
+      checks.console_log_messages.length.should.equal(0);
+      should.not.exist(checks.console_jobName);
     });
 
     it('should pass job name when exec console is called', function () {
@@ -130,7 +167,7 @@ describe('cli', function () {
       cli.exec();
       checks.bag_parse_commands.console.desc.should.equal('Display latest build console output\n\tnestor console <jobname>');
       checks.bag_parse_commands.console.action('job1');
-      checks.build_jobName.should.equal('job1');
+      checks.console_jobName.should.equal('job1');
     });
 
     it('should log job not found error when exec console is called and job does not exist', function () {
