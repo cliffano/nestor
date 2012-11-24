@@ -1,4 +1,7 @@
-### 0.0.10 (SNAPSHOT)
+### 0.0.11 (SNAPSHOT)
+*
+
+### 0.0.10
 * Add stop command
 * Colourise build status display
 * Add -c/--console flag to build command
