@@ -1,6 +1,7 @@
 ### 0.0.10 (SNAPSHOT)
 * Add stop command
 * Colourise build status display
+* Add -c/--console flag to build command
 
 ### 0.0.9
 * Add proxy support
