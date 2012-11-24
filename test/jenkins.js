@@ -268,20 +268,25 @@ describe('jenkins', function () {
         }
       };
       mocks.globals = {
-        process: bag.mock.process(checks, mocks)
+        process: bag.mock.process(checks, mocks),
+        setTimeout: function (cb, timeout) {
+          should.exist(timeout);
+          cb();
+        }
       };
       jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
-      jenkins.consoleTimeout = 1; // note that 0 is considered as falsey and console will default to 1000 ms timeout
       jenkins.console('job1', function cb(err, result) {
         checks.jenkins_console_cb_args = cb['arguments'];
         done();
       });
-      checks.stream_write_strings.length.should.equal(2);
+      checks.stream_write_strings.length.should.equal(3);
       checks.stream_write_strings[0].should.equal('Console output 1');
       checks.stream_write_strings[1].should.equal('Console output 2');
-      checks.request_starts.length.should.equal(2);
+      checks.stream_write_strings[2].should.equal('Console output 3');
+      checks.request_starts.length.should.equal(3);
       checks.request_starts[0].should.equal(0);
       checks.request_starts[1].should.equal(10);
+      checks.request_starts[2].should.equal(20);
     });
 
     it('should not display console output when result body is undefined', function (done) {
@@ -294,17 +299,20 @@ describe('jenkins', function () {
               null,
               {
                 statusCode: 200,
-                body: (count === 2) ? undefined : 'Console output ' + count,
+                body: (count >= 2) ? undefined : 'Console output ' + count,
                 headers: {'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
               }
             );
         }
       };
       mocks.globals = {
-        process: bag.mock.process(checks, mocks)
+        process: bag.mock.process(checks, mocks),
+        setTimeout: function (cb, timeout) {
+          should.exist(timeout);
+          cb();
+        }
       };
       jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.consoleTimeout = 1;
       jenkins.console('job1', function cb(err, result) {
         checks.jenkins_console_cb_args = cb['arguments'];
         done();
@@ -330,10 +338,13 @@ describe('jenkins', function () {
         }
       };
       mocks.globals = {
-        process: bag.mock.process(checks, mocks)
+        process: bag.mock.process(checks, mocks),
+        setTimeout: function (cb, timeout) {
+          should.exist(timeout);
+          cb();
+        }
       };
       jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
-      jenkins.consoleTimeout = 1;
       jenkins.console('job1', function cb(err, result) {
         err.message.should.equal('someerror');
         done();
