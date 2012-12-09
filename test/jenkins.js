@@ -1,3 +1,206 @@
+var buster = require('buster'),
+  Jenkins = require('../lib/jenkins'),
+  bag = require('bagofholding');
+
+/*
+buster.testCase('', {
+  '': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, '');
+      assert.equals(url, 'http://localhost:8080');
+      opts.handlers['200']({ headers: {} }, cb);
+    }
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.version(function (err, result) {
+      done();
+    });
+  }
+});
+*/
+
+// TODO: discover
+
+buster.testCase('executor', {
+  'should pass executor idle, stuck, and progress status when executor has them': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/computer/api/json');
+      opts.handlers['200']({ statusCode: 200, body: JSON.stringify({
+        computer: [
+          {
+            displayName: 'master',
+            executors: [
+              { idle: false, likelyStuck: false, progress: 88, currentExecutable: { url: 'http://localhost:8080/job/job1/19/' } },
+              { idle: true, likelyStuck: false, progress: 0 }
+            ]
+          },
+          {
+            displayName: 'slave',
+            executors: [
+              { idle: false, likelyStuck: true, progress: 88, currentExecutable: { url: 'http://localhost:8080/job/job2/30/' } }
+            ]
+          }
+        ]
+      })}, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.executor(function (err, result) {
+      assert.isNull(err);
+
+      // multiple executors on a master
+      assert.equals(result.master.length, 2);
+      assert.equals(result.master[0].progress, 88);
+      assert.equals(result.master[0].stuck, false);
+      assert.equals(result.master[0].idle, false);
+      assert.equals(result.master[0].name, 'job1');
+      assert.equals(result.master[1].progress, 0);
+      assert.equals(result.master[1].stuck, false);
+      assert.equals(result.master[1].idle, true);
+      assert.equals(result.master[1].name, undefined);
+
+      // single executor on a slave
+      assert.equals(result.slave.length, 1);
+      assert.equals(result.slave[0].progress, 88);
+      assert.equals(result.slave[0].stuck, true);
+      assert.equals(result.slave[0].idle, false);
+      assert.equals(result.slave[0].name, 'job2');
+
+      done();
+    });
+  }
+});
+
+buster.testCase('job', {
+  'should pass job status and results when job exists': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/api/json');
+      opts.handlers['200']({ statusCode: 200, body: JSON.stringify({
+        color: 'blue',
+        healthReport: [
+          { description: 'Coverage is 100%' },
+          { description: 'All system is go!' }
+        ]
+      })}, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.job('job1', function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.status, 'OK'.blue);
+      assert.equals(result.reports[0], 'Coverage is 100%');
+      assert.equals(result.reports[1], 'All system is go!');
+      done();
+    });
+  },
+  'should pass error when job does not exist': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/api/json');
+      opts.handlers['404']({ statusCode: 404, body: 'somenotfounderror' }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.job('job1', function (err, result) {
+      assert.equals(err.message, 'Job job1 does not exist');
+      assert.equals(result, undefined);
+      done();
+    });
+  }
+});
+
+buster.testCase('queue', {
+  'should pass job names when queue is not empty': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/queue/api/json');
+      opts.handlers['200']({ statusCode: 200, body: JSON.stringify({
+        items: [
+          { task: { name: 'job1' }},
+          { task: { name: 'job2' }}
+        ]
+      })}, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.queue(function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 2);
+      assert.equals(result[0], 'job1');
+      assert.equals(result[1], 'job2');
+      done();
+    });
+  },
+  'should pass empty job names when queue is empty': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/queue/api/json');
+      opts.handlers['200']({ statusCode: 200, body: JSON.stringify({
+        items: []
+      })}, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.queue(function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 0);
+      done();
+    });
+  }
+});
+
+buster.testCase('version', {
+  'should pass error to callback when headers do not contain x-jenkins': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'head');
+      assert.equals(url, 'http://localhost:8080');
+      opts.handlers['200']({ headers: {} }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.version(function (err, result) {
+      assert.equals(err.message, 'Not a Jenkins server');
+      assert.equals(result, undefined);
+      done();
+    });
+  },
+  'should pass version to callback when headers contain x-jenkins': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'head');
+      assert.equals(url, 'http://localhost:8080');
+      opts.handlers['200']({ statusCode: 200, headers: { 'x-jenkins': '1.464' }}, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.version(function (err, result) {
+      assert.isNull(err);
+      assert.equals(result, '1.464');
+      done();
+    });
+  }
+});
+
+buster.testCase('_status', {
+  'should show the correct status for all supported colors': function () {
+    var jenkins = new Jenkins();
+    assert.equals(jenkins._status('blue'), 'OK'.blue);
+    assert.equals(jenkins._status('green'), 'OK'.green);
+    assert.equals(jenkins._status('grey'), 'ABORTED'.grey);
+    assert.equals(jenkins._status('red'), 'FAIL'.red);
+    assert.equals(jenkins._status('yellow'), 'WARN'.yellow);
+  },
+  'should show the correct status for actively running build': function () {
+    var jenkins = new Jenkins();
+    assert.equals(jenkins._status('blue_anime'), 'OK'.blue);
+  },
+  'should use grey color when status is unsupported': function () {
+    var jenkins = new Jenkins();
+    assert.equals(jenkins._status('unknown'), 'UNKNOWN'.grey);
+  }
+});
+/*
 var bag = require('bagofholding'),
   _jscov = require('../lib/jenkins'),
   sandbox = require('sandboxed-module'),
@@ -731,3 +934,5 @@ describe('jenkins', function () {
     });
   });
 });
+
+*/

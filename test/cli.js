@@ -1,3 +1,75 @@
+var buster = require('buster'),
+  cli = require('../lib/cli'),
+  bag = require('bagofholding'),
+  Jenkins = new require('../lib/jenkins');
+
+/*
+buster.testCase('', {
+  '': function (done) {
+    mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, '');
+      assert.equals(url, 'http://localhost:8080');
+      opts.handlers['200']({ headers: {} }, cb);
+    }
+    this.stub(bag, 'http', { request: mockRequest });
+    jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.version(function (err, result) {
+      done();
+    });
+  }
+});
+*/
+
+buster.testCase('exec', {
+  'should contain commands with actions': function (done) {
+    var mockCommand = function (base, actions) {
+      assert.defined(base);
+      assert.defined(actions.commands.build.action);
+      assert.defined(actions.commands.console.action);
+      assert.defined(actions.commands.stop.action);
+      assert.defined(actions.commands.dashboard.action);
+      assert.defined(actions.commands.discover.action);
+      assert.defined(actions.commands.executor.action);
+      assert.defined(actions.commands.job.action);
+      assert.defined(actions.commands.queue.action);
+      assert.defined(actions.commands.ver.action);
+      done();
+    };
+    this.stub(bag, 'cli', { command: mockCommand });
+    cli.exec();
+  }
+});
+
+buster.testCase('ver', {
+  'setUp': function () {
+    this.mockConsole = this.mock(console);
+    this.mockProcess = this.mock(process);
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.ver.action();
+      },
+      exitCb: bag.cli.exitCb
+    });
+  },
+  'should log version when exec ver is called and version exists': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s', '1.2.3');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'version', function (cb) {
+      cb(null, '1.2.3');
+    });
+    cli.exec();
+  },
+  'should log error when exec ver is called and version does not exist': function () {
+    this.mockConsole.expects('error').once().withExactArgs('someerror');
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    this.stub(Jenkins.prototype, 'version', function (cb) {
+      cb(new Error('someerror'));
+    });
+    cli.exec();
+  }
+});
+
+/*
 var bag = require('bagofholding'),
   sandbox = require('sandboxed-module'),
   should = require('should'),
@@ -371,3 +443,4 @@ describe('cli', function () {
     });
   });
 });
+*/
