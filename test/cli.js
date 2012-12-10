@@ -3,24 +3,7 @@ var buster = require('buster'),
   bag = require('bagofholding'),
   Jenkins = new require('../lib/jenkins');
 
-/*
-buster.testCase('', {
-  '': function (done) {
-    mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, '');
-      assert.equals(url, 'http://localhost:8080');
-      opts.handlers['200']({ headers: {} }, cb);
-    }
-    this.stub(bag, 'http', { request: mockRequest });
-    jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.version(function (err, result) {
-      done();
-    });
-  }
-});
-*/
-
-buster.testCase('exec', {
+buster.testCase('cli - exec', {
   'should contain commands with actions': function (done) {
     var mockCommand = function (base, actions) {
       assert.defined(base);
@@ -40,7 +23,332 @@ buster.testCase('exec', {
   }
 });
 
-buster.testCase('ver', {
+buster.testCase('cli - build', {
+  'setUp': function () {
+    this.mockConsole = this.mock(console);
+    this.mockProcess = this.mock(process);
+  },
+  'should log job started successfully when exec build is called  and job exists': function () {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.build.action('job1');
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'job1');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
+      assert.equals(jobName, 'job1');
+      assert.equals(params, undefined);
+      cb();
+    });
+    cli.exec();
+  },
+  'should log job not found error when exec build is called and job does not exist': function () {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.build.action('job1');
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.mockConsole.expects('error').once().withExactArgs('Job not found');
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
+      assert.equals(jobName, 'job1');
+      assert.equals(params, undefined);
+      cb(new Error('Job not found'));
+    });
+    cli.exec();
+  },
+  'should follow build with console command when build is called with console flag': function (done) {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.build.action('job2', { console: true, pending: 1 });
+      },
+      exit: bag.cli.exit
+    });
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'job2');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
+      assert.equals(jobName, 'job2');
+      assert.equals(params, undefined);
+      cb();
+    });
+    this.stub(Jenkins.prototype, 'console', function (jobName, cb) {
+      assert.equals(jobName, 'job2');
+      cb();
+      // NOTE: done should not be necessary,
+      // but somehow Sinon.js does not stub the second method (console) when done is not the test argument
+      done();
+    });
+    cli.exec();
+  },
+  'should pass error when error occurs after build is called with console flag': function () {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.build.action('job1', { console: true, pending: 1 });
+      },
+      exit: bag.cli.exit
+    });
+    this.mockConsole.expects('error').once().withExactArgs('Job not found');
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
+      assert.equals(jobName, 'job1');
+      assert.equals(params, undefined);
+      cb(new Error('Job not found'));
+    });
+    cli.exec();
+  }
+});
+
+buster.testCase('cli - console', {
+  'setUp': function () {
+    this.mockConsole = this.mock(console);
+    this.mockProcess = this.mock(process);
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.console.action('job1');
+      },
+      exit: bag.cli.exit
+    });
+  },
+  'should pass job name when exec console is called': function () {
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'console', function (jobName, cb) {
+      assert.equals(jobName, 'job1');
+      cb();
+    });
+    cli.exec();
+  },
+  'should log job not found error when exec console is called and job does not exist': function () {
+    this.mockConsole.expects('error').once().withExactArgs('Job not found');
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    this.stub(Jenkins.prototype, 'console', function (jobName, cb) {
+      assert.equals(jobName, 'job1');
+      cb(new Error('Job not found'));
+    });
+    cli.exec();
+  }
+});
+
+buster.testCase('cli - stop', {
+  'setUp': function () {
+    this.mockConsole = this.mock(console);
+    this.mockProcess = this.mock(process);
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.stop.action('job1');
+      },
+      exitCb: bag.cli.exitCb
+    });
+  },
+  'should log job started successfully when exec stop is called  and job exists': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was stopped successfully', 'job1');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'stop', function (jobName, cb) {
+      assert.equals(jobName, 'job1');
+      cb();
+    });
+    cli.exec();
+  },
+  'should log job not found error when exec stop is called and job does not exist': function () {
+    this.mockConsole.expects('error').once().withExactArgs('Job not found');
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    this.stub(Jenkins.prototype, 'stop', function (jobName, cb) {
+      assert.equals(jobName, 'job1');
+      cb(new Error('Job not found'));
+    });
+    cli.exec();
+  }
+});
+
+buster.testCase('cli - dashboard', {
+  'setUp': function () {
+    this.mockConsole = this.mock(console);
+    this.mockProcess = this.mock(process);
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.dashboard.action();
+      },
+      exitCb: bag.cli.exitCb
+    });
+  },
+  'should log jobs status and name when exec dashboard is called and Jenkins result has jobs': function () {
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'OK', 'job1');
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'FAIL', 'job2');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'dashboard', function (cb) {
+      cb(null, [
+        { status: 'OK', name: 'job1' },
+        { status: 'FAIL', name: 'job2' }
+      ]);
+    });
+    cli.exec();
+  },
+  'should log no job when exec dashboard is called and Jenkins result has no job': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Jobless Jenkins');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'dashboard', function (cb) {
+      cb(null, []);
+    });
+    cli.exec();
+  }
+});
+
+buster.testCase('cli - discover', {
+  'setUp': function () {
+    this.mockConsole = this.mock(console);
+    this.mockProcess = this.mock(process);
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.discover.action();
+      },
+      exitCb: bag.cli.exitCb
+    });
+  },
+  'should log version and url when exec discover is called and there is a running Jenkins instance': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'http://localhost:8080/');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'discover', function (host, cb) {
+      assert.equals(host, 'localhost');
+      cb(null, {
+        hudson: {
+          version: ['1.2.3'],
+          url: ['http://localhost:8080/'],
+          'server-id': ['362f249fc053c1ede86a218587d100ce'],
+          'slave-port': ['55325']
+        }
+      });
+    });
+    cli.exec();
+  },
+  'should log host instead of url when exec discover result does not include any url': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'localhost');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'discover', function (host, cb) {
+      assert.equals(host, 'localhost');
+      cb(null, {
+        hudson: {
+          version: ['1.2.3'],
+          'server-id': ['362f249fc053c1ede86a218587d100ce'],
+          'slave-port': ['55325']
+        }
+      });
+    });
+    cli.exec();
+  }
+});
+
+buster.testCase('cli - executor', {
+  'setUp': function () {
+    this.mockConsole = this.mock(console);
+    this.mockProcess = this.mock(process);
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.executor.action();
+      },
+      exitCb: bag.cli.exitCb
+    });
+  },
+  'should log executor status when exec executor is called and there are some executors': function () {
+    this.mockConsole.expects('log').once().withExactArgs('+ master');
+    this.mockConsole.expects('log').once().withExactArgs('  - idle');
+    this.mockConsole.expects('log').once().withExactArgs('  - %s | %s%%s', 'job1', 5, '');
+    this.mockConsole.expects('log').once().withExactArgs('  - %s | %s%%s', undefined, 33, '');
+    this.mockConsole.expects('log').once().withExactArgs('+ slave');
+    this.mockConsole.expects('log').once().withExactArgs('  - %s | %s%%s', 'job2', 11, ' stuck!');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'executor', function (cb) {
+      cb(null, {
+        master: [
+          { idle: true },
+          { idle: false, name: 'job1', progress: 5 },
+          { idle: false, progress: 33 }
+        ],
+        slave: [
+          { idle: false, stuck: true, name: 'job2' , progress: 11 }
+        ]
+      });
+    });
+    cli.exec();
+  },
+  'should log no executor found when exec executor is called and there is no executor': function () {
+    this.mockConsole.expects('log').once().withExactArgs('No executor found');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'executor', function (cb) {
+      cb(null, {});
+    });
+    cli.exec();
+  }
+});
+
+buster.testCase('cli - job', {
+  'setUp': function () {
+    this.mockConsole = this.mock(console);
+    this.mockProcess = this.mock(process);
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.job.action('job1');
+      },
+      exitCb: bag.cli.exitCb
+    });
+  },
+  'should log job name, status, and reports when job exists': function () {
+    this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'job1', 'OK');
+    this.mockConsole.expects('log').once().withExactArgs(' - %s', 'Coverage 100%');
+    this.mockConsole.expects('log').once().withExactArgs(' - %s', 'All good!');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'job', function (name, cb) {
+      assert.equals(name, 'job1');
+      cb(null, {
+        status: 'OK',
+        reports: ['Coverage 100%', 'All good!']
+      });
+    });
+    cli.exec();
+  },
+  'should log job not found error when job does not exist': function () {
+    this.mockConsole.expects('error').once().withExactArgs('someerror');
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    this.stub(Jenkins.prototype, 'job', function (name, cb) {
+      assert.equals(name, 'job1');
+      cb(new Error('someerror'));
+    });
+    cli.exec();
+  }
+});
+
+buster.testCase('cli - queue', {
+  'setUp': function () {
+    this.mockConsole = this.mock(console);
+    this.mockProcess = this.mock(process);
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.queue.action();
+      },
+      exitCb: bag.cli.exitCb
+    });
+  },
+  'should log queued job names when exec queue is called and there are some queued jobs': function () {
+    this.mockConsole.expects('log').once().withExactArgs('- %s', 'job1');
+    this.mockConsole.expects('log').once().withExactArgs('- %s', 'job2');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'queue', function (cb) {
+      cb(null, ['job1', 'job2']);
+    });
+    cli.exec();
+  },
+  'should log queue empty message when exec queue is called and there is no queued job': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Queue is empty');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'queue', function (cb) {
+      cb(null, []);
+    });
+    cli.exec();
+  }
+});
+
+buster.testCase('cli - ver', {
   'setUp': function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
@@ -68,379 +376,3 @@ buster.testCase('ver', {
     cli.exec();
   }
 });
-
-/*
-var bag = require('bagofholding'),
-  sandbox = require('sandboxed-module'),
-  should = require('should'),
-  checks, mocks,
-  cli;
-
-describe('cli', function () {
-
-  function create(checks, mocks) {
-    return sandbox.require('../lib/cli', {
-      requires: {
-        bagofholding: {
-          cli: {
-            exit: function (err, result) {
-              if (err) {
-                bag.mock.console(checks).error(err.message);
-              } else if (result) {
-                bag.mock.console(checks).log(result);
-              }
-            },
-            exitCb: function (errorCb, successCb) {
-              // TODO: investigate why bag.mock.exitCb does not have the mock globals (console and process)
-              if (!errorCb) {
-                errorCb = function (err) {
-                  bag.mock.console(checks).error(err.message);
-                };
-              }
-              return function (err, result) {
-                if (err) {
-                  errorCb(err);
-                } else {
-                  successCb(result);
-                }
-              };
-            },
-            parse: function (commands, dir) {
-              checks.bag_parse_commands = commands;
-              checks.bag_parse_dir = dir;
-            }
-          }
-        },
-        './jenkins': function (url, proxy) {
-          checks.jenkins_url = url;
-          checks.jenkins_proxy = proxy;
-          function _cb(cb) {
-            cb(mocks.jenkins_action_err, mocks.jenkins_action_result);
-          }
-          return {
-            build: function (jobName, params, cb) {
-              checks.build_jobName = jobName;
-              checks.build_params = params;
-              _cb(cb);
-            },
-            console: function (jobName, cb) {
-              checks.console_jobName = jobName;
-              cb(mocks.jenkins_action_err, mocks.jenkins_action_result);
-            },
-            stop: function (jobName, cb) {
-              checks.stop_jobName = jobName;
-              _cb(cb);
-            },
-            dashboard: _cb,
-            discover: function (host, cb) {
-              checks.discover_host = host;
-              _cb(cb);
-            },
-            executor: _cb,
-            job: function (name, cb) {
-              checks.job_name = name;
-              _cb(cb);
-            },
-            queue: _cb,
-            version: _cb
-          };
-        }
-      },
-      globals: {
-        console: bag.mock.console(checks),
-        process: bag.mock.process(checks, mocks),
-        setTimeout: function (cb, timeout) {
-          should.exist(timeout);
-          cb();
-        }
-      },
-      locals: {
-        __dirname: '/somedir/nestor/lib'
-      }
-    });
-  }
-
-  beforeEach(function () {
-    checks = {};
-    mocks = {};
-  });
-
-  describe('exec with environment variables set', function () {
-
-    beforeEach(function () {
-      mocks.process_env = {
-        JENKINS_URL: 'http://ci.jenkins-ci.org',
-        http_proxy: 'http://someproxy:8080'
-      };
-    });
-
-    afterEach(function () {
-      checks.bag_parse_dir.should.equal('/somedir/nestor/lib');
-      checks.jenkins_url.should.equal('http://ci.jenkins-ci.org');
-      checks.jenkins_proxy.should.equal('http://someproxy:8080');
-    });
-
-    it('should log job started successfully when exec build is called  and job exists', function () {
-      mocks.jenkins_action_err = null;
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters\n\tnestor build <jobname> ["param1=value1&param2=value2"]');
-      checks.bag_parse_commands.build.options[0].arg.should.equal('-c, --console');
-      checks.bag_parse_commands.build.options[0].desc.should.equal('Display console ouptput of the triggered build progress');
-      checks.bag_parse_commands.build.action('job1', 'foo=bar&abc=xyz');
-      checks.build_jobName.should.equal('job1');
-      checks.build_params.should.equal('foo=bar&abc=xyz');
-      checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Job job1 was started successfully');
-    });
-
-    it('should log job not found error when exec build is called and job does not exist', function () {
-      mocks.jenkins_action_err = new Error('Job not found');
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters\n\tnestor build <jobname> ["param1=value1&param2=value2"]');
-      checks.bag_parse_commands.build.options[0].arg.should.equal('-c, --console');
-      checks.bag_parse_commands.build.options[0].desc.should.equal('Display console ouptput of the triggered build progress');
-      checks.bag_parse_commands.build.action('job1');
-      checks.console_error_messages.length.should.equal(1);
-      checks.console_error_messages[0].should.equal('Job not found');
-    });
-
-    it('should follow build with console command when build is called with console flag', function () {
-      mocks.jenkins_action_err = null;
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters\n\tnestor build <jobname> ["param1=value1&param2=value2"]');
-      checks.bag_parse_commands.build.options[0].arg.should.equal('-c, --console');
-      checks.bag_parse_commands.build.options[0].desc.should.equal('Display console ouptput of the triggered build progress');
-      checks.bag_parse_commands.build.action('job1', { console: true });
-      should.not.exist(checks.build_params);
-      checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Job job1 was started successfully');
-      checks.console_jobName.should.equal('job1');
-    });
-
-    it('should pass error when error occurs after build is called with console flag', function () {
-      mocks.jenkins_action_err = new Error('Job not found');
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.build.desc.should.equal('Trigger a build with optional parameters\n\tnestor build <jobname> ["param1=value1&param2=value2"]');
-      checks.bag_parse_commands.build.options[0].arg.should.equal('-c, --console');
-      checks.bag_parse_commands.build.options[0].desc.should.equal('Display console ouptput of the triggered build progress');
-      checks.bag_parse_commands.build.action('job1', { console: true });
-      should.not.exist(checks.build_params);
-      checks.console_log_messages.length.should.equal(0);
-      should.not.exist(checks.console_jobName);
-    });
-
-    it('should pass job name when exec console is called', function () {
-      mocks.jenkins_action_err = null;
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.console.desc.should.equal('Display latest build console output\n\tnestor console <jobname>');
-      checks.bag_parse_commands.console.action('job1');
-      checks.console_jobName.should.equal('job1');
-    });
-
-    it('should log job not found error when exec console is called and job does not exist', function () {
-      mocks.jenkins_action_err = new Error('Job not found');
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.console.desc.should.equal('Display latest build console output\n\tnestor console <jobname>');
-      checks.bag_parse_commands.console.action('job1');
-      checks.console_error_messages.length.should.equal(1);
-      checks.console_error_messages[0].should.equal('Job not found');
-    });
-
-    it('should log job started successfully when exec stop is called  and job exists', function () {
-      mocks.jenkins_action_err = null;
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.stop.desc.should.equal('Stop the currently running build\n\tnestor stop <jobname>');
-      checks.bag_parse_commands.stop.action('job1');
-      checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Job job1 was stopped successfully');
-    });
-
-    it('should log job not found error when exec stop is called and job does not exist', function () {
-      mocks.jenkins_action_err = new Error('Job not found');
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.stop.desc.should.equal('Stop the currently running build\n\tnestor stop <jobname>');
-      checks.bag_parse_commands.stop.action('job1');
-      checks.console_error_messages.length.should.equal(1);
-      checks.console_error_messages[0].should.equal('Job not found');
-    });
-
-    it('should log jobs status and name when exec dashboard is called and Jenkins result has jobs', function () {
-      mocks.jenkins_action_result = [
-        { status: 'OK', name: 'job1' },
-        { status: 'FAIL', name: 'job2' }
-      ];
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.dashboard.desc.should.equal('View status of all jobs\n\tnestor dashboard');
-      checks.bag_parse_commands.dashboard.action();
-      checks.console_log_messages.length.should.equal(2);
-      checks.console_log_messages[0].should.equal('OK - job1');
-      checks.console_log_messages[1].should.equal('FAIL - job2');
-    });
-
-    it('should log no job when exec dashboard is called and Jenkins result has no job', function () {
-      mocks.jenkins_action_result = [];
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.dashboard.desc.should.equal('View status of all jobs\n\tnestor dashboard');
-      checks.bag_parse_commands.dashboard.action();
-      checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Jobless Jenkins');
-    });
-
-    it('should log version and url when exec discover is called and there is a running Jenkins instance', function () {
-      mocks.jenkins_action_result = {
-        hudson: {
-          version: ['1.2.3'],
-          url: ['http://localhost:8080/'],
-          'server-id': ['362f249fc053c1ede86a218587d100ce'],
-          'slave-port': ['55325']
-        }
-      };
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.discover.desc.should.equal('Discover Jenkins instance running on a specified host\n\tnestor discover <hostname>');
-      checks.bag_parse_commands.discover.action('localhost');
-      checks.discover_host.should.equal('localhost');
-      checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Jenkins ver. 1.2.3 is running on http://localhost:8080/');
-    });
-
-    it('should log host instead of url when exec discover result does not include any url', function () {
-      mocks.jenkins_action_result = {
-        hudson: {
-          version: ['1.2.3'],
-          'server-id': ['362f249fc053c1ede86a218587d100ce'],
-          'slave-port': ['55325']
-        }
-      };
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.discover.desc.should.equal('Discover Jenkins instance running on a specified host\n\tnestor discover <hostname>');
-      checks.bag_parse_commands.discover.action('localhost');
-      checks.discover_host.should.equal('localhost');
-      checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Jenkins ver. 1.2.3 is running on localhost');
-    });
-
-    it('should log executor status when exec executor is called and there are some executors', function () {
-      mocks.jenkins_action_result = {
-        master: [
-          { idle: true },
-          { idle: false, name: 'job1', progress: 5 },
-          { idle: false, progress: 33 }
-        ],
-        slave: [
-          { idle: false, stuck: true, name: 'job2' , progress: 11 }
-        ]
-      };
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.executor.desc.should.equal('View executors\' status (running builds)\n\tnestor executor');
-      checks.bag_parse_commands.executor.action();
-      checks.console_log_messages.length.should.equal(6);
-      checks.console_log_messages[0].should.equal('+ master');
-      checks.console_log_messages[1].should.equal('  - idle');
-      checks.console_log_messages[2].should.equal('  - job1 | 5%');
-      checks.console_log_messages[3].should.equal('  - undefined | 33%');
-      checks.console_log_messages[4].should.equal('+ slave');
-      checks.console_log_messages[5].should.equal('  - job2 | 11% stuck!');
-    });
-
-    it('should log no executor found when exec executor is called and there is no executor', function () {
-      mocks.jenkins_action_result = [];
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.executor.desc.should.equal('View executors\' status (running builds)\n\tnestor executor');
-      checks.bag_parse_commands.executor.action();
-      checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('No executor found');
-    });
-
-    it('should log job name, status, and reports when job exists', function () {
-      mocks.jenkins_action_result = {
-        status: 'OK',
-        reports: ['Coverage 100%', 'All good!']
-      };
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.job.desc.should.equal('View job status reports\n\tnestor job <jobname>');
-      checks.bag_parse_commands.job.action('job1');
-      checks.console_log_messages.length.should.equal(3);
-      checks.console_log_messages[0].should.equal('job1 | OK');
-      checks.console_log_messages[1].should.equal(' - Coverage 100%');
-      checks.console_log_messages[2].should.equal(' - All good!');
-    });
-
-    it('should log job not found error when job does not exist', function () {
-      mocks.jenkins_action_err = new Error('someerror');
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.job.desc.should.equal('View job status reports\n\tnestor job <jobname>');
-      checks.bag_parse_commands.job.action('job1');
-      checks.console_error_messages.length.should.equal(1);
-      checks.console_error_messages[0].should.equal('someerror');
-    });
-
-    it('should log queued job names when exec queue is called and there are some queued jobs', function () {
-      mocks.jenkins_action_result = ['job1', 'job2'];
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.queue.desc.should.equal('View queued jobs\n\tnestor queue');
-      checks.bag_parse_commands.queue.action();
-      checks.console_log_messages.length.should.equal(2);
-      checks.console_log_messages[0].should.equal('- job1');
-      checks.console_log_messages[1].should.equal('- job2');
-    });
-
-    it('should log queue empty message when exec queue is called and there is no queued job', function () {
-      mocks.jenkins_action_result = [];
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.queue.desc.should.equal('View queued jobs\n\tnestor queue');
-      checks.bag_parse_commands.queue.action();
-      checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Queue is empty');
-    });
-
-    it('should log version when exec ver is called and version exists', function () {
-      mocks.jenkins_action_result = '1.2.3';
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.ver.desc.should.equal('View Jenkins version number\n\tnestor ver');
-      checks.bag_parse_commands.ver.action();
-      checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Jenkins ver. 1.2.3');
-    });
-
-    it('should log error when exec ver is called and version does not exist', function () {
-      mocks.jenkins_action_err = new Error('someerror');
-      cli = create(checks, mocks);
-      cli.exec();
-      checks.bag_parse_commands.ver.desc.should.equal('View Jenkins version number\n\tnestor ver');
-      checks.bag_parse_commands.ver.action();
-      checks.console_error_messages.length.should.equal(1);
-      checks.console_error_messages[0].should.equal('someerror');
-    });
-  });
-
-  describe('exec with environment variables unset', function () {
-
-    it('should not set Jenkins URL and http proxy when environment variables are not set', function () {
-      mocks.process_env = {};
-      cli = create(checks, mocks);
-      cli.exec();
-      should.not.exist(checks.jenkins_url);
-      should.not.exist(checks.jenkins_proxy);
-    });
-  });
-});
-*/
