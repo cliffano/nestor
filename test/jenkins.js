@@ -3,7 +3,7 @@ var buster = require('buster'),
   bag = require('bagofholding');
 
 /*
-buster.testCase('', {
+buster.testCase('jenkins - ', {
   '': function (done) {
     var mockRequest = function (method, url, opts, cb) {
       assert.equals(method, '');
@@ -21,7 +21,7 @@ buster.testCase('', {
 
 // TODO: discover
 
-buster.testCase('executor', {
+buster.testCase('jenkins - executor', {
   'should pass executor idle, stuck, and progress status when executor has them': function (done) {
     var mockRequest = function (method, url, opts, cb) {
       assert.equals(method, 'get');
@@ -72,7 +72,7 @@ buster.testCase('executor', {
   }
 });
 
-buster.testCase('job', {
+buster.testCase('jenkins - job', {
   'should pass job status and results when job exists': function (done) {
     var mockRequest = function (method, url, opts, cb) {
       assert.equals(method, 'get');
@@ -111,7 +111,7 @@ buster.testCase('job', {
   }
 });
 
-buster.testCase('queue', {
+buster.testCase('jenkins - queue', {
   'should pass job names when queue is not empty': function (done) {
     var mockRequest = function (method, url, opts, cb) {
       assert.equals(method, 'get');
@@ -151,7 +151,7 @@ buster.testCase('queue', {
   }
 });
 
-buster.testCase('version', {
+buster.testCase('jenkins - version', {
   'should pass error to callback when headers do not contain x-jenkins': function (done) {
     var mockRequest = function (method, url, opts, cb) {
       assert.equals(method, 'head');
@@ -182,7 +182,7 @@ buster.testCase('version', {
   }
 });
 
-buster.testCase('_status', {
+buster.testCase('jenkins - _status', {
   'should show the correct status for all supported colors': function () {
     var jenkins = new Jenkins();
     assert.equals(jenkins._status('blue'), 'OK'.blue);
