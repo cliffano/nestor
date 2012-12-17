@@ -1,31 +1,554 @@
-var buster = require('buster'),
+var bag = require('bagofholding'),
+  buster = require('buster'),
+  dgram = require('dgram'),
   Jenkins = require('../lib/jenkins'),
-  bag = require('bagofholding');
+  request = require('request'),
+  sinon = require('sinon');
 
-/*
-buster.testCase('jenkins - ', {
-  '': function (done) {
+buster.testCase('jenkins - jenkins', {
+  'should use url and proxy when specified': function (done) {
     var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, '');
-      assert.equals(url, 'http://localhost:8080');
-      opts.handlers['200']({ headers: {} }, cb);
-    }
+      assert.equals(url, 'http://jenkins-ci.org:8080/job/job1/build');
+      assert.equals(opts.proxy, 'http://someproxy');
+      opts.handlers['401']({ statusCode: 401 }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://jenkins-ci.org:8080', 'http://someproxy');
+    jenkins.build('job1', undefined, function (err, result) {
+      done();
+    });
+  },
+  'should use default url and no proxy when not specified': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(url, 'http://localhost:8080/job/job1/build');
+      assert.equals(opts.proxy, undefined);
+      opts.handlers['401']({ statusCode: 401 }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins();
+    jenkins.build('job1', undefined, function (err, result) {
+      done();
+    });
+  },
+  'should pass authentication failed error to callback when result has status code 401': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      opts.handlers['401']({ statusCode: 401 }, cb);
+    };
     this.stub(bag, 'http', { request: mockRequest });
     var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.version(function (err, result) {
+    jenkins.build('job1', undefined, function (err, result) {
+      assert.equals(err.message, 'Authentication failed - incorrect username and/or password in JENKINS_URL');
+      done();
+    });
+  },
+  'should pass authentication required error to callback when result has status code 403': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      opts.handlers['403']({ statusCode: 401 }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.build('job1', undefined, function (err, result) {
+      assert.equals(err.message, 'Jenkins requires authentication - set username and password in JENKINS_URL');
       done();
     });
   }
 });
+
+buster.testCase('jenkins - build', {
+  'should pass error not found when job does not exist': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/build');
+      assert.equals(opts.queryStrings.token, 'nestor');
+      assert.equals(opts.queryStrings.json, '{"parameter":[]}');
+      opts.handlers['404']({ statusCode: 404 }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.build('job1', undefined, function (err, result) {
+      assert.equals(err.message, 'Job job1 does not exist');
+      assert.equals(result, undefined);
+      done();
+    });
+  },
+  'should pass error not allowed job requires build parameters': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/build');
+      assert.equals(opts.queryStrings.token, 'nestor');
+      assert.equals(opts.queryStrings.json, '{"parameter":[]}');
+      opts.handlers['405']({ statusCode: 405 }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.build('job1', undefined, function (err, result) {
+      assert.equals(err.message, 'Job job1 requires build parameters');
+      assert.equals(result, undefined);
+      done();
+    });
+  },
+  'should use get method when job is not parameterised': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/build');
+      assert.equals(opts.queryStrings.token, 'nestor');
+      assert.equals(opts.queryStrings.json, '{"parameter":[]}');
+      opts.handlers['200']({ statusCode: 200 }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.build('job1', undefined, function (err, result) {
+      assert.equals(err, undefined);
+      assert.equals(result, undefined);
+      done();
+    });
+  },
+  'should use post method when job is parameterised': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'post');
+      assert.equals(url, 'http://localhost:8080/job/job1/build');
+      assert.equals(opts.queryStrings.token, 'nestor');
+      assert.equals(opts.queryStrings.json, '{"parameter":[{"name":"foo","value":"bar"},{"name":"abc","value":"xyz"}]}');
+      opts.handlers['200']({ statusCode: 200 }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.build('job1', 'foo=bar&abc=xyz', function (err, result) {
+      assert.equals(err, undefined);
+      assert.equals(result, undefined);
+      done();
+    });
+  }
+});
+
+/*
+
+   describe('console', function () {
+
+
+    it('should not display console output when result body is undefined', function (done) {
+      checks.request_starts = [];
+      var count = 0;
+      mocks.requires = {
+        request: function (opts, cb) {
+          count += 1;
+          cb(
+              null,
+              {
+                statusCode: 200,
+                body: (count >= 2) ? undefined : 'Console output ' + count,
+                headers: {'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
+              }
+            );
+        }
+      };
+      mocks.globals = {
+        process: bag.mock.process(checks, mocks),
+        setTimeout: function (cb, timeout) {
+          should.exist(timeout);
+          cb();
+        }
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.console('job1', function cb(err, result) {
+        checks.jenkins_console_cb_args = cb['arguments'];
+        done();
+      });
+      checks.stream_write_strings.length.should.equal(1);
+      checks.stream_write_strings[0].should.equal('Console output 1');
+    });
+
+    it('should pass error while chunking console output', function (done) {
+      var count = 0;
+      mocks.requires = {
+        request: function (opts, cb) {
+          opts.proxy.should.equal('http://someproxy:8080');
+          count += 1;
+          cb(
+              (count === 1) ? null : new Error('someerror'),
+              {
+                statusCode: 200,
+                body: 'Console output ' + count,
+                headers: { 'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
+              }
+            );
+        }
+      };
+      mocks.globals = {
+        process: bag.mock.process(checks, mocks),
+        setTimeout: function (cb, timeout) {
+          should.exist(timeout);
+          cb();
+        }
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
+      jenkins.console('job1', function cb(err, result) {
+        err.message.should.equal('someerror');
+        done();
+      });
+      checks.stream_write_strings.length.should.equal(1);
+      checks.stream_write_strings[0].should.equal('Console output 1');
+    });
+
+  });
+  //////////////////////////////////
+
+
+    it('should display console output until there is no more text', function (done) {
+      checks.request_starts = [];
+      var count = 0;
+      mocks.requires = {
+        request: function (opts, cb) {
+          opts.proxy.should.equal('http://someproxy:8080');
+          checks.request_starts.push(opts.qs.start);
+          count += 1;
+          cb(
+              null,
+              {
+                statusCode: 200,
+                body: 'Console output ' + count,
+                headers: { 'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
+              }
+            );
+        }
+      };
+      mocks.globals = {
+        process: bag.mock.process(checks, mocks),
+        setTimeout: function (cb, timeout) {
+          should.exist(timeout);
+          cb();
+        }
+      };
+      jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
+      jenkins.console('job1', function cb(err, result) {
+        checks.jenkins_console_cb_args = cb['arguments'];
+        done();
+      });
+      checks.stream_write_strings.length.should.equal(3);
+      checks.stream_write_strings[0].should.equal('Console output 1');
+      checks.stream_write_strings[1].should.equal('Console output 2');
+      checks.stream_write_strings[2].should.equal('Console output 3');
+      checks.request_starts.length.should.equal(3);
+      checks.request_starts[0].should.equal(0);
+      checks.request_starts[1].should.equal(10);
+      checks.request_starts[2].should.equal(20);
+    });
+
 */
 
+buster.testCase('jenkins - console', {
+  'setUp': function () {
+    this.mockConsole = this.mock(console);
+  },
+  'should pass error not found when job does not exist': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
+      opts.handlers['404']({ statusCode: 404 }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.console('job1', function (err, result) {
+      assert.equals(err.message, 'Job job1 does not exist');
+      assert.equals(result, undefined);
+      done();
+    });
+  },
+  'should display a single console output when there is no more text': function (done) {
+    this.mockConsole.expects('log')
+      .once().withExactArgs('Job started by Foo');
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
+      opts.handlers['200']({ statusCode: 200, body: 'Job started by Foo', headers: { 'x-more-data': 'false' } }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.console('job1', function (err, result) {
+      assert.equals(err, undefined);
+      assert.equals(result, undefined);
+      done();
+    });
+  },
+  'should not display anything if there is only a single console output with no value (e.g. build step sleeping for several seconds)': function (done) {
+    this.mockConsole.expects('log').never();
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
+      opts.handlers['200']({ statusCode: 200, body: undefined, headers: { 'x-more-data': 'false' } }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.console('job1', function (err, result) {
+      assert.equals(err, undefined);
+      assert.equals(result, undefined);
+      done();
+    });
+  }/*,
+  'should display console output until there is no more text': function () {
+    this.mockConsole.expects('log')
+      .once().withExactArgs('Console output 1');
+//      .once().withExactArgs('Console output 2')
+//      .once().withExactArgs('Console output 3');
+    // only first request uses bag.http.request
+    var mockBagRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
+      opts.handlers['200']({
+        statusCode: 200,
+        body: 'Console output 1',
+        headers: { 'x-more-data': 'true', 'x-text-size': 10 } 
+      }, cb);
+    };
+    // the rest use request module
+    var mockRequest = this.mock(request);
+    mockRequest.expects('get').once().callArgWith(1, null, {
+      statusCode: 200,
+      body: 'Console output 2',
+      headers: { 'x-more-data': true, 'x-text-size': 20 }
+    });
+    // this.mock(request, 'get', function (params, cb) {
+    //   assert.equals(params.proxy, undefined);
+    //   assert.equals(params.url, '');
+    //   assert.equals(params.qs.start, 1);
+    //   count += 1;
+    //   cb(null, {
+    //     statusCode: 200,
+    //     body: 'Console output ' + count,
+    //     headers: { 'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
+    //   });
+    // });
+    this.stub(bag, 'http', { request: mockBagRequest });
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.console('job1', function (err, result) {
+      assert.equals(err, undefined);
+      assert.equals(result, undefined);
+      //done();
+    });
+  }*/
+});
+
+buster.testCase('jenkins - stop', {
+  'should pass error not found when job does not exist': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/stop');
+      opts.handlers['404']({ statusCode: 404 }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.stop('job1', function (err, result) {
+      assert.equals(err.message, 'Job job1 does not exist');
+      assert.equals(result, undefined);
+      done();
+    });
+  },
+  'should give status code 200 when there is no error': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/stop');
+      opts.handlers['200']({ statusCode: 200 }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.stop('job1', function (err, result) {
+      assert.isNull(err);
+      assert.equals(result, undefined);
+      done();
+    });
+  }
+});
+
+buster.testCase('jenkins - dashboard', {
+  'should return empty data when dashboard has no job': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/api/json');
+      opts.handlers['200']({ statusCode: 200, body: '{ "jobs": [] }' }, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.dashboard(function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 0);
+      done();
+    });
+  },
+  'should return statuses when dashboard has jobs with known color value': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/api/json');
+      opts.handlers['200']({ statusCode: 200, body: JSON.stringify(
+        { jobs: [
+          { name: 'job1', color: 'blue' },
+          { name: 'job2', color: 'green' },
+          { name: 'job3', color: 'grey' },
+          { name: 'job4', color: 'red' },
+          { name: 'job5', color: 'yellow' }
+        ]}
+      )}, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.dashboard(function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 5);
+      assert.equals(result[0].name, 'job1');
+      assert.equals(result[0].status, 'OK'.blue);
+      assert.equals(result[1].name, 'job2');
+      assert.equals(result[1].status, 'OK'.green);
+      assert.equals(result[2].name, 'job3');
+      assert.equals(result[2].status, 'ABORTED'.grey);
+      assert.equals(result[3].name, 'job4');
+      assert.equals(result[3].status, 'FAIL'.red);
+      assert.equals(result[4].name, 'job5');
+      assert.equals(result[4].status, 'WARN'.yellow);
+      done();
+    });
+  },
+  'should return statuses when dashboard has running jobs with animated color value': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/api/json');
+      opts.handlers['200']({ statusCode: 200, body: JSON.stringify(
+        { jobs: [
+          { name: 'job1', color: 'grey_anime' },
+          { name: 'job2', color: 'red_anime' }
+        ]}
+      )}, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.dashboard(function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 2);
+      assert.equals(result[0].name, 'job1');
+      assert.equals(result[0].status, 'ABORTED'.grey);
+      assert.equals(result[1].name, 'job2');
+      assert.equals(result[1].status, 'FAIL'.red);
+      done();
+    });
+  },
+  'should return statuses when dashboard has jobs with unknown color value': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/api/json');
+      opts.handlers['200']({ statusCode: 200, body: JSON.stringify(
+        { jobs: [
+          { name: 'job1', color: 'disabled' }
+        ]}
+      )}, cb);
+    };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.dashboard(function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 1);
+      assert.equals(result[0].name, 'job1');
+      assert.equals(result[0].status, 'DISABLED'.grey);
+      done();
+    });
+  }
+});
+
+/*
+  describe('discover', function () {
+
+    beforeEach(function () {
+      mocks.requires = {
+        dgram: {
+          createSocket: function (type) {
+            type.should.equal('udp4');
+            return bag.mock.socket(checks, mocks);
+          }
+        }
+      };
+    });
+
+    afterEach(function () {
+      checks.socket_send__args[0].toString().should.equal('Long live Jenkins!');
+      checks.socket_send__args[1].should.equal(0);
+      checks.socket_send__args[2].should.equal(18);
+      checks.socket_send__args[3].should.equal(33848);
+      checks.socket_send__args[4].should.equal('somehost');
+      (typeof checks.socket_send__args[5]).should.equal('function');
+    });
+
+    it('should close socket and pass error to callback when socket emits error event', function (done) {
+      mocks.socket_on_error = [new Error('someerror')];
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.discover('somehost', function cb(err, result) {
+        checks.jenkins_discover_cb_args = cb['arguments'];
+        done();
+      });
+      checks.socket_close__count.should.equal(1);
+      checks.socket_on_error__args[0].should.equal('error');
+      (typeof checks.socket_on_error__args[1]).should.equal('function');
+      checks.jenkins_discover_cb_args[0].message.should.equal('someerror');
+    });
+
+    it('should close socket and pass result to callback when socket emits message event', function (done) {
+      mocks.socket_on_message = ['<hudson><version>1.431</version><url>http://localhost:8080/</url><server-id>362f249fc053c1ede86a218587d100ce</server-id><slave-port>55328</slave-port></hudson>'];
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.discover('somehost', function cb(err, result) {
+        checks.jenkins_discover_cb_args = cb['arguments'];
+        done();
+      });
+      checks.socket_close__count.should.equal(1);
+      checks.socket_on_message__args[0].should.equal('message');
+      (typeof checks.socket_on_message__args[1]).should.equal('function');
+      should.not.exist(checks.jenkins_discover_cb_args[0]);
+      checks.jenkins_discover_cb_args[1].hudson.version[0].should.equal('1.431');
+      checks.jenkins_discover_cb_args[1].hudson.url[0].should.equal('http://localhost:8080/');
+    });
+
+    it('should close socket and pass error to callback when an error occurs while sending a message', function (done) {
+      jenkins = new (create(checks, mocks))('http://localhost:8080');
+      jenkins.discover('somehost', function cb(err, result) {
+        checks.jenkins_discover_cb_args = cb['arguments'];
+        done();
+      });
+      checks.socket_send__args[5](new Error('someerror'));
+      checks.socket_close__count.should.equal(1);
+      checks.jenkins_discover_cb_args[0].message.should.equal('someerror');
+    });
+  });
+*/
 // TODO: discover
+
+buster.testCase('jenkins - discover', {
+  /*
+  'setUp': function () {
+    this.mockSocket = this.mock(dgram.Socket.prototype);
+    //this.mockSocket = this.mock({ close: function () {}, on: function () {}, send: function () {} });
+  },
+  'should close socket and pass error to callback when socket emits error event': function (done) {
+    //this.mockSocket.expects('on').once().withArgs('error').callArg(1, new Error('someerror'));
+    this.mockSocket.expects('close').once();
+    //this.mockSocket.expects('send').once();
+    this.mock(dgram).expects('createSocket').once().withExactArgs('udp4').returns(this.mockSocket);
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.discover('somehost', function (err, result) {
+console.log('CALLBACK')
+      assert.equals(err.message, 'someerror');
+      assert.equals(result, undefined);
+      done();
+    });
+  }*//*,
+  'should close socket and pass result to callback when socket emits message event': function () {
+    
+  },
+  'should close socket and pass error to callback when an error occurs while sending a message': function () {
+    
+  }*/
+});
 
 buster.testCase('jenkins - executor', {
   'should pass executor idle, stuck, and progress status when executor has them': function (done) {
     var mockRequest = function (method, url, opts, cb) {
       assert.equals(method, 'get');
       assert.equals(url, 'http://localhost:8080/computer/api/json');
+      assert.equals(opts.queryStrings.depth, 1);
       opts.handlers['200']({ statusCode: 200, body: JSON.stringify({
         computer: [
           {
@@ -200,739 +723,3 @@ buster.testCase('jenkins - _status', {
     assert.equals(jenkins._status('unknown'), 'UNKNOWN'.grey);
   }
 });
-/*
-var bag = require('bagofholding'),
-  _jscov = require('../lib/jenkins'),
-  sandbox = require('sandboxed-module'),
-  should = require('should'),
-  checks, mocks,
-  jenkins;
-
-describe('jenkins', function () {
-
-  function create(checks, mocks) {
-    return sandbox.require('../lib/jenkins', {
-      requires: mocks ? mocks.requires : {},
-      globals: mocks ? mocks.globals : {}
-    });
-  }
-
-  beforeEach(function () {
-    checks = {};
-    mocks = {};
-  });
-
-  describe('jenkins', function () {
-
-    it('should set default URL when none is specified', function () {
-      jenkins = new (create(checks, mocks))();
-      jenkins.url.should.equal('http://localhost:8080');
-    });
-
-    it('should set URL as specified in constructor but not proxy when it is not specified', function () {
-      jenkins = new (create(checks, mocks))('http://ci.jenkins-ci.org');
-      jenkins.url.should.equal('http://ci.jenkins-ci.org');
-      should.not.exist(jenkins.proxy);
-    });
-
-    it('should set URL and proxy as specified in constructor', function () {
-      jenkins = new (create(checks, mocks))('http://ci.jenkins-ci.org', 'http://someproxy:8080');
-      jenkins.url.should.equal('http://ci.jenkins-ci.org');
-      jenkins.proxy.should.equal('http://someproxy:8080');
-    });
-
-    it('should pass error to callback when an error occurs while sending request', function (done) {
-      mocks.request_err = new Error('someerror');
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))();
-      jenkins.dashboard(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      checks.jenkins_dashboard_cb_args[0].message.should.equal('someerror');
-      should.not.exist(checks.jenkins_dashboard_cb_args[1]);
-    });
-
-    it('should pass authentication failed error to callback when result has status code 401', function (done) {
-      mocks.request_result = { statusCode: 401 };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))();
-      jenkins.dashboard(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      checks.jenkins_dashboard_cb_args[0].message.should.equal('Authentication failed - incorrect username and/or password in JENKINS_URL');
-      should.not.exist(checks.jenkins_dashboard_cb_args[1]);
-    });
-
-    it('should pass authentication required error to callback when result has status code 403', function (done) {
-      mocks.request_result = { statusCode: 403 };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))();
-      jenkins.dashboard(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      checks.jenkins_dashboard_cb_args[0].message.should.equal('Jenkins requires authentication - set username and password in JENKINS_URL');
-      should.not.exist(checks.jenkins_dashboard_cb_args[1]);
-    });
-
-    it('should pass error with status code and body to callback when request responds with unexpected status code', function (done) {
-      mocks.request_result = { statusCode: 503, body: 'unexpectedbody' };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.dashboard(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      var err = checks.jenkins_dashboard_cb_args[0];
-      err.message.should.equal('Unexpected status code 503 from Jenkins\nResponse body:\nunexpectedbody');
-      should.not.exist(checks.jenkins_dashboard_cb_args[1]);
-    });
-
-    it('should pass proxy to http request when specified', function (done) {
-      mocks.request_result = { statusCode: 503, body: 'unexpectedbody' };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.dashboard(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      checks.request_opts.uri.should.equal('http://localhost:8080/api/json');
-      should.not.exist(checks.request_opts.proxy);
-    });
-
-    it('should pass proxy to http request when specified', function (done) {
-      mocks.request_result = { statusCode: 503, body: 'unexpectedbody' };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
-      jenkins.dashboard(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      checks.request_opts.uri.should.equal('http://localhost:8080/api/json');
-      checks.request_opts.proxy.should.equal('http://someproxy:8080');
-    });
-  });
-
-  describe('build', function () {
-
-    it('should pass error not found when job does not exist', function (done) {
-      mocks.request_result = { statusCode: 404 };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.build('job1', undefined, function cb(err, result) {
-        checks.jenkins_build_cb_args = cb['arguments'];
-        done();
-      });
-      checks.jenkins_build_cb_args[0].message.should.equal('Job job1 does not exist');
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/build');
-      checks.request_opts.qs.token.should.equal('nestor');
-      checks.request_opts.qs.json.should.equal('{"parameter":[]}');
-    });
-
-    it('should pass error not allowed job requires build parameters', function (done) {
-      mocks.request_result = { statusCode: 405 };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.build('job1', undefined, function cb(err, result) {
-        checks.jenkins_build_cb_args = cb['arguments'];
-        done();
-      });
-      checks.jenkins_build_cb_args[0].message.should.equal('Job job1 requires build parameters');
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/build');
-      checks.request_opts.qs.token.should.equal('nestor');
-      checks.request_opts.qs.json.should.equal('{"parameter":[]}');
-    });
-
-    it('should use get method when job is not parameterised', function (done) {
-      mocks.request_result = { statusCode: 200 };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.build('job1', undefined, function cb(err, result) {
-        checks.jenkins_build_cb_args = cb['arguments'];
-        done();
-      });
-      should.not.exist(checks.jenkins_build_cb_args[0]);
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/build');
-      checks.request_opts.qs.token.should.equal('nestor');
-      checks.request_opts.qs.json.should.equal('{"parameter":[]}');
-    });
-
-    it('should use post method when job is parameterised', function (done) {
-      mocks.request_result = { statusCode: 200 };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.build('job1', 'foo=bar&abc=xyz', function cb(err, result) {
-        checks.jenkins_build_cb_args = cb['arguments'];
-        done();
-      });
-      should.not.exist(checks.jenkins_build_cb_args[0]);
-      checks.request_opts.method.should.equal('post');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/build');
-      checks.request_opts.qs.token.should.equal('nestor');
-      checks.request_opts.qs.json.should.equal('{"parameter":[{"name":"foo","value":"bar"},{"name":"abc","value":"xyz"}]}');
-    });
-  });
-
-   describe('console', function () {
-
-    it('should pass error not found when job does not exist', function (done) {
-      mocks.request_result = { statusCode: 404 };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.console('job1', function cb(err, result) {
-        checks.jenkins_console_cb_args = cb['arguments'];
-        done();
-      });
-      checks.jenkins_console_cb_args[0].message.should.equal('Job job1 does not exist');
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
-    });
-
-    it('should display a single console output when there is no more text', function (done) {
-      mocks.request_result = { statusCode: 200, body: 'Job started by Foo', headers: { 'x-more-data': 'false' }};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      mocks.globals = {
-        process: bag.mock.process(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.console('job1', function cb(err, result) {
-        checks.jenkins_console_cb_args = cb['arguments'];
-        done();
-      });
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
-      checks.stream_write_strings.length.should.equal(1);
-      checks.stream_write_strings[0].should.equal('Job started by Foo');
-    });
-
-    it('should not display anything if there is only a single console output with no value (e.g. build step sleeping for several seconds)', function (done) {
-      mocks.request_result = { statusCode: 200, body: undefined, headers: { 'x-more-data': 'false' }};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      mocks.globals = {
-        process: bag.mock.process(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.console('job1', function cb(err, result) {
-        checks.jenkins_console_cb_args = cb['arguments'];
-        done();
-      });
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
-      checks.stream_write_strings.length.should.equal(0);
-    });
-
-    it('should display console output until there is no more text', function (done) {
-      checks.request_starts = [];
-      var count = 0;
-      mocks.requires = {
-        request: function (opts, cb) {
-          opts.proxy.should.equal('http://someproxy:8080');
-          checks.request_starts.push(opts.qs.start);
-          count += 1;
-          cb(
-              null,
-              {
-                statusCode: 200,
-                body: 'Console output ' + count,
-                headers: { 'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
-              }
-            );
-        }
-      };
-      mocks.globals = {
-        process: bag.mock.process(checks, mocks),
-        setTimeout: function (cb, timeout) {
-          should.exist(timeout);
-          cb();
-        }
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
-      jenkins.console('job1', function cb(err, result) {
-        checks.jenkins_console_cb_args = cb['arguments'];
-        done();
-      });
-      checks.stream_write_strings.length.should.equal(3);
-      checks.stream_write_strings[0].should.equal('Console output 1');
-      checks.stream_write_strings[1].should.equal('Console output 2');
-      checks.stream_write_strings[2].should.equal('Console output 3');
-      checks.request_starts.length.should.equal(3);
-      checks.request_starts[0].should.equal(0);
-      checks.request_starts[1].should.equal(10);
-      checks.request_starts[2].should.equal(20);
-    });
-
-    it('should not display console output when result body is undefined', function (done) {
-      checks.request_starts = [];
-      var count = 0;
-      mocks.requires = {
-        request: function (opts, cb) {
-          count += 1;
-          cb(
-              null,
-              {
-                statusCode: 200,
-                body: (count >= 2) ? undefined : 'Console output ' + count,
-                headers: {'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
-              }
-            );
-        }
-      };
-      mocks.globals = {
-        process: bag.mock.process(checks, mocks),
-        setTimeout: function (cb, timeout) {
-          should.exist(timeout);
-          cb();
-        }
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.console('job1', function cb(err, result) {
-        checks.jenkins_console_cb_args = cb['arguments'];
-        done();
-      });
-      checks.stream_write_strings.length.should.equal(1);
-      checks.stream_write_strings[0].should.equal('Console output 1');
-    });
-
-    it('should pass error while chunking console output', function (done) {
-      var count = 0;
-      mocks.requires = {
-        request: function (opts, cb) {
-          opts.proxy.should.equal('http://someproxy:8080');
-          count += 1;
-          cb(
-              (count === 1) ? null : new Error('someerror'),
-              {
-                statusCode: 200,
-                body: 'Console output ' + count,
-                headers: { 'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
-              }
-            );
-        }
-      };
-      mocks.globals = {
-        process: bag.mock.process(checks, mocks),
-        setTimeout: function (cb, timeout) {
-          should.exist(timeout);
-          cb();
-        }
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
-      jenkins.console('job1', function cb(err, result) {
-        err.message.should.equal('someerror');
-        done();
-      });
-      checks.stream_write_strings.length.should.equal(1);
-      checks.stream_write_strings[0].should.equal('Console output 1');
-    });
-
-  });
-
-  describe('build', function () {
-
-    it('should pass error not found when job does not exist', function (done) {
-      mocks.request_result = { statusCode: 404 };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.stop('job1', function cb(err, result) {
-        checks.jenkins_stop_cb_args = cb['arguments'];
-        done();
-      });
-      checks.jenkins_stop_cb_args[0].message.should.equal('Job job1 does not exist');
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/lastBuild/stop');
-    });
-
-    it('should give status code 200 when there is no error', function (done) {
-      mocks.request_result = { statusCode: 200 };
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.stop('job1', function cb(err, result) {
-        checks.jenkins_build_cb_args = cb['arguments'];
-        done();
-      });
-      should.not.exist(checks.jenkins_build_cb_args[0]);
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/lastBuild/stop');
-    });
-  });
-
-  describe('dashboard', function () {
-
-    it('should return empty data when dashboard has no job', function (done) {
-      mocks.request_result = { statusCode: 200, body: '{ "jobs": [] }'};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.dashboard(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
-      checks.jenkins_dashboard_cb_args[1].length.should.equal(0);
-    });
-
-    it('should return statuses when dashboard has jobs with known color value', function (done) {
-      mocks.request_result = { statusCode: 200, body: JSON.stringify(
-        { jobs: [
-          { name: 'job1', color: 'blue' },
-          { name: 'job2', color: 'green' },
-          { name: 'job3', color: 'grey' },
-          { name: 'job4', color: 'red' },
-          { name: 'job5', color: 'yellow' }
-        ]}
-      )};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.dashboard(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
-      var jobs = checks.jenkins_dashboard_cb_args[1];
-      jobs.length.should.equal(5);
-      jobs[0].name.should.equal('job1');
-      jobs[0].status.should.equal('OK');
-      jobs[1].name.should.equal('job2');
-      jobs[1].status.should.equal('OK');
-      jobs[2].name.should.equal('job3');
-      jobs[2].status.should.equal('ABORTED');
-      jobs[3].name.should.equal('job4');
-      jobs[3].status.should.equal('FAIL');
-      jobs[4].name.should.equal('job5');
-      jobs[4].status.should.equal('WARN');
-    });
-
-    it('should return statuses when dashboard has running jobs with animated color value', function (done) {
-      mocks.request_result = { statusCode: 200, body: JSON.stringify(
-        { jobs: [
-          { name: 'job1', color: 'grey_anime' },
-          { name: 'job2', color: 'red_anime' }
-        ]}
-      )};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.dashboard(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
-      var jobs = checks.jenkins_dashboard_cb_args[1];
-      jobs.length.should.equal(2);
-      jobs[0].name.should.equal('job1');
-      jobs[0].status.should.equal('ABORTED');
-      jobs[1].name.should.equal('job2');
-      jobs[1].status.should.equal('FAIL');
-    });
-
-    it('should return statuses when dashboard has jobs with unknown color value', function (done) {
-      mocks.request_result = { statusCode: 200, body: JSON.stringify(
-        { jobs: [
-          { name: 'job1', color: 'disabled' }
-        ]}
-      )};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.dashboard(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
-      var jobs = checks.jenkins_dashboard_cb_args[1];
-      jobs.length.should.equal(1);
-      jobs[0].name.should.equal('job1');
-      jobs[0].status.should.equal('DISABLED');
-    });
-  });
-
-  describe('discover', function () {
-
-    beforeEach(function () {
-      mocks.requires = {
-        dgram: {
-          createSocket: function (type) {
-            type.should.equal('udp4');
-            return bag.mock.socket(checks, mocks);
-          }
-        }
-      };
-    });
-
-    afterEach(function () {
-      checks.socket_send__args[0].toString().should.equal('Long live Jenkins!');
-      checks.socket_send__args[1].should.equal(0);
-      checks.socket_send__args[2].should.equal(18);
-      checks.socket_send__args[3].should.equal(33848);
-      checks.socket_send__args[4].should.equal('somehost');
-      (typeof checks.socket_send__args[5]).should.equal('function');
-    });
-
-    it('should close socket and pass error to callback when socket emits error event', function (done) {
-      mocks.socket_on_error = [new Error('someerror')];
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.discover('somehost', function cb(err, result) {
-        checks.jenkins_discover_cb_args = cb['arguments'];
-        done();
-      });
-      checks.socket_close__count.should.equal(1);
-      checks.socket_on_error__args[0].should.equal('error');
-      (typeof checks.socket_on_error__args[1]).should.equal('function');
-      checks.jenkins_discover_cb_args[0].message.should.equal('someerror');
-    });
-
-    it('should close socket and pass result to callback when socket emits message event', function (done) {
-      mocks.socket_on_message = ['<hudson><version>1.431</version><url>http://localhost:8080/</url><server-id>362f249fc053c1ede86a218587d100ce</server-id><slave-port>55328</slave-port></hudson>'];
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.discover('somehost', function cb(err, result) {
-        checks.jenkins_discover_cb_args = cb['arguments'];
-        done();
-      });
-      checks.socket_close__count.should.equal(1);
-      checks.socket_on_message__args[0].should.equal('message');
-      (typeof checks.socket_on_message__args[1]).should.equal('function');
-      should.not.exist(checks.jenkins_discover_cb_args[0]);
-      checks.jenkins_discover_cb_args[1].hudson.version[0].should.equal('1.431');
-      checks.jenkins_discover_cb_args[1].hudson.url[0].should.equal('http://localhost:8080/');
-    });
-
-    it('should close socket and pass error to callback when an error occurs while sending a message', function (done) {
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.discover('somehost', function cb(err, result) {
-        checks.jenkins_discover_cb_args = cb['arguments'];
-        done();
-      });
-      checks.socket_send__args[5](new Error('someerror'));
-      checks.socket_close__count.should.equal(1);
-      checks.jenkins_discover_cb_args[0].message.should.equal('someerror');
-    });
-  });
-
-  describe('executor', function () {
-
-    beforeEach(function () {
-      mocks.request_result = { statusCode: 200, body: JSON.stringify({
-        computer: [
-          {
-            displayName: 'master',
-            executors: [
-              { idle: false, likelyStuck: false, progress: 88, currentExecutable: { url: 'http://localhost:8080/job/job1/19/' } },
-              { idle: true, likelyStuck: false, progress: 0 }
-            ]
-          },
-          {
-            displayName: 'slave',
-            executors: [
-              { idle: false, likelyStuck: true, progress: 88, currentExecutable: { url: 'http://localhost:8080/job/job2/30/' } }
-            ]
-          }
-        ]
-      })};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.executor(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-      });
-    });
-
-    afterEach(function () {
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/computer/api/json');
-      checks.request_opts.qs.depth.should.equal(1);
-      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
-    });
-
-    it('should pass executor idle, stuck, and progress status when executor has them', function () {
-      var data = checks.jenkins_dashboard_cb_args[1];
-      data.master[0].progress.should.equal(88);
-      data.master[0].stuck.should.equal(false);
-      data.master[0].idle.should.equal(false);
-      data.master[1].progress.should.equal(0);
-      data.master[1].stuck.should.equal(false);
-      data.master[1].idle.should.equal(true);
-      data.slave[0].progress.should.equal(88);
-      data.slave[0].stuck.should.equal(true);
-      data.slave[0].idle.should.equal(false);
-    });
-
-    it('should leave executor name undefined when executor is idle', function () {
-      var data = checks.jenkins_dashboard_cb_args[1];
-      data.master[1].idle.should.equal(true);
-      should.not.exist(data.master[1].name);
-    });
-
-    it('should pass executor name when executor is not idle', function () {
-      var data = checks.jenkins_dashboard_cb_args[1];
-      data.master[0].idle.should.equal(false);
-      data.master[0].name.should.equal('job1');
-      data.slave[0].idle.should.equal(false);
-      data.slave[0].name.should.equal('job2');
-    });
-  });
-
-  describe('job', function () {
-
-    it('should pass job status and results when job exists', function (done) {
-      mocks.request_result = { statusCode: 200, body: JSON.stringify({
-        color: 'blue',
-        healthReport: [
-          { description: 'Coverage is 100%' },
-          { description: 'All system is go!' }
-        ]
-      })};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.job('job1', function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/api/json');
-      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
-      var data = checks.jenkins_dashboard_cb_args[1];
-      data.status.should.equal('OK');
-      data.reports.length.should.equal(2);
-      data.reports[0].should.equal('Coverage is 100%');
-      data.reports[1].should.equal('All system is go!');
-    });
-
-    it('should pass error when job does not exist', function (done) {
-      mocks.request_result = { statusCode: 404, body: 'somenotfounderror'};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.job('job1', function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/job/job1/api/json');
-      should.not.exist(checks.jenkins_dashboard_cb_args[1]);
-      checks.jenkins_dashboard_cb_args[0].message.should.equal('Job job1 does not exist');
-    });
-  });
-
-  describe('queue', function () {
-
-    it('should pass job names when queue is not empty', function (done) {
-      mocks.request_result = { statusCode: 200, body: JSON.stringify({
-        items: [
-          { task: { name: 'job1' }},
-          { task: { name: 'job2' }}
-        ]
-      })};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.queue(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/queue/api/json');
-      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
-      checks.jenkins_dashboard_cb_args[1].length.should.equal(2);
-      checks.jenkins_dashboard_cb_args[1][0].should.equal('job1');
-      checks.jenkins_dashboard_cb_args[1][1].should.equal('job2');
-    });
-
-    it('should pass empty job names when queue is empty', function (done) {
-      mocks.request_result = { statusCode: 200, body: JSON.stringify({
-        items: []
-      })};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.queue(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      checks.request_opts.method.should.equal('get');
-      checks.request_opts.uri.should.equal('http://localhost:8080/queue/api/json');
-      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
-      checks.jenkins_dashboard_cb_args[1].length.should.equal(0);
-    });
-  });
-
-  describe('version', function () {
-
-    it('should pass error to callback when headers do not contain x-jenkins', function (done) {
-      mocks.request_result = { statusCode: 200, headers: {}};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.version(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      should.not.exist(checks.jenkins_dashboard_cb_args[1]);
-      var err = checks.jenkins_dashboard_cb_args[0];
-      err.message.should.equal('Not a Jenkins server');
-    });
-
-    it('should pass version to callback when headers contain x-jenkins', function (done) {
-      mocks.request_result = { statusCode: 200, headers: { 'x-jenkins': '1.464' }};
-      mocks.requires = {
-        request: bag.mock.request(checks, mocks)
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.version(function cb(err, result) {
-        checks.jenkins_dashboard_cb_args = cb['arguments'];
-        done();
-      });
-      should.not.exist(checks.jenkins_dashboard_cb_args[0]);
-      var version = checks.jenkins_dashboard_cb_args[1];
-      version.should.equal('1.464');
-    });
-  });
-});
-
-*/

@@ -1,6 +1,6 @@
-var buster = require('buster'),
+var bag = require('bagofholding'),
+  buster = require('buster'),
   cli = require('../lib/cli'),
-  bag = require('bagofholding'),
   Jenkins = new require('../lib/jenkins');
 
 buster.testCase('cli - exec', {
