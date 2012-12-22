@@ -2,8 +2,7 @@ var bag = require('bagofholding'),
   buster = require('buster'),
   dgram = require('dgram'),
   Jenkins = require('../lib/jenkins'),
-  request = require('request'),
-  sinon = require('sinon');
+  request = require('request');
 
 buster.testCase('jenkins - jenkins', {
   'should use url and proxy when specified': function (done) {
@@ -121,121 +120,6 @@ buster.testCase('jenkins - build', {
   }
 });
 
-/*
-
-   describe('console', function () {
-
-
-    it('should not display console output when result body is undefined', function (done) {
-      checks.request_starts = [];
-      var count = 0;
-      mocks.requires = {
-        request: function (opts, cb) {
-          count += 1;
-          cb(
-              null,
-              {
-                statusCode: 200,
-                body: (count >= 2) ? undefined : 'Console output ' + count,
-                headers: {'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
-              }
-            );
-        }
-      };
-      mocks.globals = {
-        process: bag.mock.process(checks, mocks),
-        setTimeout: function (cb, timeout) {
-          should.exist(timeout);
-          cb();
-        }
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080');
-      jenkins.console('job1', function cb(err, result) {
-        checks.jenkins_console_cb_args = cb['arguments'];
-        done();
-      });
-      checks.stream_write_strings.length.should.equal(1);
-      checks.stream_write_strings[0].should.equal('Console output 1');
-    });
-
-    it('should pass error while chunking console output', function (done) {
-      var count = 0;
-      mocks.requires = {
-        request: function (opts, cb) {
-          opts.proxy.should.equal('http://someproxy:8080');
-          count += 1;
-          cb(
-              (count === 1) ? null : new Error('someerror'),
-              {
-                statusCode: 200,
-                body: 'Console output ' + count,
-                headers: { 'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
-              }
-            );
-        }
-      };
-      mocks.globals = {
-        process: bag.mock.process(checks, mocks),
-        setTimeout: function (cb, timeout) {
-          should.exist(timeout);
-          cb();
-        }
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
-      jenkins.console('job1', function cb(err, result) {
-        err.message.should.equal('someerror');
-        done();
-      });
-      checks.stream_write_strings.length.should.equal(1);
-      checks.stream_write_strings[0].should.equal('Console output 1');
-    });
-
-  });
-  //////////////////////////////////
-
-
-    it('should display console output until there is no more text', function (done) {
-      checks.request_starts = [];
-      var count = 0;
-      mocks.requires = {
-        request: function (opts, cb) {
-          opts.proxy.should.equal('http://someproxy:8080');
-          checks.request_starts.push(opts.qs.start);
-          count += 1;
-          cb(
-              null,
-              {
-                statusCode: 200,
-                body: 'Console output ' + count,
-                headers: { 'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
-              }
-            );
-        }
-      };
-      mocks.globals = {
-        process: bag.mock.process(checks, mocks),
-        setTimeout: function (cb, timeout) {
-          should.exist(timeout);
-          cb();
-        }
-      };
-      jenkins = new (create(checks, mocks))('http://localhost:8080', 'http://someproxy:8080');
-      jenkins.console('job1', function cb(err, result) {
-        checks.jenkins_console_cb_args = cb['arguments'];
-        done();
-      });
-      checks.stream_write_strings.length.should.equal(3);
-      checks.stream_write_strings[0].should.equal('Console output 1');
-      checks.stream_write_strings[1].should.equal('Console output 2');
-      checks.stream_write_strings[2].should.equal('Console output 3');
-      checks.request_starts.length.should.equal(3);
-      checks.request_starts[0].should.equal(0);
-      checks.request_starts[1].should.equal(10);
-      checks.request_starts[2].should.equal(20);
-    });
-
-*/
-
 buster.testCase('jenkins - console', {
   'setUp': function () {
     this.mockConsole = this.mock(console);
@@ -284,12 +168,12 @@ buster.testCase('jenkins - console', {
       assert.equals(result, undefined);
       done();
     });
-  }/*,
-  'should display console output until there is no more text': function () {
+  },
+  'should display console output until there is no more text': function (done) {
     this.mockConsole.expects('log')
       .once().withExactArgs('Console output 1');
-//      .once().withExactArgs('Console output 2')
-//      .once().withExactArgs('Console output 3');
+    this.mockConsole.expects('log')
+      .once().withExactArgs('Console output 2');
     // only first request uses bag.http.request
     var mockBagRequest = function (method, url, opts, cb) {
       assert.equals(method, 'get');
@@ -300,32 +184,72 @@ buster.testCase('jenkins - console', {
         headers: { 'x-more-data': 'true', 'x-text-size': 10 } 
       }, cb);
     };
-    // the rest use request module
+    // the subsequent request uses request module
     var mockRequest = this.mock(request);
-    mockRequest.expects('get').once().callArgWith(1, null, {
+    mockRequest.expects('get').once().callsArgWith(1, null, {
       statusCode: 200,
       body: 'Console output 2',
-      headers: { 'x-more-data': true, 'x-text-size': 20 }
+      headers: { 'x-more-data': 'false', 'x-text-size': 20 }
     });
-    // this.mock(request, 'get', function (params, cb) {
-    //   assert.equals(params.proxy, undefined);
-    //   assert.equals(params.url, '');
-    //   assert.equals(params.qs.start, 1);
-    //   count += 1;
-    //   cb(null, {
-    //     statusCode: 200,
-    //     body: 'Console output ' + count,
-    //     headers: { 'x-more-data': (count < 3) ? 'true' : false, 'x-text-size': count * 10 }
-    //   });
-    // });
     this.stub(bag, 'http', { request: mockBagRequest });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.console('job1', function (err, result) {
+    jenkins.console('job1', { interval: 1 }, function (err, result) {
       assert.equals(err, undefined);
       assert.equals(result, undefined);
-      //done();
+      done();
     });
-  }*/
+  },
+  'should not display chunked console output when result body is undefined': function (done) {
+    this.mockConsole.expects('log')
+      .once().withExactArgs('Console output 1');
+    // only first request uses bag.http.request
+    var mockBagRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
+      opts.handlers['200']({
+        statusCode: 200,
+        body: 'Console output 1',
+        headers: { 'x-more-data': 'true', 'x-text-size': 10 } 
+      }, cb);
+    };
+    // the subsequent request uses request module
+    var mockRequest = this.mock(request);
+    mockRequest.expects('get').once().callsArgWith(1, null, {
+      statusCode: 200,
+      headers: { 'x-more-data': 'false', 'x-text-size': 20 }
+    });
+    this.stub(bag, 'http', { request: mockBagRequest });
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.console('job1', { interval: 1 }, function (err, result) {
+      assert.equals(err, undefined);
+      assert.equals(result, undefined);
+      done();
+    });
+  },
+  'should pass error when chunking console output has an error': function (done) {
+    this.mockConsole.expects('log')
+      .once().withExactArgs('Console output 1');
+    // only first request uses bag.http.request
+    var mockBagRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
+      opts.handlers['200']({
+        statusCode: 200,
+        body: 'Console output 1',
+        headers: { 'x-more-data': 'true', 'x-text-size': 10 } 
+      }, cb);
+    };
+    // the subsequent request uses request module
+    var mockRequest = this.mock(request);
+    mockRequest.expects('get').once().callsArgWith(1, new Error('someerror'));
+    this.stub(bag, 'http', { request: mockBagRequest });
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.console('job1', { interval: 1 }, function (err, result) {
+      assert.equals(err.message, 'someerror');
+      assert.equals(result, undefined);
+      done();
+    });
+  }
 });
 
 buster.testCase('jenkins - stop', {
@@ -517,30 +441,87 @@ buster.testCase('jenkins - dashboard', {
 // TODO: discover
 
 buster.testCase('jenkins - discover', {
-  /*
-  'setUp': function () {
-    this.mockSocket = this.mock(dgram.Socket.prototype);
-    //this.mockSocket = this.mock({ close: function () {}, on: function () {}, send: function () {} });
-  },
   'should close socket and pass error to callback when socket emits error event': function (done) {
-    //this.mockSocket.expects('on').once().withArgs('error').callArg(1, new Error('someerror'));
-    this.mockSocket.expects('close').once();
-    //this.mockSocket.expects('send').once();
-    this.mock(dgram).expects('createSocket').once().withExactArgs('udp4').returns(this.mockSocket);
+    var closeCallCount = 0,
+      mockSocket = {
+        close: function () {
+          closeCallCount++;
+        },
+        on: function (event, cb) {
+          if (event === 'error') {
+            cb(new Error('someerror'));
+          }
+        },
+        send:  function (buf, offset, length, port, address, cb) {}
+      };
+    this.stub(dgram, 'createSocket', function (type) {
+      assert.equals(type, 'udp4');
+      return mockSocket;
+    });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.discover('somehost', function (err, result) {
-console.log('CALLBACK')
+    jenkins.discover('somehost', function cb(err, result) {
       assert.equals(err.message, 'someerror');
       assert.equals(result, undefined);
       done();
     });
-  }*//*,
-  'should close socket and pass result to callback when socket emits message event': function () {
-    
+    assert.equals(closeCallCount, 1);
   },
-  'should close socket and pass error to callback when an error occurs while sending a message': function () {
-    
-  }*/
+  'should close socket and pass error to callback when an error occurs while sending a message': function (done) {
+    var closeCallCount = 0,
+      mockSocket = {
+        close: function () {
+          closeCallCount++;
+        },
+        on: function (event, cb) {},
+        send:  function (buf, offset, length, port, address, cb) {
+          assert.equals(buf.toString(), 'Long live Jenkins!');
+          assert.equals(offset, 0);
+          assert.equals(length, 18);
+          assert.equals(port, 33848);
+          assert.equals(address, 'somehost');
+          cb(new Error('someerror'));
+        }
+      };
+    this.stub(dgram, 'createSocket', function (type) {
+      assert.equals(type, 'udp4');
+      return mockSocket;
+    });
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.discover('somehost', function cb(err, result) {
+      assert.equals(err.message, 'someerror');
+      assert.equals(result, undefined);
+      done();
+    });
+    assert.equals(closeCallCount, 1);
+  },
+  'should close socket and pass result to callback when socket emits message event': function (done) {
+    var closeCallCount = 0,
+      mockSocket = {
+        close: function () {
+          closeCallCount++;
+        },
+        on: function (event, cb) {
+          if (event === 'message') {
+            cb('<hudson><version>1.431</version><url>http://localhost:8080/</url><server-id>362f249fc053c1ede86a218587d100ce</server-id><slave-port>55328</slave-port></hudson>');
+          }
+        },
+        send:  function (buf, offset, length, port, address, cb) {}
+      };
+    this.stub(dgram, 'createSocket', function (type) {
+      assert.equals(type, 'udp4');
+      return mockSocket;
+    });
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.discover('somehost', function cb(err, result) {
+      assert.equals(err, null);
+      assert.equals(result.hudson['server-id'][0], '362f249fc053c1ede86a218587d100ce');
+      assert.equals(result.hudson['slave-port'][0], '55328');
+      assert.equals(result.hudson.url[0], 'http://localhost:8080/');
+      assert.equals(result.hudson.version[0], '1.431');
+      done();
+    });
+    assert.equals(closeCallCount, 1);
+  }
 });
 
 buster.testCase('jenkins - executor', {
