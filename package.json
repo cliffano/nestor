@@ -39,8 +39,7 @@
   },
   "devDependencies": {
     "buster": "0.6.12",
-    "buster-istanbul": "http://github.com/cliffano/buster-istanbul/tarball/master",
-    "sinon": "1.5.2"
+    "buster-istanbul": "http://github.com/cliffano/buster-istanbul/tarball/master"
   },
   "scripts": {},
   "engines": {
