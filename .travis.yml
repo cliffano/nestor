@@ -4,4 +4,4 @@ node_js:
   - 0.8
   - 0.6
 before_install: "npm install -g bob"
-script: "bob clean lint && node_modules/buster/bin/buster test"
+script: "bob clean lint test"
