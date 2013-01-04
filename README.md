@@ -51,11 +51,15 @@ View executors' status (running builds):
     
 Discover Jenkins instance running on a specified host:
 
-    nestor discover <hostname>
+    nestor discover <host>
 
 View Jenkins version number:
 
     nestor ver
+
+Start an IRC bot:
+
+    nestor irc <host> <channel>
 
 Configuration
 -------------

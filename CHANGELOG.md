@@ -2,6 +2,7 @@
 * Move commands setup to conf/commands.json, cli handling to bag.cli.command
 * Move request handling to bag.http.request
 * Change unit tests from Mocha to Buster
+* Add irc command
 
 ### 0.0.10
 * Add stop command

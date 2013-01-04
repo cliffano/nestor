@@ -19,7 +19,7 @@
       "desc": "View status of all jobs\n\tnestor dashboard"
     },
     "discover": {
-      "desc": "Discover Jenkins instance running on a specified host\n\tnestor discover <hostname>"
+      "desc": "Discover Jenkins instance running on a specified host\n\tnestor discover <host>"
     },
     "executor": {
       "desc": "View executors' status (running builds)\n\tnestor executor"
@@ -32,6 +32,9 @@
     },
     "ver": {
       "desc": "View Jenkins version number\n\tnestor ver"
+    },
+    "irc": {
+      "desc": "Start an IRC bot\n\tnestor irc <host> <channel>"
     }
   }
 }
