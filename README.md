@@ -59,7 +59,7 @@ View Jenkins version number:
 
 Start an IRC bot:
 
-    nestor irc <host> <channel>
+    nestor irc <host> <channel> [nick]
 
 Configuration
 -------------

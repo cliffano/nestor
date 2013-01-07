@@ -34,7 +34,7 @@
       "desc": "View Jenkins version number\n\tnestor ver"
     },
     "irc": {
-      "desc": "Start an IRC bot\n\tnestor irc <host> <channel>"
+      "desc": "Start an IRC bot\n\tnestor irc <host> <channel> [nick]"
     }
   }
 }

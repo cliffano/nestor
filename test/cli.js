@@ -381,15 +381,25 @@ buster.testCase('cli - ver', {
 buster.testCase('cli - irc', {
   'setUp': function () {
     this.mockIrc = this.mock(irc);
+  },
+  'should start irc bot with undefined nick when irc command is called with host and channel args only': function () {
+    this.mockIrc.expects('start').once().withExactArgs('somehost', 'somechannel', undefined);
     this.stub(bag, 'cli', {
       command: function (base, actions) {
         actions.commands.irc.action('somehost', 'somechannel');
       },
       exitCb: bag.cli.exitCb
     });
+    cli.exec();
   },
-  'should start irc bot when irc command is called': function () {
-    this.mockIrc.expects('start').once().withExactArgs('somehost', 'somechannel');
+  'should start irc bot with nick option when irc command is called with host, channel, and nick args only': function () {
+    this.mockIrc.expects('start').once().withExactArgs('somehost', 'somechannel', 'somenick');
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.irc.action('somehost', 'somechannel', 'somenick');
+      },
+      exitCb: bag.cli.exitCb
+    });
     cli.exec();
   }
 });
