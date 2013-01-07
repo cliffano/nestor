@@ -1,6 +1,7 @@
 var bag = require('bagofholding'),
   buster = require('buster'),
   cli = require('../lib/cli'),
+  irc = require('../lib/irc'),
   Jenkins = new require('../lib/jenkins');
 
 buster.testCase('cli - exec', {
@@ -373,6 +374,22 @@ buster.testCase('cli - ver', {
     this.stub(Jenkins.prototype, 'version', function (cb) {
       cb(new Error('someerror'));
     });
+    cli.exec();
+  }
+});
+
+buster.testCase('cli - irc', {
+  'setUp': function () {
+    this.mockIrc = this.mock(irc);
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.irc.action('somehost', 'somechannel');
+      },
+      exitCb: bag.cli.exitCb
+    });
+  },
+  'should start irc bot when irc command is called': function () {
+    this.mockIrc.expects('start').once().withExactArgs('somehost', 'somechannel');
     cli.exec();
   }
 });
