@@ -29,7 +29,7 @@ buster.testCase('cli - build', {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
   },
-  'should log job started successfully when exec build is called  and job exists': function () {
+  'should log job started successfully when exec build is called and job exists': function () {
     this.stub(bag, 'cli', {
       command: function (base, actions) {
         actions.commands.build.action('job1');
@@ -41,6 +41,22 @@ buster.testCase('cli - build', {
     this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
       assert.equals(jobName, 'job1');
       assert.equals(params, undefined);
+      cb();
+    });
+    cli.exec();
+  },
+  'should log job started successfully when exec build is called with ': function () {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.build.action('job1', 'foo1=bar1&foo2&bar2');
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'job1');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
+      assert.equals(jobName, 'job1');
+      assert.equals(params, 'foo1=bar1&foo2&bar2');
       cb();
     });
     cli.exec();
@@ -64,7 +80,7 @@ buster.testCase('cli - build', {
   'should follow build with console command when build is called with console flag': function (done) {
     this.stub(bag, 'cli', {
       command: function (base, actions) {
-        actions.commands.build.action('job2', { console: true, pending: 1 });
+        actions.commands.build.action('job2', 'foo1=bar1&foo2=bar2', { console: true, pending: 1 });
       },
       exit: bag.cli.exit
     });
@@ -72,7 +88,7 @@ buster.testCase('cli - build', {
     this.mockProcess.expects('exit').once().withExactArgs(0);
     this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
       assert.equals(jobName, 'job2');
-      assert.equals(params, undefined);
+      assert.equals(params, 'foo1=bar1&foo2=bar2');
       cb();
     });
     this.stub(Jenkins.prototype, 'console', function (jobName, cb) {
@@ -200,14 +216,14 @@ buster.testCase('cli - discover', {
   'setUp': function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
+  },
+  'should log version and url when exec discover is called and there is a running Jenkins instance': function () {
     this.stub(bag, 'cli', {
       command: function (base, actions) {
         actions.commands.discover.action();
       },
       exitCb: bag.cli.exitCb
     });
-  },
-  'should log version and url when exec discover is called and there is a running Jenkins instance': function () {
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'http://localhost:8080/');
     this.mockProcess.expects('exit').once().withExactArgs(0);
     this.stub(Jenkins.prototype, 'discover', function (host, cb) {
@@ -223,7 +239,35 @@ buster.testCase('cli - discover', {
     });
     cli.exec();
   },
+  'should log version and url when exec discover is called with specified host': function () {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.discover.action('somehost');
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'http://localhost:8080/');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'discover', function (host, cb) {
+      assert.equals(host, 'somehost');
+      cb(null, {
+        hudson: {
+          version: ['1.2.3'],
+          url: ['http://localhost:8080/'],
+          'server-id': ['362f249fc053c1ede86a218587d100ce'],
+          'slave-port': ['55325']
+        }
+      });
+    });
+    cli.exec();
+  },
   'should log host instead of url when exec discover result does not include any url': function () {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.discover.action();
+      },
+      exitCb: bag.cli.exitCb
+    });
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'localhost');
     this.mockProcess.expects('exit').once().withExactArgs(0);
     this.stub(Jenkins.prototype, 'discover', function (host, cb) {

@@ -192,7 +192,7 @@ buster.testCase('jenkins - console', {
       headers: { 'x-more-data': 'false', 'x-text-size': 20 }
     });
     this.stub(bag, 'http', { request: mockBagRequest });
-    var jenkins = new Jenkins('http://localhost:8080');
+    var jenkins = new Jenkins('http://localhost:8080', 'http://someproxy');
     jenkins.console('job1', { interval: 1 }, function (err, result) {
       assert.equals(err, undefined);
       assert.equals(result, undefined);
@@ -440,7 +440,7 @@ buster.testCase('jenkins - discover', {
             cb('<hudson><version>1.431</version><url>http://localhost:8080/</url><server-id>362f249fc053c1ede86a218587d100ce</server-id><slave-port>55328</slave-port></hudson>');
           }
         },
-        send:  function (buf, offset, length, port, address, cb) {}
+        send:  function (buf, offset, length, port, address, cb) { cb(); }
       };
     this.stub(dgram, 'createSocket', function (type) {
       assert.equals(type, 'udp4');
