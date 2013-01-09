@@ -427,10 +427,11 @@ buster.testCase('cli - irc', {
     this.mockIrc = this.mock(irc);
   },
   'should start irc bot with undefined nick when irc command is called with host and channel args only': function () {
+    // nick argument is an object because commander passes the whole arg object when cli only has host and channel args
     this.mockIrc.expects('start').once().withExactArgs('somehost', 'somechannel', undefined);
     this.stub(bag, 'cli', {
       command: function (base, actions) {
-        actions.commands.irc.action('somehost', 'somechannel');
+        actions.commands.irc.action('somehost', 'somechannel', {});
       },
       exitCb: bag.cli.exitCb
     });
