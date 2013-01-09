@@ -5,8 +5,11 @@ var bag = require('bagofholding'),
 
 buster.testCase('irc - build', {
   'should say job started successfully when build is called  and job exists': function (done) {
-    this.stub(bag.irc.Bot.prototype, 'start', function (commands) {
-      commands.build('job1', 'foo=bar&foo1=bar1');
+    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+      assert.equals(host, 'somehost');
+      assert.equals(channel, 'somechannel');
+      assert.equals(opts.nick, 'somenick');
+      this.commands.build('job1', 'foo=bar&foo1=bar1');
     });
     this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
       assert.equals(jobName, 'job1');
@@ -21,8 +24,11 @@ buster.testCase('irc - build', {
     irc.start('somehost', 'somechannel', 'somenick');
   },
   'should say job started successfully when build is called  without params': function (done) {
-    this.stub(bag.irc.Bot.prototype, 'start', function (commands) {
-      commands.build('job1');
+    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+      assert.equals(host, 'somehost');
+      assert.equals(channel, 'somechannel');
+      assert.equals(opts.nick, 'somenick');
+      this.commands.build('job1');
     });
     this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
       assert.equals(jobName, 'job1');
@@ -40,8 +46,11 @@ buster.testCase('irc - build', {
 
 buster.testCase('irc - stop', {
   'setUp': function () {
-    this.stub(bag.irc.Bot.prototype, 'start', function (commands) {
-      commands.stop('job1');
+    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+      assert.equals(host, 'somehost');
+      assert.equals(channel, 'somechannel');
+      assert.equals(opts.nick, 'somenick');
+      this.commands.stop('job1');
     });
   },
   'should say job started successfully when stop is called  and job exists': function (done) {
@@ -60,8 +69,11 @@ buster.testCase('irc - stop', {
 
 buster.testCase('irc - dashboard', {
   'setUp': function () {
-    this.stub(bag.irc.Bot.prototype, 'start', function (commands) {
-      commands.dashboard();
+    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+      assert.equals(host, 'somehost');
+      assert.equals(channel, 'somechannel');
+      assert.equals(opts.nick, 'somenick');
+      this.commands.dashboard();
     });
   },
   'should say jobs status and name when dashboard is called and Jenkins result has jobs': function (done) {
@@ -100,8 +112,11 @@ buster.testCase('irc - dashboard', {
 
 buster.testCase('irc - discover', {
   'should say version and url when discover is called and there is a running Jenkins instance': function (done) {
-    this.stub(bag.irc.Bot.prototype, 'start', function (commands) {
-      commands.discover('localhost');
+    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+      assert.equals(host, 'somehost');
+      assert.equals(channel, 'somechannel');
+      assert.equals(opts.nick, 'somenick');
+      this.commands.discover('localhost');
     });
     this.stub(Jenkins.prototype, 'discover', function (host, cb) {
       assert.equals(host, 'localhost');
@@ -123,8 +138,11 @@ buster.testCase('irc - discover', {
     irc.start('somehost', 'somechannel', 'somenick');
   },
   'should use localhost when discover is called without host arg': function (done) {
-    this.stub(bag.irc.Bot.prototype, 'start', function (commands) {
-      commands.discover();
+    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+      assert.equals(host, 'somehost');
+      assert.equals(channel, 'somechannel');
+      assert.equals(opts.nick, 'somenick');
+      this.commands.discover();
     });
     this.stub(Jenkins.prototype, 'discover', function (host, cb) {
       assert.equals(host, 'localhost');
@@ -146,8 +164,11 @@ buster.testCase('irc - discover', {
     irc.start('somehost', 'somechannel', 'somenick');
   },
   'should say host instead of url when discover result does not include any url': function (done) {
-    this.stub(bag.irc.Bot.prototype, 'start', function (commands) {
-      commands.discover('localhost');
+    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+      assert.equals(host, 'somehost');
+      assert.equals(channel, 'somechannel');
+      assert.equals(opts.nick, 'somenick');
+      this.commands.discover('localhost');
     });
     this.stub(Jenkins.prototype, 'discover', function (host, cb) {
       assert.equals(host, 'localhost');
@@ -171,8 +192,11 @@ buster.testCase('irc - discover', {
 
 buster.testCase('irc - executor', {
   'setUp': function () {
-    this.stub(bag.irc.Bot.prototype, 'start', function (commands) {
-      commands.executor();
+    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+      assert.equals(host, 'somehost');
+      assert.equals(channel, 'somechannel');
+      assert.equals(opts.nick, 'somenick');
+      this.commands.executor();
     });
   },
   'should say executor status when executor is called and there are some executors': function (done) {
@@ -226,8 +250,11 @@ buster.testCase('irc - executor', {
 
 buster.testCase('irc - job', {
   'setUp': function () {
-    this.stub(bag.irc.Bot.prototype, 'start', function (commands) {
-      commands.job('job1');
+    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+      assert.equals(host, 'somehost');
+      assert.equals(channel, 'somechannel');
+      assert.equals(opts.nick, 'somenick');
+      this.commands.job('job1');
     });
   },
   'should say job name, status, and reports when job exists': function (done) {
@@ -258,8 +285,11 @@ buster.testCase('irc - job', {
 
 buster.testCase('irc - queue', {
   'setUp': function () {
-    this.stub(bag.irc.Bot.prototype, 'start', function (commands) {
-      commands.queue();
+    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+      assert.equals(host, 'somehost');
+      assert.equals(channel, 'somechannel');
+      assert.equals(opts.nick, 'somenick');
+      this.commands.queue();
     });
   },
   'should say queued job names when queue is called and there are some queued jobs': function (done) {
@@ -293,8 +323,11 @@ buster.testCase('irc - queue', {
 
 buster.testCase('irc - ver', {
   'setUp': function () {
-    this.stub(bag.irc.Bot.prototype, 'start', function (commands) {
-      commands.ver();
+    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+      assert.equals(host, 'somehost');
+      assert.equals(channel, 'somechannel');
+      assert.equals(opts.nick, 'somenick');
+      this.commands.ver();
     });
   },
   'should say version when ver is called and version exists': function (done) {
