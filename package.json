@@ -38,7 +38,8 @@
     "xml2js": "0.2.2"
   },
   "devDependencies": {
-    "buster": "0.6.12"
+    "buster": "0.6.12",
+    "shelljs": "0.1.2"
   },
   "scripts": {},
   "engines": {
