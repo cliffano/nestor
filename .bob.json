@@ -4,5 +4,8 @@
   },
   "test-integration": {
     "type": "buster"
+  },
+  "coverage": {
+    "type": "buster-istanbul"
   }
 }
