@@ -1,8 +1,9 @@
-### 0.0.11 (SNAPSHOT)
+### 0.1.0-pre
 * Move commands setup to conf/commands.json, cli handling to bag.cli.command
 * Move request handling to bag.http.request
 * Change unit tests from Mocha to Buster
 * Add irc command
+* Modify Jenkins constructor, proxy is now part of opts
 
 ### 0.0.10
 * Add stop command

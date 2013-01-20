@@ -5,24 +5,37 @@ var bag = require('bagofholding'),
   request = require('request');
 
 buster.testCase('jenkins - jenkins', {
-  'should use url and proxy when specified': function (done) {
+  'should use url and optional proxy when specified': function (done) {
     var mockRequest = function (method, url, opts, cb) {
       assert.equals(url, 'http://jenkins-ci.org:8080/job/job1/build');
       assert.equals(opts.proxy, 'http://someproxy');
       opts.handlers['401']({ statusCode: 401 }, cb);
     };
     this.stub(bag, 'http', { request: mockRequest });
-    var jenkins = new Jenkins('http://jenkins-ci.org:8080', 'http://someproxy');
+    var jenkins = new Jenkins('http://jenkins-ci.org:8080', { proxy: 'http://someproxy' });
     jenkins.build('job1', undefined, function (err, result) {
       done();
     });
   },
-  'should use default url and no proxy when not specified': function (done) {
+  'should use default url and no optional proxy when not specified': function (done) {
     var mockRequest = function (method, url, opts, cb) {
       assert.equals(url, 'http://localhost:8080/job/job1/build');
       assert.equals(opts.proxy, undefined);
       opts.handlers['401']({ statusCode: 401 }, cb);
     };
+    this.stub(bag, 'http', { request: mockRequest });
+    var jenkins = new Jenkins();
+    jenkins.build('job1', undefined, function (err, result) {
+      done();
+    });
+  },
+  'should use http_proxy when optional proxy is not specified and env variable http_proxy is set': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(url, 'http://localhost:8080/job/job1/build');
+      assert.equals(opts.proxy, 'http://someproxy');
+      opts.handlers['401']({ statusCode: 401 }, cb);
+    };
+    this.stub(process, 'env', { http_proxy: 'http://someproxy' });
     this.stub(bag, 'http', { request: mockRequest });
     var jenkins = new Jenkins();
     jenkins.build('job1', undefined, function (err, result) {
@@ -192,7 +205,7 @@ buster.testCase('jenkins - console', {
       headers: { 'x-more-data': 'false', 'x-text-size': 20 }
     });
     this.stub(bag, 'http', { request: mockBagRequest });
-    var jenkins = new Jenkins('http://localhost:8080', 'http://someproxy');
+    var jenkins = new Jenkins('http://localhost:8080', { proxy: 'http://someproxy' });
     jenkins.console('job1', { interval: 1 }, function (err, result) {
       assert.equals(err, undefined);
       assert.equals(result, undefined);
