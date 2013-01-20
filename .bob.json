@@ -1,4 +1,5 @@
 {
+  "build": "clean lint complexity test coverage",
   "test": {
     "type": "buster"
   },
