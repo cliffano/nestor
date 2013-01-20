@@ -134,7 +134,7 @@ buster.testCase('jenkins - build', {
 });
 
 buster.testCase('jenkins - console', {
-  'setUp': function () {
+  setUp: function () {
     this.mockConsole = this.mock(console);
   },
   'should pass error not found when job does not exist': function (done) {

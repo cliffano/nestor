@@ -45,7 +45,7 @@ buster.testCase('irc - build', {
 });
 
 buster.testCase('irc - stop', {
-  'setUp': function () {
+  setUp: function () {
     this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
@@ -68,7 +68,7 @@ buster.testCase('irc - stop', {
 });
 
 buster.testCase('irc - dashboard', {
-  'setUp': function () {
+  setUp: function () {
     this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
@@ -191,7 +191,7 @@ buster.testCase('irc - discover', {
 });
 
 buster.testCase('irc - executor', {
-  'setUp': function () {
+  setUp: function () {
     this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
@@ -249,7 +249,7 @@ buster.testCase('irc - executor', {
 });
 
 buster.testCase('irc - job', {
-  'setUp': function () {
+  setUp: function () {
     this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
@@ -284,7 +284,7 @@ buster.testCase('irc - job', {
 });
 
 buster.testCase('irc - queue', {
-  'setUp': function () {
+  setUp: function () {
     this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
@@ -322,7 +322,7 @@ buster.testCase('irc - queue', {
 });
 
 buster.testCase('irc - ver', {
-  'setUp': function () {
+  setUp: function () {
     this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');

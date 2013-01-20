@@ -25,7 +25,7 @@ buster.testCase('cli - exec', {
 });
 
 buster.testCase('cli - build', {
-  'setUp': function () {
+  setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
   },
@@ -119,7 +119,7 @@ buster.testCase('cli - build', {
 });
 
 buster.testCase('cli - console', {
-  'setUp': function () {
+  setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
     this.stub(bag, 'cli', {
@@ -149,7 +149,7 @@ buster.testCase('cli - console', {
 });
 
 buster.testCase('cli - stop', {
-  'setUp': function () {
+  setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
     this.stub(bag, 'cli', {
@@ -180,7 +180,7 @@ buster.testCase('cli - stop', {
 });
 
 buster.testCase('cli - dashboard', {
-  'setUp': function () {
+  setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
     this.stub(bag, 'cli', {
@@ -213,7 +213,7 @@ buster.testCase('cli - dashboard', {
 });
 
 buster.testCase('cli - discover', {
-  'setUp': function () {
+  setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
   },
@@ -285,7 +285,7 @@ buster.testCase('cli - discover', {
 });
 
 buster.testCase('cli - executor', {
-  'setUp': function () {
+  setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
     this.stub(bag, 'cli', {
@@ -328,7 +328,7 @@ buster.testCase('cli - executor', {
 });
 
 buster.testCase('cli - job', {
-  'setUp': function () {
+  setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
     this.stub(bag, 'cli', {
@@ -364,7 +364,7 @@ buster.testCase('cli - job', {
 });
 
 buster.testCase('cli - queue', {
-  'setUp': function () {
+  setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
     this.stub(bag, 'cli', {
@@ -394,7 +394,7 @@ buster.testCase('cli - queue', {
 });
 
 buster.testCase('cli - ver', {
-  'setUp': function () {
+  setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
     this.stub(bag, 'cli', {
@@ -423,7 +423,7 @@ buster.testCase('cli - ver', {
 });
 
 buster.testCase('cli - irc', {
-  'setUp': function () {
+  setUp: function () {
     this.mockIrc = this.mock(irc);
   },
   'should start irc bot with undefined nick when irc command is called with host and channel args only': function () {
