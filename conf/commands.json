@@ -1,7 +1,7 @@
 {
   "commands": {
     "build": {
-      "desc": "Trigger a build with optional parameters\n\tnestor build <jobname> [\"param1=value1&param2=value2\"]",
+      "desc": "Trigger a build with optional parameters\nUsage: nestor build [-c/--console] <job> [\"param1=value1&param2=value2\"]",
       "options": [
         {
           "arg": "-c, --console",
@@ -10,31 +10,31 @@
       ]
     },
     "console": {
-      "desc": "Display latest build console output\n\tnestor console <jobname>"
+      "desc": "Display latest build console output\nUsage: nestor console <job>"
     },
     "stop": {
-      "desc": "Stop the currently running build\n\tnestor stop <jobname>"
+      "desc": "Stop the currently running build\nUsage: nestor stop <job>"
     },
     "dashboard": {
-      "desc": "View status of all jobs\n\tnestor dashboard"
+      "desc": "View status of all jobs\nUsage: nestor dashboard"
     },
     "discover": {
-      "desc": "Discover Jenkins instance running on a specified host\n\tnestor discover <host>"
+      "desc": "Discover Jenkins instance running on a specified host\nUsage: nestor discover <host>"
     },
     "executor": {
-      "desc": "View executors' status (running builds)\n\tnestor executor"
+      "desc": "View executors' status (running builds)\nUsage: nestor executor"
     },
     "job": {
-      "desc": "View job status reports\n\tnestor job <jobname>"
+      "desc": "View job status reports\nUsage: nestor job <job>"
     },
     "queue": {
-      "desc": "View queued jobs\n\tnestor queue"
+      "desc": "View queued jobs\nUsage: nestor queue"
     },
     "ver": {
-      "desc": "View Jenkins version number\n\tnestor ver"
+      "desc": "View Jenkins version number\nUsage: nestor ver"
     },
     "irc": {
-      "desc": "Start an IRC bot\n\tnestor irc <host> <channel> [nick]"
+      "desc": "Start an IRC bot\nUsage: nestor irc <host> <channel> [nick]"
     }
   }
 }

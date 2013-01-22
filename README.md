@@ -15,23 +15,23 @@ Usage
 
 Trigger a build:
 
-    nestor build <jobname>
+    nestor build <job>
 
 Trigger a parameterised build:
 
-    nestor build <jobname> ["param1=value1&param2=value2"]
+    nestor build <job> ["param1=value1&param2=value2"]
 
 Trigger a build followed by console output:
 
-    nestor build --console  <jobname>
+    nestor build --console  <job>
 
 Display latest build console output:
 
-    nestor console <jobname>
+    nestor console <job>
 
 Stop currently running build:
 
-    nestor stop <jobname>
+    nestor stop <job>
 
 View status of all jobs:
 
@@ -39,7 +39,7 @@ View status of all jobs:
 
 View job status reports:
 
-    nestor job <jobname>
+    nestor job <job>
 
 View queued jobs:
 
