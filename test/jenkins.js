@@ -232,6 +232,7 @@ buster.testCase('jenkins - console', {
       statusCode: 200,
       headers: { 'x-more-data': 'false', 'x-text-size': 20 }
     });
+    this.stub(process, 'env', {}); // simulate no http_proxy environment variable
     this.stub(bag, 'http', { request: mockBagRequest });
     var jenkins = new Jenkins('http://localhost:8080');
     jenkins.console('job1', { interval: 1 }, function (err, result) {
