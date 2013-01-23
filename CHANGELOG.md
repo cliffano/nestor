@@ -1,5 +1,6 @@
 ### 0.1.1-pre
 * Move status colouring to cli so that when lib/jenkins is used programatically then it gets plain uncoloured text
+* JENKINS_URL is now handled by lib/jenkins
 
 ### 0.1.0
 * Move commands setup to conf/commands.json, cli handling to bag.cli.command

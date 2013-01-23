@@ -61,6 +61,18 @@ Start an IRC bot:
 
     nestor irc <host> <channel> [nick]
 
+Programmatically:
+
+    var nestor = new (require('nestor'))(
+      'http://user:pass@host:port/path'
+    );
+
+    // trigger a parameterised build
+    nestor.build('job', 'param1=value1&param2=value2', function (err, result) {
+    });
+
+Check out [lib/jenkins](https://github.com/cliffano/nestor/blob/master/lib/jenkins.js) for available methods.
+
 Configuration
 -------------
 
