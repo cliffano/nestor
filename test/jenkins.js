@@ -23,6 +23,7 @@ buster.testCase('jenkins - jenkins', {
       assert.equals(opts.proxy, undefined);
       opts.handlers['401']({ statusCode: 401 }, cb);
     };
+    this.stub(process, 'env', {}); // simulate no http_proxy environment variable
     this.stub(bag, 'http', { request: mockRequest });
     var jenkins = new Jenkins();
     jenkins.build('job1', undefined, function (err, result) {
@@ -331,15 +332,15 @@ buster.testCase('jenkins - dashboard', {
       assert.isNull(err);
       assert.equals(result.length, 5);
       assert.equals(result[0].name, 'job1');
-      assert.equals(result[0].status, 'OK'.blue);
+      assert.equals(result[0].status, 'OK');
       assert.equals(result[1].name, 'job2');
-      assert.equals(result[1].status, 'OK'.green);
+      assert.equals(result[1].status, 'OK');
       assert.equals(result[2].name, 'job3');
-      assert.equals(result[2].status, 'ABORTED'.grey);
+      assert.equals(result[2].status, 'ABORTED');
       assert.equals(result[3].name, 'job4');
-      assert.equals(result[3].status, 'FAIL'.red);
+      assert.equals(result[3].status, 'FAIL');
       assert.equals(result[4].name, 'job5');
-      assert.equals(result[4].status, 'WARN'.yellow);
+      assert.equals(result[4].status, 'WARN');
       done();
     });
   },
@@ -360,9 +361,9 @@ buster.testCase('jenkins - dashboard', {
       assert.isNull(err);
       assert.equals(result.length, 2);
       assert.equals(result[0].name, 'job1');
-      assert.equals(result[0].status, 'ABORTED'.grey);
+      assert.equals(result[0].status, 'ABORTED');
       assert.equals(result[1].name, 'job2');
-      assert.equals(result[1].status, 'FAIL'.red);
+      assert.equals(result[1].status, 'FAIL');
       done();
     });
   },
@@ -382,7 +383,7 @@ buster.testCase('jenkins - dashboard', {
       assert.isNull(err);
       assert.equals(result.length, 1);
       assert.equals(result[0].name, 'job1');
-      assert.equals(result[0].status, 'DISABLED'.grey);
+      assert.equals(result[0].status, 'DISABLED');
       done();
     });
   }
@@ -541,7 +542,7 @@ buster.testCase('jenkins - job', {
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.job('job1', function (err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'OK'.blue);
+      assert.equals(result.status, 'OK');
       assert.equals(result.reports[0], 'Coverage is 100%');
       assert.equals(result.reports[1], 'All system is go!');
       done();
@@ -637,18 +638,18 @@ buster.testCase('jenkins - version', {
 buster.testCase('jenkins - _status', {
   'should show the correct status for all supported colors': function () {
     var jenkins = new Jenkins();
-    assert.equals(jenkins._status('blue'), 'OK'.blue);
-    assert.equals(jenkins._status('green'), 'OK'.green);
-    assert.equals(jenkins._status('grey'), 'ABORTED'.grey);
-    assert.equals(jenkins._status('red'), 'FAIL'.red);
-    assert.equals(jenkins._status('yellow'), 'WARN'.yellow);
+    assert.equals(jenkins._status('blue'), 'OK');
+    assert.equals(jenkins._status('green'), 'OK');
+    assert.equals(jenkins._status('grey'), 'ABORTED');
+    assert.equals(jenkins._status('red'), 'FAIL');
+    assert.equals(jenkins._status('yellow'), 'WARN');
   },
   'should show the correct status for actively running build': function () {
     var jenkins = new Jenkins();
-    assert.equals(jenkins._status('blue_anime'), 'OK'.blue);
+    assert.equals(jenkins._status('blue_anime'), 'OK');
   },
-  'should use grey color when status is unsupported': function () {
+  'should uppercase status when it is unsupported': function () {
     var jenkins = new Jenkins();
-    assert.equals(jenkins._status('unknown'), 'UNKNOWN'.grey);
+    assert.equals(jenkins._status('unknown'), 'UNKNOWN');
   }
 });

@@ -191,13 +191,13 @@ buster.testCase('cli - dashboard', {
     });
   },
   'should log jobs status and name when exec dashboard is called and Jenkins result has jobs': function () {
-    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'OK', 'job1');
-    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'FAIL', 'job2');
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'OK'.green, 'job1');
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'UNKNOWN'.grey, 'job2');
     this.mockProcess.expects('exit').once().withExactArgs(0);
     this.stub(Jenkins.prototype, 'dashboard', function (cb) {
       cb(null, [
         { status: 'OK', name: 'job1' },
-        { status: 'FAIL', name: 'job2' }
+        { status: 'UNKNOWN', name: 'job2' }
       ]);
     });
     cli.exec();
@@ -339,7 +339,7 @@ buster.testCase('cli - job', {
     });
   },
   'should log job name, status, and reports when job exists': function () {
-    this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'job1', 'OK');
+    this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'job1', 'OK'.green);
     this.mockConsole.expects('log').once().withExactArgs(' - %s', 'Coverage 100%');
     this.mockConsole.expects('log').once().withExactArgs(' - %s', 'All good!');
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -347,6 +347,19 @@ buster.testCase('cli - job', {
       assert.equals(name, 'job1');
       cb(null, {
         status: 'OK',
+        reports: ['Coverage 100%', 'All good!']
+      });
+    });
+    cli.exec();
+  },
+  'should use grey colour when job status is unknown': function () {
+    this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'job1', 'UNKNOWN'.grey);
+    this.mockConsole.expects('log').once().withExactArgs(' - %s', 'Coverage 100%');
+    this.mockConsole.expects('log').once().withExactArgs(' - %s', 'All good!');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'job', function (name, cb) {
+      cb(null, {
+        status: 'UNKNOWN',
         reports: ['Coverage 100%', 'All good!']
       });
     });
