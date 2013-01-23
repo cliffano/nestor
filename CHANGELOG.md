@@ -1,4 +1,7 @@
-### 0.1.1-pre
+### 0.1.2-pre
+*
+
+### 0.1.1
 * Move status colouring to cli so that when lib/jenkins is used programatically then it gets plain uncoloured text
 * JENKINS_URL is now handled by lib/jenkins
 
