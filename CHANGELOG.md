@@ -1,4 +1,7 @@
-### 0.1.0-pre
+### 0.1.1-pre
+*
+
+### 0.1.0
 * Move commands setup to conf/commands.json, cli handling to bag.cli.command
 * Move request handling to bag.http.request
 * Change unit tests from Mocha to Buster
