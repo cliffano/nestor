@@ -5,7 +5,7 @@
       "options": [
         {
           "arg": "-c, --console",
-          "desc": "Display console ouptput of the triggered build progress"
+          "desc": "Display console output of the triggered build progress"
         }
       ]
     },
