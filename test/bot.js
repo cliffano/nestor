@@ -157,7 +157,7 @@ buster.testCase('bot - disconnect', {
         assert.equals(channel, '#somechannel');
         done();
       }
-    }
+    };
     this.bot.disconnect();
   }
 });
