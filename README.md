@@ -71,7 +71,7 @@ Programmatically:
     nestor.build('job', 'param1=value1&param2=value2', function (err, result) {
     });
 
-Check out [lib/jenkins](https://github.com/cliffano/nestor/blob/master/lib/jenkins.js) for available methods.
+Check out [lib/jenkins](https://github.com/cliffano/nestor/blob/master/lib/jenkins.js) for other available methods.
 
 Configuration
 -------------
