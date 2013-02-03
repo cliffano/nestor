@@ -1,11 +1,11 @@
-var bag = require('bagofholding'),
+var Bot = require('../lib/bot'),
   buster = require('buster'),
   irc = require('../lib/irc'),
   Jenkins = new require('../lib/jenkins');
 
 buster.testCase('irc - build', {
   'should say job started successfully when build is called  and job exists': function (done) {
-    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
       assert.equals(opts.nick, 'somenick');
@@ -16,7 +16,7 @@ buster.testCase('irc - build', {
       assert.equals(params, 'foo=bar&foo1=bar1');
       cb();
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function (format, data) {
+    this.stub(Bot.prototype, 'say', function (format, data) {
       assert.equals(format, 'Job %s was started successfully');
       assert.equals(data, 'job1');
       done();
@@ -24,7 +24,7 @@ buster.testCase('irc - build', {
     irc.start('somehost', 'somechannel', 'somenick');
   },
   'should say job started successfully when build is called  without params': function (done) {
-    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
       assert.equals(opts.nick, 'somenick');
@@ -35,7 +35,7 @@ buster.testCase('irc - build', {
       assert.equals(params, undefined);
       cb();
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function (format, data) {
+    this.stub(Bot.prototype, 'say', function (format, data) {
       assert.equals(format, 'Job %s was started successfully');
       assert.equals(data, 'job1');
       done();
@@ -46,7 +46,7 @@ buster.testCase('irc - build', {
 
 buster.testCase('irc - stop', {
   setUp: function () {
-    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
       assert.equals(opts.nick, 'somenick');
@@ -58,7 +58,7 @@ buster.testCase('irc - stop', {
       assert.equals(jobName, 'job1');
       cb(null, 'job1');
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function (format, data) {
+    this.stub(Bot.prototype, 'say', function (format, data) {
       assert.equals(format, 'Job %s was stopped successfully');
       assert.equals(data, 'job1');
       done();
@@ -69,7 +69,7 @@ buster.testCase('irc - stop', {
 
 buster.testCase('irc - dashboard', {
   setUp: function () {
-    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
       assert.equals(opts.nick, 'somenick');
@@ -84,7 +84,7 @@ buster.testCase('irc - dashboard', {
         { status: 'FAIL', name: 'job2' }
       ]);
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function () {
+    this.stub(Bot.prototype, 'say', function () {
       result.push(arguments);
       if (result.length === 2) {
         assert.equals(result[0][0], '%s - %s');
@@ -102,7 +102,7 @@ buster.testCase('irc - dashboard', {
     this.stub(Jenkins.prototype, 'dashboard', function (cb) {
       cb(null, []);
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function (format, data) {
+    this.stub(Bot.prototype, 'say', function (format, data) {
       assert.equals(format, 'Jobless Jenkins');
       done();
     });
@@ -112,7 +112,7 @@ buster.testCase('irc - dashboard', {
 
 buster.testCase('irc - discover', {
   'should say version and url when discover is called and there is a running Jenkins instance': function (done) {
-    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
       assert.equals(opts.nick, 'somenick');
@@ -129,7 +129,7 @@ buster.testCase('irc - discover', {
         }
       });
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function (format, data0, data1) {
+    this.stub(Bot.prototype, 'say', function (format, data0, data1) {
       assert.equals(format, 'Jenkins ver. %s is running on %s');
       assert.equals(data0, '1.2.3');
       assert.equals(data1, 'http://localhost:8080/');
@@ -138,7 +138,7 @@ buster.testCase('irc - discover', {
     irc.start('somehost', 'somechannel', 'somenick');
   },
   'should use localhost when discover is called without host arg': function (done) {
-    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
       assert.equals(opts.nick, 'somenick');
@@ -155,7 +155,7 @@ buster.testCase('irc - discover', {
         }
       });
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function (format, data0, data1) {
+    this.stub(Bot.prototype, 'say', function (format, data0, data1) {
       assert.equals(format, 'Jenkins ver. %s is running on %s');
       assert.equals(data0, '1.2.3');
       assert.equals(data1, 'http://localhost:8080/');
@@ -164,7 +164,7 @@ buster.testCase('irc - discover', {
     irc.start('somehost', 'somechannel', 'somenick');
   },
   'should say host instead of url when discover result does not include any url': function (done) {
-    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
       assert.equals(opts.nick, 'somenick');
@@ -180,7 +180,7 @@ buster.testCase('irc - discover', {
         }
       });
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function (format, data0, data1) {
+    this.stub(Bot.prototype, 'say', function (format, data0, data1) {
       assert.equals(format, 'Jenkins ver. %s is running on %s');
       assert.equals(data0, '1.2.3');
       assert.equals(data1, 'localhost');
@@ -192,7 +192,7 @@ buster.testCase('irc - discover', {
 
 buster.testCase('irc - executor', {
   setUp: function () {
-    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
       assert.equals(opts.nick, 'somenick');
@@ -213,7 +213,7 @@ buster.testCase('irc - executor', {
         ]
       });
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function () {
+    this.stub(Bot.prototype, 'say', function () {
       result.push(arguments);
       if (result.length === 6) {
         assert.equals(result[0][0], '+ master');
@@ -240,7 +240,7 @@ buster.testCase('irc - executor', {
     this.stub(Jenkins.prototype, 'executor', function (cb) {
       cb(null, {});
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function (format, data) {
+    this.stub(Bot.prototype, 'say', function (format, data) {
       assert.equals(format, 'No executor found');
       done();
     });
@@ -250,7 +250,7 @@ buster.testCase('irc - executor', {
 
 buster.testCase('irc - job', {
   setUp: function () {
-    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
       assert.equals(opts.nick, 'somenick');
@@ -266,7 +266,7 @@ buster.testCase('irc - job', {
         reports: ['Coverage 100%', 'All good!']
       });
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function () {
+    this.stub(Bot.prototype, 'say', function () {
       result.push(arguments);
       if (result.length === 3) {
         assert.equals(result[0][0], '%s | %s');
@@ -285,7 +285,7 @@ buster.testCase('irc - job', {
 
 buster.testCase('irc - queue', {
   setUp: function () {
-    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
       assert.equals(opts.nick, 'somenick');
@@ -297,7 +297,7 @@ buster.testCase('irc - queue', {
     this.stub(Jenkins.prototype, 'queue', function (cb) {
       cb(null, ['job1', 'job2']);
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function () {
+    this.stub(Bot.prototype, 'say', function () {
       result.push(arguments);
       if (result.length === 2) {
         assert.equals(result[0][0], '- %s');
@@ -313,7 +313,7 @@ buster.testCase('irc - queue', {
     this.stub(Jenkins.prototype, 'queue', function (cb) {
       cb(null, []);
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function (format, data) {
+    this.stub(Bot.prototype, 'say', function (format, data) {
       assert.equals(format, 'Queue is empty');
       done();
     });
@@ -323,7 +323,7 @@ buster.testCase('irc - queue', {
 
 buster.testCase('irc - ver', {
   setUp: function () {
-    this.stub(bag.irc.Bot.prototype, 'connect', function (host, channel, opts) {
+    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
       assert.equals(host, 'somehost');
       assert.equals(channel, 'somechannel');
       assert.equals(opts.nick, 'somenick');
@@ -334,7 +334,7 @@ buster.testCase('irc - ver', {
     this.stub(Jenkins.prototype, 'version', function (cb) {
       cb(null, '1.2.3');
     });
-    this.stub(bag.irc.Bot.prototype, 'say', function (format, data) {
+    this.stub(Bot.prototype, 'say', function (format, data) {
       assert.equals(format, 'Jenkins ver. %s');
       assert.equals(data, '1.2.3');
       done();
