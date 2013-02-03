@@ -1,6 +1,6 @@
 {
   "name": "nestor",
-  "description": "Jenkins command-line interface in Node.js",
+  "description": "Jenkins CLI and Node.js client",
   "keywords": [
     "jenkins",
     "ci",
