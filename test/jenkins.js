@@ -56,7 +56,7 @@ buster.testCase('jenkins - jenkins', {
   },
   'should pass authentication required error to callback when result has status code 403': function (done) {
     var mockRequest = function (method, url, opts, cb) {
-      opts.handlers[403]({ statusCode: 401 }, cb);
+      opts.handlers[403]({ statusCode: 403 }, cb);
     };
     this.stub(bag, 'http', { request: mockRequest });
     var jenkins = new Jenkins('http://localhost:8080');    
