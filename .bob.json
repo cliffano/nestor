@@ -1,5 +1,5 @@
 {
-  "build": "clean lint complexity test coverage",
+  "build": "clean lint complexity test coverage depgraph",
   "test": {
     "type": "buster"
   },
