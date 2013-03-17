@@ -1,0 +1,8 @@
+.bob
+.bob.json
+.DS_Store
+.travis.yml
+node_modules
+npm-debug.log
+test
+test-integration
