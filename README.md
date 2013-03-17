@@ -1,4 +1,4 @@
-Nestor [![http://travis-ci.org/cliffano/nestor](https://secure.travis-ci.org/cliffano/nestor.png?branch=master)](http://travis-ci.org/cliffano/nestor)
+Nestor [![Build Status](https://secure.travis-ci.org/cliffano/nestor.png?branch=master)](http://travis-ci.org/cliffano/nestor) [![Dependencies Status](https://david-dm.org/cliffano/nestor.png)][http://david-dm.org/cliffano/nestor]
 ------
 
 Nestor is a [Jenkins](http://jenkins-ci.org) CLI and Node.js client.
