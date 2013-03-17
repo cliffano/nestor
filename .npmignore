@@ -1,6 +1,7 @@
 .bob
 .bob.json
 .DS_Store
+.git
 .travis.yml
 node_modules
 npm-debug.log
