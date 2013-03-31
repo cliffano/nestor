@@ -61,6 +61,14 @@ Start an IRC bot:
 
     nestor irc <host> <channel> [nick]
 
+View builds feed of all jobs:
+
+    nestor feed
+
+View builds feed of a job:
+
+    nestor feed <job>
+
 Programmatically:
 
     var nestor = new (require('nestor'))(
