@@ -33,8 +33,9 @@
     "async": "0.2.6",
     "bagofholding": "0.1.2",
     "colors": "0.6.0-1",
+    "feedparser": "0.14.0",
     "irc": "0.3.6",
-    "request": "2.16.2",
+    "request": "2.16.6",
     "underscore": "1.4.4",
     "xml2js": "0.2.6"
   },

@@ -17,6 +17,8 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands.job.action);
       assert.defined(actions.commands.queue.action);
       assert.defined(actions.commands.ver.action);
+      assert.defined(actions.commands.irc.action);
+      assert.defined(actions.commands.feed.action);
       done();
     };
     this.stub(bag, 'cli', { command: mockCommand });
@@ -457,6 +459,58 @@ buster.testCase('cli - irc', {
         actions.commands.irc.action('somehost', 'somechannel', 'somenick');
       },
       exitCb: bag.cli.exitCb
+    });
+    cli.exec();
+  }
+});
+
+buster.testCase('cli - feed', {
+  setUp: function () {
+    this.mockConsole = this.mock(console);
+    this.mockProcess = this.mock(process);
+  },
+  'should log article titles when exec feed is called and articles exist': function () {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.feed.action('somejob');
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.mockConsole.expects('log').once().withExactArgs('some title 1');
+    this.mockConsole.expects('log').once().withExactArgs('some title 2');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'feed', function (jobName, cb) {
+      assert.equals(jobName, 'somejob');
+      cb(null, [{ title: 'some title 1' }, { title: 'some title 2' }]);
+    });
+    cli.exec();
+  },
+  'should log nothing when exec feed is called and no article exists': function () {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.feed.action();
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+    this.stub(Jenkins.prototype, 'feed', function (jobName, cb) {
+      assert.equals(jobName, undefined);
+      cb(null, []);
+    });
+    cli.exec();
+  },
+  'should log error when exec feed is called an error occurs': function () {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.feed.action('somejob');
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.mockConsole.expects('error').once().withExactArgs('some error');
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    this.stub(Jenkins.prototype, 'feed', function (jobName, cb) {
+      assert.equals(jobName, 'somejob');
+      cb(new Error('some error'));
     });
     cli.exec();
   }

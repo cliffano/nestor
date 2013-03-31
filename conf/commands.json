@@ -35,6 +35,9 @@
     },
     "irc": {
       "desc": "Start an IRC bot\nUsage: nestor irc <host> <channel> [nick]"
+    },
+    "feed": {
+      "desc": "Retrieve Jenkins feed\nUsage: nestor feed [<job>]"
     }
   }
 }
