@@ -134,7 +134,7 @@ buster.testCase('jenkins - build', {
   }
 });
 
-buster.testCase('jenkins - console', {
+buster.testCase('jenkins - consoleStream', {
   setUp: function () {
     this.mockConsole = this.mock(console);
   },
@@ -146,27 +146,27 @@ buster.testCase('jenkins - console', {
     };
     this.stub(bag, 'http', { request: mockRequest });
     var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.console('job1', function (err, result) {
+    jenkins.consoleStream('job1', function (err, result) {
       assert.equals(err.message, 'Job job1 does not exist');
       assert.equals(result, undefined);
       done();
     });
   },
   'should display a single console output when there is no more text': function (done) {
-    this.mockConsole.expects('log')
-      .once().withExactArgs('Job started by Foo');
     var mockRequest = function (method, url, opts, cb) {
       assert.equals(method, 'get');
       assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
       opts.handlers[200]({ statusCode: 200, body: 'Job started by Foo', headers: { 'x-more-data': 'false' } }, cb);
     };
     this.stub(bag, 'http', { request: mockRequest });
-    var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.console('job1', function (err, result) {
+    var jenkins = new Jenkins('http://localhost:8080'),
+      read = [];
+    jenkins.consoleStream('job1', function (err, result) {
       assert.equals(err, undefined);
       assert.equals(result, undefined);
+      assert.equals(read, ['Job started by Foo']);
       done();
-    });
+    }).on('data', read.push.bind(read));
   },
   'should not display anything if there is only a single console output with no value (e.g. build step sleeping for several seconds)': function (done) {
     this.mockConsole.expects('log').never();
@@ -177,17 +177,15 @@ buster.testCase('jenkins - console', {
     };
     this.stub(bag, 'http', { request: mockRequest });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.console('job1', function (err, result) {
+    jenkins.consoleStream('job1', function (err, result) {
       assert.equals(err, undefined);
       assert.equals(result, undefined);
       done();
+    }).on('data', function() {
+      assert(false, "There should be no data");
     });
   },
   'should display console output until there is no more text': function (done) {
-    this.mockConsole.expects('log')
-      .once().withExactArgs('Console output 1');
-    this.mockConsole.expects('log')
-      .once().withExactArgs('Console output 2');
     // only first request uses bag.http.request
     var mockBagRequest = function (method, url, opts, cb) {
       assert.equals(method, 'get');
@@ -206,16 +204,16 @@ buster.testCase('jenkins - console', {
       headers: { 'x-more-data': 'false', 'x-text-size': 20 }
     });
     this.stub(bag, 'http', { request: mockBagRequest, proxy: function(url) { return 'http://someproxy'; }});
-    var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.console('job1', { interval: 1 }, function (err, result) {
+    var jenkins = new Jenkins('http://localhost:8080'),
+      read = [];
+    jenkins.consoleStream('job1', { interval: 1 }, function (err, result) {
       assert.equals(err, undefined);
       assert.equals(result, undefined);
+      assert.equals(read, ['Console output 1', 'Console output 2']);
       done();
-    });
+    }).on('data', read.push.bind(read));
   },
   'should not display chunked console output when result body is undefined': function (done) {
-    this.mockConsole.expects('log')
-      .once().withExactArgs('Console output 1');
     // only first request uses bag.http.request
     var mockBagRequest = function (method, url, opts, cb) {
       assert.equals(method, 'get');
@@ -233,16 +231,15 @@ buster.testCase('jenkins - console', {
       headers: { 'x-more-data': 'false', 'x-text-size': 20 }
     });
     this.stub(bag, 'http', { request: mockBagRequest, proxy: function () { return undefined; }});
-    var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.console('job1', { interval: 1 }, function (err, result) {
+    var jenkins = new Jenkins('http://localhost:8080'),
+      read = [];
+    jenkins.consoleStream('job1', { interval: 1 }, function (err, result) {
       assert.equals(err, undefined);
       assert.equals(result, undefined);
       done();
-    });
+    }).on('data', read.push.bind(read));
   },
   'should pass error when chunking console output has an error': function (done) {
-    this.mockConsole.expects('log')
-      .once().withExactArgs('Console output 1');
     // only first request uses bag.http.request
     var mockBagRequest = function (method, url, opts, cb) {
       assert.equals(method, 'get');
@@ -257,12 +254,14 @@ buster.testCase('jenkins - console', {
     var mockRequest = this.mock(request);
     mockRequest.expects('get').once().callsArgWith(1, new Error('someerror'));
     this.stub(bag, 'http', { request: mockBagRequest, proxy: function () { return undefined; }});
-    var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.console('job1', { interval: 1 }, function (err, result) {
+    var jenkins = new Jenkins('http://localhost:8080'),
+      read = [];
+    jenkins.consoleStream('job1', { interval: 1 }, function (err, result) {
       assert.equals(err.message, 'someerror');
       assert.equals(result, undefined);
+      assert.equals(read, ['Console output 1']);
       done();
-    });
+    }).on('data', read.push.bind(read));
   }
 });
 
