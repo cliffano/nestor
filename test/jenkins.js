@@ -265,6 +265,24 @@ buster.testCase('jenkins - consoleStream', {
   }
 });
 
+buster.testCase('jenkins - console', {
+  'should pipe console stream to standard output': function (done) {
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.consoleStream = function (jobName, opts, cb) {
+      assert.equals(jobName, 'somejob');
+      assert.equals(opts.interval, 10000);
+      return {
+        pipe: function (dest, opts) {
+          assert.equals(dest, process.stdout);
+          assert.isFalse(opts.end);
+          done();
+        }
+      };
+    };
+    jenkins.console('somejob', { interval: 10000 });
+  }
+});
+
 buster.testCase('jenkins - stop', {
   'should pass error not found when job does not exist': function (done) {
     var mockRequest = function (method, url, opts, cb) {
