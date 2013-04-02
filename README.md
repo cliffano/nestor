@@ -63,11 +63,16 @@ Start an IRC bot:
 
 View builds feed of all jobs:
 
-    nestor feed
+    nestor feed 
 
 View builds feed of a job:
 
     nestor feed <job>
+
+Monitor build status and notify Ninja Blocks RGB LED device:
+
+    export NINJABLOCKS_TOKEN=<token>
+    nestor ninja [job] ["cron_schedule"]
 
 Programmatically:
 

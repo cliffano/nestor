@@ -1,6 +1,7 @@
 ### 0.1.2-pre
 * Move proxy environment variable handling to bag.http.request and bag.http.proxy
 * Add feed command
+* Add jenkins#monitor and ninja command
 
 ### 0.1.1
 * Move status colouring to cli so that when lib/jenkins is used programatically then it gets plain uncoloured text

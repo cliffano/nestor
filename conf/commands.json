@@ -37,7 +37,10 @@
       "desc": "Start an IRC bot\nUsage: nestor irc <host> <channel> [nick]"
     },
     "feed": {
-      "desc": "Retrieve Jenkins feed\nUsage: nestor feed [<job>]"
+      "desc": "Retrieve Jenkins feed\nUsage: nestor feed [job]"
+    },
+    "ninja": {
+      "desc": "Display latest build status on Ninja Blocks RGB LED\nUsage: NINJABLOCKS_TOKEN=<token> nestor ninja [job] [cron_schedule]"
     }
   }
 }

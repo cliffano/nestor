@@ -1,5 +1,6 @@
 var bag = require('bagofholding'),
   buster = require('buster'),
+  cron = require('cron'),
   dgram = require('dgram'),
   feedparser = require('feedparser'),
   Jenkins = require('../lib/jenkins'),
@@ -671,21 +672,86 @@ buster.testCase('jenkins - feed', {
   }
 });
 
-buster.testCase('jenkins - _status', {
+buster.testCase('jenkins - monitor', {
+  'should call notify callback with last article title when result exists': function (done) {
+    this.stub(cron.CronJob.prototype, 'start', function () {
+      done();
+    });
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.feed = function (jobName, cb) {
+      assert.equals(jobName, 'somejob');
+      cb(null, [{ title: 'somejob 1 (stable)' }, { title: 'somejob 2 (aborted)' }]);
+    };
+    jenkins.monitor('somejob', '*/30 * * * * *', function (err, result) {
+      assert.isNull(err);
+      assert.equals(result, 'OK');
+    });
+  },
+  'should call notify callback when there is no article but there is no monitoring error as well': function (done) {
+    this.stub(cron.CronJob.prototype, 'start', function () {
+      done();
+    });
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.feed = function (jobName, cb) {
+      assert.equals(jobName, 'somejob');
+      cb(null, []);
+    };
+    jenkins.monitor('somejob', '*/30 * * * * *', function (err, result) {
+      assert.isNull(err);
+      assert.isNull(result);
+    });
+  },
+  'should call notify callback with null result and error when an error occurs while retrieving the feed': function (done) {
+    this.stub(cron.CronJob.prototype, 'start', function () {
+      done();
+    });
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.feed = function (jobName, cb) {
+      assert.equals(jobName, 'somejob');
+      cb(new Error('some error'));
+    };
+    jenkins.monitor('somejob', undefined, function (err, result) {
+      assert.equals(err.message, 'some error');
+      assert.equals(result, null);
+    });
+  }
+});
+
+buster.testCase('jenkins - _colorStatus', {
   'should show the correct status for all supported colors': function () {
     var jenkins = new Jenkins();
-    assert.equals(jenkins._status('blue'), 'OK');
-    assert.equals(jenkins._status('green'), 'OK');
-    assert.equals(jenkins._status('grey'), 'ABORTED');
-    assert.equals(jenkins._status('red'), 'FAIL');
-    assert.equals(jenkins._status('yellow'), 'WARN');
+    assert.equals(jenkins._colorStatus('blue'), 'OK');
+    assert.equals(jenkins._colorStatus('green'), 'OK');
+    assert.equals(jenkins._colorStatus('grey'), 'ABORTED');
+    assert.equals(jenkins._colorStatus('red'), 'FAIL');
+    assert.equals(jenkins._colorStatus('yellow'), 'WARN');
   },
   'should show the correct status for actively running build': function () {
     var jenkins = new Jenkins();
-    assert.equals(jenkins._status('blue_anime'), 'OK');
+    assert.equals(jenkins._colorStatus('blue_anime'), 'OK');
   },
   'should uppercase status when it is unsupported': function () {
     var jenkins = new Jenkins();
-    assert.equals(jenkins._status('unknown'), 'UNKNOWN');
+    assert.equals(jenkins._colorStatus('unknown'), 'UNKNOWN');
+  }
+});
+
+buster.testCase('jenkins - _titleStatus', {
+  'should show correct status based on title info': function () {
+    var jenkins = new Jenkins();
+    assert.equals(jenkins._titleStatus('somejob #123 (aborted)'), 'ABORTED');
+  },
+  'should show correct status based on keyword matches': function () {
+    var jenkins = new Jenkins();
+    assert.equals(jenkins._titleStatus('somejob #123 (stable)'), 'OK');
+    assert.equals(jenkins._titleStatus('somejob #123 (back to normal)'), 'OK');
+    assert.equals(jenkins._titleStatus('somejob #123 (broken for a long time)'), 'FAIL');
+    assert.equals(jenkins._titleStatus('somejob #123 (broken since this build)'), 'FAIL');
+    assert.equals(jenkins._titleStatus('somejob #123 (broken since build #100)'), 'FAIL');
+    assert.equals(jenkins._titleStatus('somejob #123 (1 test failure)'), 'FAIL');
+    assert.equals(jenkins._titleStatus('somejob #123 (23 test failures)'), 'FAIL');
+    assert.equals(jenkins._titleStatus('somejob #123 (23 tests are still failing)'), 'WARN');
+    assert.equals(jenkins._titleStatus('somejob #123 (3 less tests are failing (total 20))'), 'WARN');
+    assert.equals(jenkins._titleStatus('somejob #123 (1 test started to fail)'), 'WARN');
   }
 });

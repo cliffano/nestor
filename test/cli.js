@@ -2,7 +2,8 @@ var bag = require('bagofholding'),
   buster = require('buster'),
   cli = require('../lib/cli'),
   irc = require('../lib/irc'),
-  Jenkins = new require('../lib/jenkins');
+  Jenkins = new require('../lib/jenkins'),
+  NinjaBlocks = require('../lib/ninjablocks');
 
 buster.testCase('cli - exec', {
   'should contain commands with actions': function (done) {
@@ -19,6 +20,7 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands.ver.action);
       assert.defined(actions.commands.irc.action);
       assert.defined(actions.commands.feed.action);
+      assert.defined(actions.commands.ninja.action);
       done();
     };
     this.stub(bag, 'cli', { command: mockCommand });
@@ -511,6 +513,99 @@ buster.testCase('cli - feed', {
     this.stub(Jenkins.prototype, 'feed', function (jobName, cb) {
       assert.equals(jobName, 'somejob');
       cb(new Error('some error'));
+    });
+    cli.exec();
+  }
+});
+
+buster.testCase('cli - ninja', {
+  setUp: function () {
+    this.mockConsole = this.mock(console);
+  },
+  'should log monitoring error': function () {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.ninja.action('somejob', '* * * * * *');
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.mockConsole.expects('error').once().withExactArgs('some error');
+    this.stub(Jenkins.prototype, 'monitor', function (jobName, schedule, cb) {
+      assert.equals(jobName, 'somejob');
+      assert.equals(schedule, '* * * * * *');
+      cb(new Error('some error'));
+    });
+    cli.exec();
+  },
+  'should notify ninjablocks when there is no monitoring error': function (done) {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.ninja.action('somejob', '* * * * * *');
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.stub(Jenkins.prototype, 'monitor', function (jobName, schedule, cb) {
+      assert.equals(jobName, 'somejob');
+      assert.equals(schedule, '* * * * * *');
+      cb(null, 'OK');
+    });
+    this.stub(NinjaBlocks.prototype, 'notify', function (result) {
+      assert.equals(result, 'OK');
+      done();
+    });
+    cli.exec();
+  },
+  'should set job and schedule to null when there is no string argument': function (done) {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.ninja.action({});
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.stub(Jenkins.prototype, 'monitor', function (jobName, schedule, cb) {
+      assert.isNull(jobName);
+      assert.isNull(schedule);
+      cb(null, 'OK');
+    });
+    this.stub(NinjaBlocks.prototype, 'notify', function (result) {
+      assert.equals(result, 'OK');
+      done();
+    });
+    cli.exec();
+  },
+  'should set first arg as schedule and job name as null when first arg matches cron schedule format': function (done) {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.ninja.action('*/30 * * * * *');
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.stub(Jenkins.prototype, 'monitor', function (jobName, schedule, cb) {
+      assert.isNull(jobName);
+      assert.equals(schedule, '*/30 * * * * *');
+      cb(null, 'OK');
+    });
+    this.stub(NinjaBlocks.prototype, 'notify', function (result) {
+      assert.equals(result, 'OK');
+      done();
+    });
+    cli.exec();
+  },
+  'should set first arg as job name and schedule to null when first arg does not match cron schedule format': function (done) {
+    this.stub(bag, 'cli', {
+      command: function (base, actions) {
+        actions.commands.ninja.action('somejob');
+      },
+      exitCb: bag.cli.exitCb
+    });
+    this.stub(Jenkins.prototype, 'monitor', function (jobName, schedule, cb) {
+      assert.equals(jobName, 'somejob');
+      assert.isNull(schedule);
+      cb(null, 'OK');
+    });
+    this.stub(NinjaBlocks.prototype, 'notify', function (result) {
+      assert.equals(result, 'OK');
+      done();
     });
     cli.exec();
   }
