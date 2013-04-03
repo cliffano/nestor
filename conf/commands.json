@@ -3,10 +3,8 @@
     "build": {
       "desc": "Trigger a build with optional parameters\nUsage: nestor build [-c/--console] <job> [\"param1=value1&param2=value2\"]",
       "options": [
-        {
-          "arg": "-c, --console",
-          "desc": "Display console output of the triggered build progress"
-        }
+        { "arg": "-c, --console", "desc": "Display console output of the triggered build progress" },
+        { "arg": "-p, --pending <pending>", "desc": "Pending time (in milliseconds) before displaying console output, default: 5000" }
       ]
     },
     "console": {

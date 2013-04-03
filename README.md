@@ -25,6 +25,11 @@ Trigger a build followed by console output:
 
     nestor build --console  <job>
 
+Trigger a build, wait for 5 seconds, then display console output:
+(handy for builds that don't immediately display anything to console output)
+
+    nestor build --pending 5000 --console <job>
+
 Display latest build console output:
 
     nestor console <job>

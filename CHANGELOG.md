@@ -3,6 +3,7 @@
 * Add feed command
 * Add jenkins#monitor and ninja command
 * Add jenkins#consoleStream (Whyme Lyu)
+* Add -p/--pending flag to build command
 
 ### 0.1.1
 * Move status colouring to cli so that when lib/jenkins is used programatically then it gets plain uncoloured text
