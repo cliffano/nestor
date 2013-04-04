@@ -1,4 +1,7 @@
-### 0.1.2-pre
+### 0.1.3-pre
+*
+
+### 0.1.2
 * Move proxy environment variable handling to bag.http.request and bag.http.proxy
 * Add feed command
 * Add jenkins#monitor and ninja command
