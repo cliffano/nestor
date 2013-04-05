@@ -70,7 +70,7 @@ buster.testCase('jenkins - jenkins', {
 buster.testCase('jenkins - build', {
   'should pass error not found when job does not exist': function (done) {
     var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
+      assert.equals(method, 'post');
       assert.equals(url, 'http://localhost:8080/job/job1/build');
       assert.equals(opts.queryStrings.token, 'nestor');
       assert.equals(opts.queryStrings.json, '{"parameter":[]}');
@@ -86,7 +86,7 @@ buster.testCase('jenkins - build', {
   },
   'should pass error not allowed job requires build parameters': function (done) {
     var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
+      assert.equals(method, 'post');
       assert.equals(url, 'http://localhost:8080/job/job1/build');
       assert.equals(opts.queryStrings.token, 'nestor');
       assert.equals(opts.queryStrings.json, '{"parameter":[]}');
@@ -100,9 +100,9 @@ buster.testCase('jenkins - build', {
       done();
     });
   },
-  'should use get method when job is not parameterised': function (done) {
+  'should use post method when job is not parameterised': function (done) {
     var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
+      assert.equals(method, 'post');
       assert.equals(url, 'http://localhost:8080/job/job1/build');
       assert.equals(opts.queryStrings.token, 'nestor');
       assert.equals(opts.queryStrings.json, '{"parameter":[]}');
