@@ -1,4 +1,7 @@
-### 0.1.3-pre
+### 0.1.4-pre
+*
+
+### 0.1.3
 * Fix build trigger error on Jenkins v1.5xx when job requires auth 
 
 ### 0.1.2
