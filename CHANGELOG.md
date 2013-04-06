@@ -1,5 +1,5 @@
 ### 0.1.3-pre
-*
+* Fix build trigger error on Jenkins v1.5xx when job requires auth 
 
 ### 0.1.2
 * Move proxy environment variable handling to bag.http.request and bag.http.proxy
