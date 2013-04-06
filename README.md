@@ -76,7 +76,7 @@ View builds feed of a job:
 
 Monitor build status and notify Ninja Blocks RGB LED device:
 
-    export NINJABLOCKS_TOKEN=<token>
+    export NINJABLOCKS_TOKEN=<token_from_https://a.ninja.is/hacking>
     nestor ninja [job] ["cron_schedule"]
 
 Programmatically:
