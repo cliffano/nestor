@@ -3,7 +3,7 @@ Nestor [![Build Status](https://secure.travis-ci.org/cliffano/nestor.png?branch=
 
 Nestor is a [Jenkins](http://jenkins-ci.org) CLI and Node.js client.
 
-This is handy for those who prefer to touch type on the command line over GUI and mouse clicks on the browser. It also serves as an alternative to Jenkins Java CLI where Nestor has shorter commands and executes faster.
+This is handy for Jenkins users who prefer to touch type on the command line over GUI and mouse clicks on the browser. It also serves as an alternative to Jenkins Java CLI where Nestor has shorter commands and executes faster.
 
 Installation
 ------------
