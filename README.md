@@ -1,6 +1,6 @@
 Nestor [![Build Status](https://secure.travis-ci.org/cliffano/nestor.png?branch=master)](http://travis-ci.org/cliffano/nestor) [![Dependencies Status](https://david-dm.org/cliffano/nestor.png)](http://david-dm.org/cliffano/nestor)
 ------
-<img align="right" src="https://raw.github.com/cliffano/nestor/master/avatar.jpg" alt="Avatar"/>
+<a href="http://en.wikipedia.org/wiki/Nestor_%28Tintin_character%29"><img align="right" src="https://raw.github.com/cliffano/nestor/master/avatar.jpg" alt="Avatar"/></a>
 
 Nestor is a [Jenkins](http://jenkins-ci.org) CLI and Node.js client.
 
