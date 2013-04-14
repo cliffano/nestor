@@ -1,5 +1,11 @@
 {
   "build": "clean lint complexity test coverage",
+  "lint": {
+    "type": "jshint"
+  },
+  "complexity": {
+    "type": "plato"
+  },
   "test": {
     "type": "buster"
   },
