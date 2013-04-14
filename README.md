@@ -1,5 +1,6 @@
 Nestor [![Build Status](https://secure.travis-ci.org/cliffano/nestor.png?branch=master)](http://travis-ci.org/cliffano/nestor) [![Dependencies Status](https://david-dm.org/cliffano/nestor.png)](http://david-dm.org/cliffano/nestor)
 ------
+<img align="right" src="https://raw.github.com/cliffano/nestor/master/avatar.jpg" alt="Avatar"/>
 
 Nestor is a [Jenkins](http://jenkins-ci.org) CLI and Node.js client.
 
@@ -105,3 +106,10 @@ Set Jenkins URL in JENKINS_URL environment variable (defaults to http://localhos
     set JENKINS_URL=http://user:pass@host:port/path
 
 If http_proxy environment variable is set, then Nestor will automatically use it.
+
+Colophon
+--------
+
+* [Jenkins Build Status On Ninja Blocks RGB LED](http://blog.cliffano.com/2013/04/08/jenkins-build-status-on-ninja-blocks-rgb-led/)
+* [Nestor – A Faster And Simpler CLI For Jenkins](http://blog.cliffano.com/2011/10/22/nestor-a-faster-and-simpler-cli-for-jenkins/)
+* [Using Node.js To Discover Jenkins On The Network](http://blog.cliffano.com/2011/08/04/using-nodejs-to-discover-jenkins-on-the-network/)
