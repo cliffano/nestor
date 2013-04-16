@@ -1,7 +1,7 @@
 {
   "commands": {
     "build": {
-      "desc": "Trigger a build with optional parameters\nUsage: nestor build [-c/--console] <job> [\"param1=value1&param2=value2\"]",
+      "desc": "Trigger a build with optional parameters\nUsage: nestor build [-c/--console] [-p/--pending <pending>] <job> [\"param1=value1&param2=value2\"]",
       "options": [
         { "arg": "-c, --console", "desc": "Display console output of the triggered build progress" },
         { "arg": "-p, --pending <pending>", "desc": "Pending time (in milliseconds) before displaying console output, default: 5000" }
@@ -39,6 +39,13 @@
     },
     "ninja": {
       "desc": "Display latest build status on Ninja Blocks RGB LED\nUsage: NINJABLOCKS_TOKEN=<token> nestor ninja [job] [cron_schedule]"
+    },
+    "buildlight": {
+      "desc": "Display latest build status on Delcom USB Visual Indicator\nUsage: nestor buildlight [job] [cron_schedule]",
+      "options": [
+        { "arg": "-s, --scheme <scheme>", "desc": "Comma-separated colour scheme, default: red,green,blue" },
+        { "arg": "-u, --usbled <usbled>", "desc": "Path to usbled installation, if not specified then it will try to find a usbled installation at /sys/bus/usb/drivers/usbled/" }
+      ]
     }
   }
 }
