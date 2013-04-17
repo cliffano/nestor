@@ -1,4 +1,7 @@
-### 0.1.4-pre
+### 0.1.5-pre
+*
+
+### 0.1.4
 * Add buildlight command
 * Ninja command's job and schedule are now flags since they are optional
 
