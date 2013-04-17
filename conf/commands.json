@@ -38,12 +38,18 @@
       "desc": "Retrieve Jenkins feed\nUsage: nestor feed [job]"
     },
     "ninja": {
-      "desc": "Display latest build status on Ninja Blocks RGB LED\nUsage: NINJABLOCKS_TOKEN=<token> nestor ninja [job] [cron_schedule]"
+      "desc": "Display latest build status on Ninja Blocks RGB LED\nUsage: NINJABLOCKS_TOKEN=<token> nestor [-j/--job <jobName>] [-s/--schedule <schedule>] [-c/--scheme <scheme>] [-u/--usbled <usbled>] ninja",
+      "options": [
+        { "arg": "-j, --job <jobName>", "desc": "Jenkins job name, unspecified means all jobs" },
+        { "arg": "-s, --schedule <schedule>", "desc": "Cron scheduling definition, default: 0 * * * * * (every minute)" }
+      ]
     },
     "buildlight": {
-      "desc": "Display latest build status on Delcom USB Visual Indicator\nUsage: nestor buildlight [job] [cron_schedule]",
+      "desc": "Display latest build status on Delcom USB Visual Indicator\nUsage: nestor [-j/--job <jobName>] [-s/--schedule <schedule>] [-c/--scheme <scheme>] [-u/--usbled <usbled>] buildlight",
       "options": [
-        { "arg": "-s, --scheme <scheme>", "desc": "Comma-separated colour scheme, default: red,green,blue" },
+        { "arg": "-j, --job <jobName>", "desc": "Jenkins job name, unspecified means all jobs" },
+        { "arg": "-s, --schedule <schedule>", "desc": "Cron scheduling definition, default: 0 * * * * * (every minute)" },
+        { "arg": "-c, --scheme <scheme>", "desc": "Comma-separated colour scheme, default: red,green,blue" },
         { "arg": "-u, --usbled <usbled>", "desc": "Path to usbled installation, if not specified then it will try to find a usbled installation at /sys/bus/usb/drivers/usbled/" }
       ]
     }
