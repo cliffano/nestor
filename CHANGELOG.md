@@ -1,5 +1,5 @@
 ### 0.1.5-pre
-*
+* Change buildlight status colour mapping, unknown displays blue, warn displays all colours to simulate yellow
 
 ### 0.1.4
 * Add buildlight command

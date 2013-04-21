@@ -28,9 +28,17 @@ buster.testCase('buildlight - notify', {
     var buildLight = new BuildLight({ scheme: ['red', 'green', 'blue'], usbled: '/some/usbled/path/' });
     buildLight.notify('OK');
   },
-  'should switch all colours on on build light device when notification status is unsupported': function () {
+  'should switch all colours on on build light device when notification status is warn': function () {
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/red', 1);
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/green', 1);
+    this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/blue', 1);
+    var buildLight = new BuildLight({ scheme: ['red', 'green', 'blue'], usbled: '/some/usbled/path/' });
+    buildLight.notify('WARN');
+  },
+  'should switch all colours off then switch blue colour on on build light device when status is unknown': function () {
+    this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/red', 0);
+    this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/green', 0);
+    this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/blue', 0);
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/blue', 1);
     var buildLight = new BuildLight({ scheme: ['red', 'green', 'blue'], usbled: '/some/usbled/path/' });
     buildLight.notify('SOMEUNKNOWNSTATUS');
