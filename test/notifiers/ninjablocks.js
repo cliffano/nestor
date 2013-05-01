@@ -1,5 +1,5 @@
 var buster = require('buster'),
-  NinjaBlocks = require('../lib/ninjablocks'),
+  NinjaBlocks = require('../../lib/notifiers/ninjablocks'),
   ninjaBlocks = require('ninja-blocks');
 
 buster.testCase('ninjablocks - ninjablocks', {

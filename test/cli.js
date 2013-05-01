@@ -1,10 +1,10 @@
 var bag = require('bagofholding'),
   buster = require('buster'),
-  BuildLight = require('../lib/buildlight'),
+  BuildLight = require('../lib/notifiers/buildlight'),
   cli = require('../lib/cli'),
   irc = require('../lib/irc'),
   Jenkins = new require('../lib/jenkins'),
-  NinjaBlocks = require('../lib/ninjablocks');
+  NinjaBlocks = require('../lib/notifiers/ninjablocks');
 
 buster.testCase('cli - exec', {
   'should contain commands with actions': function (done) {

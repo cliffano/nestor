@@ -1,5 +1,5 @@
 var buster = require('buster'),
-  BuildLight = require('../lib/buildlight'),
+  BuildLight = require('../../lib/notifiers/buildlight'),
   _BuildLight = require('buildlight'),
   fs = require('fs');
 
