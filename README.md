@@ -73,7 +73,7 @@ View builds feed of all jobs:
 
 View builds feed of a job:
 
-    nestor feed <job>
+    nestor --job <job> feed
 
 Monitor build status and notify Ninja Blocks RGB LED device:
 
