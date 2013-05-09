@@ -708,11 +708,11 @@ buster.testCase('jenkins - monitor', {
     var jenkins = new Jenkins('http://localhost:8080');
     jenkins.feed = function (opts, cb) {
       assert.equals(opts.jobName, 'somejob');
-      cb(null, [{ title: 'somejob 1 (stable)' }, { title: 'somejob 2 (aborted)' }]);
+      cb(null, [{ title: 'somejob 1 #100 (stable)' }, { title: 'somejob 2 #100 (aborted)' }]);
     };
     jenkins.monitor({ jobName: 'somejob', schedule: '*/30 * * * * *' }, function (err, result) {
       assert.isNull(err);
-      assert.equals(result, 'OK');
+      assert.equals(result, 'ABORTED');
     });
   },
   'should call notify callback when there is no article but there is no monitoring error as well': function (done) {
@@ -761,6 +761,44 @@ buster.testCase('jenkins - _colorStatus', {
   'should uppercase status when it is unsupported': function () {
     var jenkins = new Jenkins();
     assert.equals(jenkins._colorStatus('unknown'), 'UNKNOWN');
+  }
+});
+
+buster.testCase('jenkins - _feedStatus', {
+  setUp: function () {
+    this.jenkins = new Jenkins();
+  },
+  'should return ok status when there is a fail but not on the latest build on any of the jobs': function () {
+    var feed = [
+      { title: 'somejob1 #123 (back to normal)' },
+      { title: 'somejob2 #333 (stable)' },
+      { title: 'somejob1 #122 (broken for a long time)' }
+    ];
+    assert.equals(this.jenkins._feedStatus(feed), 'OK');
+  },
+  'should return fail status when there is a fail on the latest build of one of the jobs': function () {
+    var feed = [
+      { title: 'somejob1 #123 (broken since this build)' },
+      { title: 'somejob2 #333 (stable)' },
+      { title: 'somejob1 #122 (stable)' }
+    ];
+    assert.equals(this.jenkins._feedStatus(feed), 'FAIL');
+  },
+  'should return warn status when there is a warn on the latest build of one of the jobs but there is no fail': function () {
+    var feed = [
+      { title: 'somejob1 #123 (23 tests are still failing)' },
+      { title: 'somejob2 #333 (stable)' },
+      { title: 'somejob1 #122 (11 tests are still failing)' }
+    ];
+    assert.equals(this.jenkins._feedStatus(feed), 'WARN');
+  },
+  'should return null status when latest build status of all jobs are neither ok, fail, or warn': function () {
+    var feed = [
+      { title: 'somejob1 #123 (foobar)' },
+      { title: 'somejob2 #333 (foobar)' },
+      { title: 'somejob1 #122 (foobar)' }
+    ];
+    assert.isNull(this.jenkins._feedStatus(feed));
   }
 });
 

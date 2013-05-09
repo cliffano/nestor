@@ -2,6 +2,7 @@
 * Change buildlight status colour mapping, unknown displays blue, warn displays all colours to simulate yellow
 * Add view monitoring support
 * Change feed jobName and viewName passing to use flags instead of args
+* Change feed status handling to check for latest status of all jobs in the feed
 
 ### 0.1.4
 * Add buildlight command
