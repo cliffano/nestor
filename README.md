@@ -109,7 +109,7 @@ Set Jenkins URL in JENKINS_URL environment variable (defaults to http://localhos
 
     set JENKINS_URL=http://user:pass@host:port/path
 
-Instead of using a password, you can use Jenkins API token instead. Jenkins API token can be found on user configuration page.
+As an alternative to password, you can use Jenkins API token instead. Jenkins API token can be found on user configuration page.
 
 If http_proxy or https_proxy environment variable is set, then Nestor will automatically use it.
 
