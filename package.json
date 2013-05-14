@@ -29,21 +29,21 @@
     "test": "./test"
   },
   "dependencies": {
-    "async": "0.2.6",
-    "bagofholding": "0.1.3",
+    "async": "0.2.8",
+    "bagofholding": "0.1.7",
     "buildlight": "0.0.1",
     "colors": "0.6.0-1",
     "cron": "1.0.1",
-    "feedparser": "0.14.0",
+    "feedparser": "0.15.3",
     "irc": "0.3.6",
     "ninja-blocks": "0.1.3",
-    "request": "2.16.6",
+    "request": "2.21.0",
     "underscore": "1.4.4",
-    "xml2js": "0.2.6"
+    "xml2js": "0.2.7"
   },
   "devDependencies": {
     "buster": "0.6.12",
-    "shelljs": "0.1.2"
+    "shelljs": "0.1.4"
   },
   "scripts": {},
   "engines": {
