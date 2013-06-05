@@ -33,6 +33,7 @@
     "bagofholding": "0.1.7",
     "buildlight": "0.0.1",
     "colors": "0.6.0-1",
+    "commander": "1.1.1",
     "cron": "1.0.1",
     "feedparser": "0.15.3",
     "irc": "0.3.6",

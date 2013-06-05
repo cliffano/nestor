@@ -1,4 +1,8 @@
 {
+  "options": [
+    { "arg": "--url <url>", "desc": "Jenkins URL" },
+    { "arg": "--interactive", "desc": "Interactive mode, username and password will be prompted" }
+  ],
   "commands": {
     "build": {
       "desc": "Trigger a build with optional parameters\nUsage: nestor build [-c/--console] [-p/--pending <pending>] <job> [\"param1=value1&param2=value2\"]",
