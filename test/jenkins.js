@@ -1,4 +1,4 @@
-var bag = require('bagofholding'),
+var bag = require('bagofrequest'),
   buster = require('buster'),
   cron = require('cron'),
   dgram = require('dgram'),
@@ -15,7 +15,7 @@ buster.testCase('jenkins - jenkins', {
       assert.equals(url, 'http://jenkins-ci.org:8080/job/job1/build');
       opts.handlers[401]({ statusCode: 401 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://jenkins-ci.org:8080');
     jenkins.build('job1', undefined, function (err, result) {
       done();
@@ -26,7 +26,7 @@ buster.testCase('jenkins - jenkins', {
       assert.equals(url, 'http://localhost:8080/job/job1/build');
       opts.handlers[401]({ statusCode: 401 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest, proxy: undefined });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins();
     jenkins.build('job1', undefined, function (err, result) {
       done();
@@ -37,7 +37,7 @@ buster.testCase('jenkins - jenkins', {
       assert.equals(url, 'http://localhost:8080/job/job1/build');
       opts.handlers[401]({ statusCode: 401 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins();
     jenkins.build('job1', undefined, function (err, result) {
       done();
@@ -47,7 +47,7 @@ buster.testCase('jenkins - jenkins', {
     var mockRequest = function (method, url, opts, cb) {
       opts.handlers[401]({ statusCode: 401 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.build('job1', undefined, function (err, result) {
       assert.equals(err.message, 'Authentication failed - incorrect username and/or password in JENKINS_URL');
@@ -58,7 +58,7 @@ buster.testCase('jenkins - jenkins', {
     var mockRequest = function (method, url, opts, cb) {
       opts.handlers[403]({ statusCode: 403 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.build('job1', undefined, function (err, result) {
       assert.equals(err.message, 'Jenkins requires authentication - set username and password in JENKINS_URL');
@@ -76,7 +76,7 @@ buster.testCase('jenkins - build', {
       assert.equals(opts.queryStrings.json, '{"parameter":[]}');
       opts.handlers[404]({ statusCode: 404 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.build('job1', undefined, function (err, result) {
       assert.equals(err.message, 'Job job1 does not exist');
@@ -92,7 +92,7 @@ buster.testCase('jenkins - build', {
       assert.equals(opts.queryStrings.json, '{"parameter":[]}');
       opts.handlers[405]({ statusCode: 405 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.build('job1', undefined, function (err, result) {
       assert.equals(err.message, 'Job job1 requires build parameters');
@@ -108,7 +108,7 @@ buster.testCase('jenkins - build', {
       assert.equals(opts.queryStrings.json, '{"parameter":[]}');
       opts.handlers[200]({ statusCode: 200 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.build('job1', undefined, function (err, result) {
       assert.equals(err, undefined);
@@ -124,7 +124,7 @@ buster.testCase('jenkins - build', {
       assert.equals(opts.queryStrings.json, '{"parameter":[{"name":"foo","value":"bar"},{"name":"abc","value":"xyz"}]}');
       opts.handlers[200]({ statusCode: 200 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.build('job1', 'foo=bar&abc=xyz', function (err, result) {
       assert.equals(err, undefined);
@@ -144,7 +144,7 @@ buster.testCase('jenkins - consoleStream', {
       assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
       opts.handlers[404]({ statusCode: 404 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.consoleStream('job1', function (err, result) {
       assert.equals(err.message, 'Job job1 does not exist');
@@ -158,7 +158,7 @@ buster.testCase('jenkins - consoleStream', {
       assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
       opts.handlers[200]({ statusCode: 200, body: 'Job started by Foo', headers: { 'x-more-data': 'false' } }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080'),
       read = [];
     jenkins.consoleStream('job1', function (err, result) {
@@ -175,7 +175,7 @@ buster.testCase('jenkins - consoleStream', {
       assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
       opts.handlers[200]({ statusCode: 200, body: undefined, headers: { 'x-more-data': 'false' } }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');
     jenkins.consoleStream('job1', function (err, result) {
       assert.equals(err, undefined);
@@ -203,7 +203,8 @@ buster.testCase('jenkins - consoleStream', {
       body: 'Console output 2',
       headers: { 'x-more-data': 'false', 'x-text-size': 20 }
     });
-    this.stub(bag, 'http', { request: mockBagRequest, proxy: function(url) { return 'http://someproxy'; }});
+    this.stub(bag, 'request', mockBagRequest);
+    this.stub(bag, 'proxy', function (url) { return 'http://someproxy'; });
     var jenkins = new Jenkins('http://localhost:8080'),
       read = [];
     jenkins.consoleStream('job1', { interval: 1 }, function (err, result) {
@@ -230,7 +231,8 @@ buster.testCase('jenkins - consoleStream', {
       statusCode: 200,
       headers: { 'x-more-data': 'false', 'x-text-size': 20 }
     });
-    this.stub(bag, 'http', { request: mockBagRequest, proxy: function () { return undefined; }});
+    this.stub(bag, 'request', mockBagRequest);
+    this.stub(bag, 'proxy', function () { return undefined; });
     var jenkins = new Jenkins('http://localhost:8080'),
       read = [];
     jenkins.consoleStream('job1', { interval: 1 }, function (err, result) {
@@ -253,7 +255,8 @@ buster.testCase('jenkins - consoleStream', {
     // the subsequent request uses request module
     var mockRequest = this.mock(request);
     mockRequest.expects('get').once().callsArgWith(1, new Error('someerror'));
-    this.stub(bag, 'http', { request: mockBagRequest, proxy: function () { return undefined; }});
+    this.stub(bag, 'request', mockBagRequest);
+    this.stub(bag, 'proxy', function () { return undefined; });
     var jenkins = new Jenkins('http://localhost:8080'),
       read = [];
     jenkins.consoleStream('job1', { interval: 1 }, function (err, result) {
@@ -290,7 +293,7 @@ buster.testCase('jenkins - stop', {
       assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/stop');
       opts.handlers[404]({ statusCode: 404 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.stop('job1', function (err, result) {
       assert.equals(err.message, 'Job job1 does not exist');
@@ -304,7 +307,7 @@ buster.testCase('jenkins - stop', {
       assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/stop');
       opts.handlers[200]({ statusCode: 200 }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.stop('job1', function (err, result) {
       assert.isNull(err);
@@ -321,7 +324,7 @@ buster.testCase('jenkins - dashboard', {
       assert.equals(url, 'http://localhost:8080/api/json');
       opts.handlers[200]({ statusCode: 200, body: '{ "jobs": [] }' }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.dashboard(function (err, result) {
       assert.isNull(err);
@@ -343,7 +346,7 @@ buster.testCase('jenkins - dashboard', {
         ]}
       )}, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.dashboard(function (err, result) {
       assert.isNull(err);
@@ -372,7 +375,7 @@ buster.testCase('jenkins - dashboard', {
         ]}
       )}, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.dashboard(function (err, result) {
       assert.isNull(err);
@@ -394,7 +397,7 @@ buster.testCase('jenkins - dashboard', {
         ]}
       )}, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.dashboard(function (err, result) {
       assert.isNull(err);
@@ -514,7 +517,7 @@ buster.testCase('jenkins - executor', {
         ]
       })}, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.executor(function (err, result) {
       assert.isNull(err);
@@ -555,7 +558,7 @@ buster.testCase('jenkins - job', {
         ]
       })}, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.job('job1', function (err, result) {
       assert.isNull(err);
@@ -571,7 +574,7 @@ buster.testCase('jenkins - job', {
       assert.equals(url, 'http://localhost:8080/job/job1/api/json');
       opts.handlers[404]({ statusCode: 404, body: 'somenotfounderror' }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.job('job1', function (err, result) {
       assert.equals(err.message, 'Job job1 does not exist');
@@ -593,7 +596,7 @@ buster.testCase('jenkins - queue', {
         ]
       })}, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.queue(function (err, result) {
       assert.isNull(err);
@@ -611,7 +614,7 @@ buster.testCase('jenkins - queue', {
         items: []
       })}, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.queue(function (err, result) {
       assert.isNull(err);
@@ -628,7 +631,7 @@ buster.testCase('jenkins - version', {
       assert.equals(url, 'http://localhost:8080');
       opts.handlers[200]({ headers: {} }, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.version(function (err, result) {
       assert.equals(err.message, 'Not a Jenkins server');
@@ -642,7 +645,7 @@ buster.testCase('jenkins - version', {
       assert.equals(url, 'http://localhost:8080');
       opts.handlers[200]({ statusCode: 200, headers: { 'x-jenkins': '1.464' }}, cb);
     };
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.version(function (err, result) {
       assert.isNull(err);

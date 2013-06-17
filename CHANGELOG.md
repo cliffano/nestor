@@ -1,6 +1,7 @@
 ### 0.1.6-pre
 * Add url flag
 * Add interactive flag
+* Change default timeout from 2secs to 30secs
 
 ### 0.1.5
 * Change buildlight status colour mapping, unknown displays blue, warn displays all colours to simulate yellow

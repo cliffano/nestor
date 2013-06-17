@@ -31,6 +31,7 @@
   "dependencies": {
     "async": "0.2.8",
     "bagofholding": "0.1.7",
+    "bagofrequest": "0.0.3",
     "buildlight": "0.0.1",
     "colors": "0.6.0-1",
     "commander": "1.1.1",
