@@ -1,4 +1,7 @@
-### 0.1.6-pre
+### 0.1.7-pre
+*
+
+### 0.1.6
 * Add url flag
 * Add interactive flag
 * Change default timeout from 2secs to 30secs
