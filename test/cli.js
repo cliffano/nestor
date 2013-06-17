@@ -1,4 +1,4 @@
-var bag = require('bagofholding'),
+var bag = require('bagofcli'),
   buster = require('buster'),
   BuildLight = require('../lib/notifiers/buildlight'),
   cli = require('../lib/cli'),
@@ -25,7 +25,7 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands.buildlight.action);
       done();
     };
-    this.stub(bag, 'cli', { command: mockCommand });
+    this.stub(bag, 'command', mockCommand);
     cli.exec();
   }
 });
@@ -36,11 +36,8 @@ buster.testCase('cli - build', {
     this.mockProcess = this.mock(process);
   },
   'should log job started successfully when exec build is called and job exists': function () {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.build.action('job1');
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.build.action('job1');
     });
     this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'job1');
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -52,11 +49,8 @@ buster.testCase('cli - build', {
     cli.exec();
   },
   'should log job started successfully when exec build is called with ': function () {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.build.action('job1', 'foo1=bar1&foo2&bar2');
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.build.action('job1', 'foo1=bar1&foo2&bar2');
     });
     this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'job1');
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -68,11 +62,8 @@ buster.testCase('cli - build', {
     cli.exec();
   },
   'should log job not found error when exec build is called and job does not exist': function () {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.build.action('job1');
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.build.action('job1');
     });
     this.mockConsole.expects('error').once().withExactArgs('Job not found');
     this.mockProcess.expects('exit').once().withExactArgs(1);
@@ -84,11 +75,8 @@ buster.testCase('cli - build', {
     cli.exec();
   },
   'should follow build with console command when build is called with console flag': function (done) {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.build.action('job2', 'foo1=bar1&foo2=bar2', { console: true, pending: 1 });
-      },
-      exit: bag.cli.exit
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.build.action('job2', 'foo1=bar1&foo2=bar2', { console: true, pending: 1 });
     });
     this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'job2');
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -107,11 +95,8 @@ buster.testCase('cli - build', {
     cli.exec();
   },
   'should pass error when error occurs after build is called with console flag': function () {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.build.action('job1', { console: true, pending: 1 });
-      },
-      exit: bag.cli.exit
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.build.action('job1', { console: true, pending: 1 });
     });
     this.mockConsole.expects('error').once().withExactArgs('Job not found');
     this.mockProcess.expects('exit').once().withExactArgs(1);
@@ -128,11 +113,8 @@ buster.testCase('cli - console', {
   setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.console.action('job1');
-      },
-      exit: bag.cli.exit
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.console.action('job1');
     });
   },
   'should pass job name when exec console is called': function () {
@@ -158,11 +140,8 @@ buster.testCase('cli - stop', {
   setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.stop.action('job1');
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.stop.action('job1');
     });
   },
   'should log job started successfully when exec stop is called  and job exists': function () {
@@ -189,11 +168,8 @@ buster.testCase('cli - dashboard', {
   setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.dashboard.action();
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.dashboard.action();
     });
   },
   'should log jobs status and name when exec dashboard is called and Jenkins result has jobs': function () {
@@ -224,11 +200,8 @@ buster.testCase('cli - discover', {
     this.mockProcess = this.mock(process);
   },
   'should log version and url when exec discover is called and there is a running Jenkins instance': function () {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.discover.action();
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.discover.action();
     });
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'http://localhost:8080/');
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -246,11 +219,8 @@ buster.testCase('cli - discover', {
     cli.exec();
   },
   'should log version and url when exec discover is called with specified host': function () {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.discover.action('somehost');
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.discover.action('somehost');
     });
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'http://localhost:8080/');
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -268,11 +238,8 @@ buster.testCase('cli - discover', {
     cli.exec();
   },
   'should log host instead of url when exec discover result does not include any url': function () {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.discover.action();
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.discover.action();
     });
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'localhost');
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -294,11 +261,8 @@ buster.testCase('cli - executor', {
   setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.executor.action();
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.executor.action();
     });
   },
   'should log executor status when exec executor is called and there are some executors': function () {
@@ -337,11 +301,8 @@ buster.testCase('cli - job', {
   setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.job.action('job1');
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.job.action('job1');
     });
   },
   'should log job name, status, and reports when job exists': function () {
@@ -386,11 +347,8 @@ buster.testCase('cli - queue', {
   setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.queue.action();
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.queue.action();
     });
   },
   'should log queued job names when exec queue is called and there are some queued jobs': function () {
@@ -416,11 +374,8 @@ buster.testCase('cli - ver', {
   setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.ver.action();
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.ver.action();
     });
   },
   'should log version when exec ver is called and version exists': function () {
@@ -448,21 +403,15 @@ buster.testCase('cli - irc', {
   'should start irc bot with undefined nick when irc command is called with host and channel args only': function () {
     // nick argument is an object because commander passes the whole arg object when cli only has host and channel args
     this.mockIrc.expects('start').once().withExactArgs('somehost', 'somechannel', undefined);
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.irc.action('somehost', 'somechannel', {});
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.irc.action('somehost', 'somechannel', {});
     });
     cli.exec();
   },
   'should start irc bot with nick option when irc command is called with host, channel, and nick args only': function () {
     this.mockIrc.expects('start').once().withExactArgs('somehost', 'somechannel', 'somenick');
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.irc.action('somehost', 'somechannel', 'somenick');
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.irc.action('somehost', 'somechannel', 'somenick');
     });
     cli.exec();
   }
@@ -474,11 +423,8 @@ buster.testCase('cli - feed', {
     this.mockProcess = this.mock(process);
   },
   'should log article titles when exec feed is called and articles exist': function () {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.feed.action({ job: 'somejob' });
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.feed.action({ job: 'somejob' });
     });
     this.mockConsole.expects('log').once().withExactArgs('some title 1');
     this.mockConsole.expects('log').once().withExactArgs('some title 2');
@@ -491,11 +437,8 @@ buster.testCase('cli - feed', {
     cli.exec();
   },
   'should log nothing when exec feed is called and no article exists': function () {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.feed.action();
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.feed.action();
     });
     this.mockProcess.expects('exit').once().withExactArgs(0);
     this.stub(Jenkins.prototype, 'feed', function (opts, cb) {
@@ -506,11 +449,8 @@ buster.testCase('cli - feed', {
     cli.exec();
   },
   'should log error when exec feed is called an error occurs': function () {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.feed.action({ job: 'somejob' });
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.feed.action({ job: 'somejob' });
     });
     this.mockConsole.expects('error').once().withExactArgs('some error');
     this.mockProcess.expects('exit').once().withExactArgs(1);
@@ -528,11 +468,8 @@ buster.testCase('cli - ninja', {
     this.mockConsole = this.mock(console);
   },
   'should log monitoring error': function () {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.ninja.action({ job: 'somejob', schedule: '* * * * * *' });
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.ninja.action({ job: 'somejob', schedule: '* * * * * *' });
     });
     this.mockConsole.expects('error').once().withExactArgs('some error');
     this.stub(Jenkins.prototype, 'monitor', function (opts, cb) {
@@ -544,11 +481,8 @@ buster.testCase('cli - ninja', {
     cli.exec();
   },
   'should notify ninjablocks when there is no monitoring error': function (done) {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.ninja.action({ job: 'somejob', schedule: '* * * * * *' });
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.ninja.action({ job: 'somejob', schedule: '* * * * * *' });
     });
     this.stub(Jenkins.prototype, 'monitor', function (opts, cb) {
       assert.equals(opts.jobName, 'somejob');
@@ -563,11 +497,8 @@ buster.testCase('cli - ninja', {
     cli.exec();
   },
   'should set job and schedule to null when there is no string argument': function (done) {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.ninja.action();
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.ninja.action();
     });
     this.stub(Jenkins.prototype, 'monitor', function (opts, cb) {
       assert.equals(opts.jobName, undefined);
@@ -588,11 +519,8 @@ buster.testCase('cli - buildlight', {
     this.mockConsole = this.mock(console);
   },
   'should notify buildlight when there is no monitoring error': function (done) {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.buildlight.action({ job: 'somejob', schedule: '* * * * * *', scheme: 'red,green,blue', usbled: '/some/usbled/path' });
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.buildlight.action({ job: 'somejob', schedule: '* * * * * *', scheme: 'red,green,blue', usbled: '/some/usbled/path' });
     });
     this.stub(Jenkins.prototype, 'monitor', function (opts, cb) {
       assert.equals(opts.jobName, 'somejob');
@@ -607,11 +535,8 @@ buster.testCase('cli - buildlight', {
     cli.exec();
   },
   'should monitor using default settings': function (done) {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.buildlight.action({});
-      },
-      exitCb: bag.cli.exitCb
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.buildlight.action({});
     });
     this.stub(Jenkins.prototype, 'monitor', function (opts, cb) {
       assert.equals(opts.jobName, undefined);
