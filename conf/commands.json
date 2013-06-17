@@ -5,48 +5,48 @@
   ],
   "commands": {
     "build": {
-      "desc": "Trigger a build with optional parameters\nUsage: nestor build [-c/--console] [-p/--pending <pending>] <job> [\"param1=value1&param2=value2\"]",
+      "desc": "Trigger a build with optional parameters",
       "options": [
         { "arg": "-c, --console", "desc": "Display console output of the triggered build progress" },
         { "arg": "-p, --pending <pending>", "desc": "Pending time (in milliseconds) before displaying console output, default: 5000" }
       ]
     },
     "console": {
-      "desc": "Display latest build console output\nUsage: nestor console <job>"
+      "desc": "Display latest build console output"
     },
     "stop": {
-      "desc": "Stop the currently running build\nUsage: nestor stop <job>"
+      "desc": "Stop the currently running build"
     },
     "dashboard": {
-      "desc": "View status of all jobs\nUsage: nestor dashboard"
+      "desc": "View status of all jobs"
     },
     "discover": {
-      "desc": "Discover Jenkins instance running on a specified host\nUsage: nestor discover <host>"
+      "desc": "Discover Jenkins instance running on a specified host"
     },
     "executor": {
-      "desc": "View executors' status (running builds)\nUsage: nestor executor"
+      "desc": "View executors' status (running builds)"
     },
     "job": {
-      "desc": "View job status reports\nUsage: nestor job <job>"
+      "desc": "View job status reports"
     },
     "queue": {
-      "desc": "View queued jobs\nUsage: nestor queue"
+      "desc": "View queued jobs"
     },
     "ver": {
-      "desc": "View Jenkins version number\nUsage: nestor ver"
+      "desc": "View Jenkins version number"
     },
     "irc": {
-      "desc": "Start an IRC bot\nUsage: nestor irc <host> <channel> [nick]"
+      "desc": "Start an IRC bot"
     },
     "feed": {
-      "desc": "Retrieve Jenkins feed\nUsage: nestor feed",
+      "desc": "Retrieve Jenkins feed",
       "options": [
         { "arg": "-j, --job <job>", "desc": "Jenkins job name" },
         { "arg": "-v, --view <view>", "desc": "Jenkins view name" }
       ]
     },
     "ninja": {
-      "desc": "Display latest build status on Ninja Blocks RGB LED\nUsage: NINJABLOCKS_TOKEN=<token> nestor [-j/--job <jobName>] [-s/--schedule <schedule>] [-c/--scheme <scheme>] [-u/--usbled <usbled>] ninja",
+      "desc": "Display latest build status on Ninja Blocks RGB LED",
       "options": [
         { "arg": "-j, --job <job>", "desc": "Jenkins job name" },
         { "arg": "-v, --view <view>", "desc": "Jenkins view name" },
@@ -54,7 +54,7 @@
       ]
     },
     "buildlight": {
-      "desc": "Display latest build status on Delcom USB Visual Indicator\nUsage: nestor [-j/--job <jobName>] [-s/--schedule <schedule>] [-c/--scheme <scheme>] [-u/--usbled <usbled>] buildlight",
+      "desc": "Display latest build status on Delcom USB Visual Indicator",
       "options": [
         { "arg": "-j, --job <job>", "desc": "Jenkins job name" },
         { "arg": "-v, --view <view>", "desc": "Jenkins view name" },
