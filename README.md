@@ -1,4 +1,4 @@
-Nestor [![Build Status](https://secure.travis-ci.org/cliffano/nestor.png?branch=master)](http://travis-ci.org/cliffano/nestor) [![Dependencies Status](https://david-dm.org/cliffano/nestor.png)](http://david-dm.org/cliffano/nestor)
+Nestor [![Build Status](https://secure.travis-ci.org/cliffano/nestor.png?branch=master)](http://travis-ci.org/cliffano/nestor) [![Dependencies Status](https://david-dm.org/cliffano/nestor.png)](http://david-dm.org/cliffano/nestor) [![Published Version](https://badge.fury.io/js/nestor.png)](http://badge.fury.io/js/nestor)
 ------
 <a href="http://en.wikipedia.org/wiki/Nestor_%28Tintin_character%29"><img align="right" src="https://raw.github.com/cliffano/nestor/master/avatar.jpg" alt="Avatar"/></a>
 
