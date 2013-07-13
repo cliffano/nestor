@@ -1,5 +1,5 @@
 ### 0.1.7-pre
-*
+* Fix unhandled response 201 on Jenkins v1.5xx when job is created
 
 ### 0.1.6
 * Add url flag

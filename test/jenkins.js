@@ -131,6 +131,22 @@ buster.testCase('jenkins - build', {
       assert.equals(result, undefined);
       done();
     });
+  },
+  'should handle response 201 when job is created': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'post');
+      assert.equals(url, 'http://localhost:8080/job/job1/build');
+      assert.equals(opts.queryStrings.token, 'nestor');
+      assert.equals(opts.queryStrings.json, '{"parameter":[{"name":"foo","value":"bar"},{"name":"abc","value":"xyz"}]}');
+      opts.handlers[201]({ statusCode: 201 }, cb);
+    };
+    this.stub(bag, 'request', mockRequest);
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.build('job1', 'foo=bar&abc=xyz', function (err, result) {
+      assert.equals(err, undefined);
+      assert.equals(result, undefined);
+      done();
+    });
   }
 });
 
