@@ -24,7 +24,7 @@ Trigger a parameterised build:
 
 Trigger a build followed by console output:
 
-    nestor build --console  <job>
+    nestor build --console <job>
 
 Trigger a build, wait for 5 seconds, then display console output:
 (handy for builds that don't immediately display anything to console output)
@@ -109,9 +109,17 @@ Set Jenkins URL in JENKINS_URL environment variable (defaults to http://localhos
 
     set JENKINS_URL=http://user:pass@host:port/path
 
-As an alternative to password, you can use Jenkins API token instead. Jenkins API token can be found on user configuration page.
+As an alternative to password, you can use Jenkins API token instead. Jenkins API token can be found on Jenkins user configuration page.
 
 If http_proxy or https_proxy environment variable is set, then Nestor will automatically use it.
+
+If you want authentication details to be prompted interactively:
+
+    JENKINS_URL=http://host:port/path nestor --interactive build job
+
+Jenkins URL can also be specified as an arg:
+
+    nestor --url http://user:pass@host:port/path dashboard
 
 Colophon
 --------

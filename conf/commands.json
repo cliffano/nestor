@@ -9,6 +9,14 @@
       "options": [
         { "arg": "-c, --console", "desc": "Display console output of the triggered build progress" },
         { "arg": "-p, --pending <pending>", "desc": "Pending time (in milliseconds) before displaying console output, default: 5000" }
+      ],
+      "examples": [
+        "nestor build job \"param1=value1&param2=value2\"",
+        "nestor build --console job",
+        "nestor build --pending 5000 --console job",
+        "JENKINS_URL=http://host:8080 nestor build --interactive job",
+        "JENKINS_URL=http://host:8080 nestor build job",
+        "nestor build --url http://host:8080 job"
       ]
     },
     "console": {
@@ -36,13 +44,20 @@
       "desc": "View Jenkins version number"
     },
     "irc": {
-      "desc": "Start an IRC bot"
+      "desc": "Start an IRC bot",
+      "examples": [
+        "nestor irc host channel nick"
+      ]
     },
     "feed": {
       "desc": "Retrieve Jenkins feed",
       "options": [
         { "arg": "-j, --job <job>", "desc": "Jenkins job name" },
         { "arg": "-v, --view <view>", "desc": "Jenkins view name" }
+      ],
+      "examples": [
+        "nestor --job job feed",
+        "nestor --view view feed"
       ]
     },
     "ninja": {
@@ -51,6 +66,9 @@
         { "arg": "-j, --job <job>", "desc": "Jenkins job name" },
         { "arg": "-v, --view <view>", "desc": "Jenkins view name" },
         { "arg": "-s, --schedule <schedule>", "desc": "Cron scheduling definition, default: 0 * * * * * (every minute)" }
+      ],
+      "examples": [
+        "export NINJABLOCKS_TOKEN=token nestor ninja"
       ]
     },
     "buildlight": {
