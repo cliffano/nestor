@@ -65,7 +65,7 @@ buster.testCase('cli - build', {
     this.stub(bag, 'command', function (base, actions) {
       actions.commands.build.action('job1');
     });
-    this.mockConsole.expects('error').once().withExactArgs('Job not found');
+    this.mockConsole.expects('error').once().withExactArgs('Job not found'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
       assert.equals(jobName, 'job1');
@@ -98,7 +98,7 @@ buster.testCase('cli - build', {
     this.stub(bag, 'command', function (base, actions) {
       actions.commands.build.action('job1', { console: true, pending: 1 });
     });
-    this.mockConsole.expects('error').once().withExactArgs('Job not found');
+    this.mockConsole.expects('error').once().withExactArgs('Job not found'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
       assert.equals(jobName, 'job1');
@@ -126,7 +126,7 @@ buster.testCase('cli - console', {
     cli.exec();
   },
   'should log job not found error when exec console is called and job does not exist': function () {
-    this.mockConsole.expects('error').once().withExactArgs('Job not found');
+    this.mockConsole.expects('error').once().withExactArgs('Job not found'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     this.stub(Jenkins.prototype, 'console', function (jobName, cb) {
       assert.equals(jobName, 'job1');
@@ -154,7 +154,7 @@ buster.testCase('cli - stop', {
     cli.exec();
   },
   'should log job not found error when exec stop is called and job does not exist': function () {
-    this.mockConsole.expects('error').once().withExactArgs('Job not found');
+    this.mockConsole.expects('error').once().withExactArgs('Job not found'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     this.stub(Jenkins.prototype, 'stop', function (jobName, cb) {
       assert.equals(jobName, 'job1');
@@ -220,7 +220,7 @@ buster.testCase('cli - discover', {
   },
   'should log version and url when exec discover is called with specified host': function () {
     this.stub(bag, 'command', function (base, actions) {
-      actions.commands.discover.action('somehost');
+      actions.commands.discover.action('somehost', {});
     });
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'http://localhost:8080/');
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -333,7 +333,7 @@ buster.testCase('cli - job', {
     cli.exec();
   },
   'should log job not found error when job does not exist': function () {
-    this.mockConsole.expects('error').once().withExactArgs('someerror');
+    this.mockConsole.expects('error').once().withExactArgs('someerror'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     this.stub(Jenkins.prototype, 'job', function (name, cb) {
       assert.equals(name, 'job1');
@@ -387,7 +387,7 @@ buster.testCase('cli - ver', {
     cli.exec();
   },
   'should log error when exec ver is called and version does not exist': function () {
-    this.mockConsole.expects('error').once().withExactArgs('someerror');
+    this.mockConsole.expects('error').once().withExactArgs('someerror'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     this.stub(Jenkins.prototype, 'version', function (cb) {
       cb(new Error('someerror'));
@@ -452,7 +452,7 @@ buster.testCase('cli - feed', {
     this.stub(bag, 'command', function (base, actions) {
       actions.commands.feed.action({ job: 'somejob' });
     });
-    this.mockConsole.expects('error').once().withExactArgs('some error');
+    this.mockConsole.expects('error').once().withExactArgs('some error'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     this.stub(Jenkins.prototype, 'feed', function (opts, cb) {
       assert.equals(opts.jobName, 'somejob');
