@@ -6,6 +6,9 @@
   "commands": {
     "build": {
       "desc": "Trigger a build with optional parameters",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
       "options": [
         { "arg": "-c, --console", "desc": "Display console output of the triggered build progress" },
         { "arg": "-p, --pending <pending>", "desc": "Pending time (in milliseconds) before displaying console output, default: 5000" }
@@ -20,10 +23,16 @@
       ]
     },
     "console": {
-      "desc": "Display latest build console output"
+      "desc": "Display latest build console output",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ]
     },
     "stop": {
-      "desc": "Stop the currently running build"
+      "desc": "Stop the currently running build",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ]
     },
     "dashboard": {
       "desc": "View status of all jobs"
@@ -35,7 +44,10 @@
       "desc": "View executors' status (running builds)"
     },
     "job": {
-      "desc": "View job status reports"
+      "desc": "View job status reports",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ]
     },
     "queue": {
       "desc": "View queued jobs"
