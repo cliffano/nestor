@@ -305,7 +305,7 @@ buster.testCase('jenkins - console', {
 buster.testCase('jenkins - stop', {
   'should pass error not found when job does not exist': function (done) {
     var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
+      assert.equals(method, 'post');
       assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/stop');
       opts.handlers[404]({ statusCode: 404 }, cb);
     };
@@ -319,7 +319,7 @@ buster.testCase('jenkins - stop', {
   },
   'should give status code 200 when there is no error': function (done) {
     var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
+      assert.equals(method, 'post');
       assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/stop');
       opts.handlers[200]({ statusCode: 200 }, cb);
     };
