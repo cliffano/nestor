@@ -1,7 +1,10 @@
-### 0.1.7-pre
+### 0.1.8-pre
+*
+
+### 0.1.7
 * Fix unhandled response 201 on Jenkins v1.5xx when creating a job
 * Fix IllegalAccessException 500 error on Jenkins v1.5xx when stopping a job
-* Nick arg is now mandatory for irc command
+* Nick argument is now mandatory for irc command
 
 ### 0.1.6
 * Add url flag
