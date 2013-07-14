@@ -50,7 +50,7 @@ buster.testCase('jenkins - jenkins', {
     this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.build('job1', undefined, function (err, result) {
-      assert.equals(err.message, 'Authentication failed - incorrect username and/or password in JENKINS_URL');
+      assert.equals(err.message, 'Authentication failed - incorrect username and/or password in Jenkins URL');
       done();
     });
   },
@@ -61,7 +61,7 @@ buster.testCase('jenkins - jenkins', {
     this.stub(bag, 'request', mockRequest);
     var jenkins = new Jenkins('http://localhost:8080');    
     jenkins.build('job1', undefined, function (err, result) {
-      assert.equals(err.message, 'Jenkins requires authentication - set username and password in JENKINS_URL');
+      assert.equals(err.message, 'Jenkins requires authentication - set username and password in Jenkins URL');
       done();
     });
   }
