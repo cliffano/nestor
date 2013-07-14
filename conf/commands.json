@@ -57,6 +57,11 @@
     },
     "irc": {
       "desc": "Start an IRC bot",
+      "args": [
+        { "name": "host", "rules": [ "notEmpty" ] },
+        { "name": "channel", "rules": [ "notEmpty" ] },
+        { "name": "nick", "rules": [ "notEmpty" ] }
+      ],
       "examples": [
         "nestor irc host channel nick"
       ]
