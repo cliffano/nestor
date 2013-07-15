@@ -1,5 +1,5 @@
 ### 0.1.8-pre
-*
+* Fix command with optional flag, no longer displays help menu
 
 ### 0.1.7
 * Fix unhandled response 201 on Jenkins v1.5xx when creating a job
