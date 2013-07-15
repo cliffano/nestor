@@ -1,4 +1,7 @@
-### 0.1.8-pre
+### 0.1.9-pre
+*
+
+### 0.1.8
 * Fix command with optional flag, no longer displays help menu
 
 ### 0.1.7
