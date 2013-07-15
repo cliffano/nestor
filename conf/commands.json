@@ -7,7 +7,8 @@
     "build": {
       "desc": "Trigger a build with optional parameters",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "notEmpty" ] },
+        { "name": "params", "optional": true }
       ],
       "options": [
         { "arg": "-c, --console", "desc": "Display console output of the triggered build progress" },
