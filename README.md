@@ -31,6 +31,14 @@ Trigger a build, wait for 5 seconds, then display console output:
 
     nestor build --pending 5000 --console <job>
 
+Trigger all builds:
+
+    nestor build-all
+
+Trigger fail builds:
+
+    nestor build-fail
+
 Display latest build console output:
 
     nestor console <job>
