@@ -1,4 +1,7 @@
-### 0.1.9-pre
+### 0.1.10-pre
+*
+
+### 0.1.9
 * Add build-all and build-fail commands
 
 ### 0.1.8
