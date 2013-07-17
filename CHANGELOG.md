@@ -1,5 +1,5 @@
 ### 0.1.9-pre
-*
+* Add build-all and build-fail commands
 
 ### 0.1.8
 * Fix command with optional flag, no longer displays help menu

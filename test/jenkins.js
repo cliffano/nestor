@@ -150,6 +150,59 @@ buster.testCase('jenkins - build', {
   }
 });
 
+buster.testCase('jenkins - buildBy', {
+  setUp: function () {
+    this.mockConsole = this.mock(console);
+  },
+  'should pass error when dashboard cannot retrieve jobs list': function (done) {
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.dashboard = function (cb) {
+      cb(new Error('some error'));
+    };
+    jenkins.buildBy(null, function (err, result) {
+      assert.equals(err.message, 'some error');
+      done();
+    });
+  },
+  'should trigger all builds when criteria is not specified': function (done) {
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'foo');
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'bar');
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.dashboard = function (cb) {
+      var data = [
+        { name: 'foo', status: 'FAIL' },
+        { name: 'bar', status: 'OK' }
+      ];
+      cb(null, data);
+    };
+    jenkins.build = function (name, params, cb) {
+      cb();
+    };
+    jenkins.buildBy(null, function (err, result) {
+      assert.isNull(err);
+      done();
+    });
+  },
+  'should trigger only builds which fits criteria': function (done) {
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'foo');
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.dashboard = function (cb) {
+      var data = [
+        { name: 'foo', status: 'FAIL' },
+        { name: 'bar', status: 'OK' }
+      ];
+      cb(null, data);
+    };
+    jenkins.build = function (name, params, cb) {
+      cb();
+    };
+    jenkins.buildBy({ status: 'FAIL' }, function (err, result) {
+      assert.isNull(err);
+      done();
+    });
+  }
+});
+
 buster.testCase('jenkins - consoleStream', {
   setUp: function () {
     this.mockConsole = this.mock(console);

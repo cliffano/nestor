@@ -23,6 +23,12 @@
         "nestor build --url http://host:8080 job"
       ]
     },
+    "build-all": {
+      "desc": "Trigger all builds"
+    },
+    "build-fail": {
+      "desc": "Trigger builds with fail status"
+    },
     "console": {
       "desc": "Display latest build console output",
       "args": [
