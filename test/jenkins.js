@@ -778,22 +778,25 @@ buster.testCase('jenkins - monitor', {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.feed = function (opts, cb) {
-      assert.equals(opts.jobName, 'somejob');
-      cb(null, [{ title: 'somejob 1 #100 (stable)' }, { title: 'somejob 2 #100 (aborted)' }]);
+    jenkins.dashboard = function (cb) {
+      var data = [
+        { status: 'OK', name: 'job1' },
+        { status: 'ABORTED', name: 'job2' },
+        { status: 'OK', name: 'job3' }
+      ];
+      cb(null, data);
     };
-    jenkins.monitor({ jobName: 'somejob', schedule: '*/30 * * * * *' }, function (err, result) {
+    jenkins.monitor({ jobName: 'job2', schedule: '*/30 * * * * *' }, function (err, result) {
       assert.isNull(err);
       assert.equals(result, 'ABORTED');
     });
   },
-  'should call notify callback when there is no article but there is no monitoring error as well': function (done) {
+  'should call notify callback when there is no job but there is no monitoring error as well': function (done) {
     this.stub(cron.CronJob.prototype, 'start', function () {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.feed = function (opts, cb) {
-      assert.equals(opts.jobName, 'somejob');
+    jenkins.dashboard = function (cb) {
       cb(null, []);
     };
     jenkins.monitor({ jobName: 'somejob', schedule: '*/30 * * * * *' }, function (err, result) {
@@ -801,18 +804,17 @@ buster.testCase('jenkins - monitor', {
       assert.isNull(result);
     });
   },
-  'should call notify callback with null result and error when an error occurs while retrieving the feed': function (done) {
+  'should call notify callback with undefined result and error when an error occurs while getting dashboard data': function (done) {
     this.stub(cron.CronJob.prototype, 'start', function () {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.feed = function (opts, cb) {
-      assert.equals(opts.jobName, 'somejob');
+    jenkins.dashboard = function (cb) {
       cb(new Error('some error'));
     };
     jenkins.monitor({ jobName: 'somejob' }, function (err, result) {
       assert.equals(err.message, 'some error');
-      assert.equals(result, null);
+      assert.equals(result, undefined);
     });
   }
 });
@@ -836,60 +838,48 @@ buster.testCase('jenkins - _colorStatus', {
   }
 });
 
-buster.testCase('jenkins - _feedStatus', {
+buster.testCase('jenkins - _dashboardStatus', {
   setUp: function () {
     this.jenkins = new Jenkins();
   },
-  'should return ok status when there is a fail but not on the latest build on any of the jobs': function () {
-    var feed = [
-      { title: 'somejob1 #123 (back to normal)' },
-      { title: 'somejob2 #333 (stable)' },
-      { title: 'somejob1 #122 (broken for a long time)' }
+  'should return ok status all jobs are successful': function () {
+    var data = [
+      { status: 'OK', name: 'job1' },
+      { status: 'OK', name: 'job2' },
+      { status: 'OK', name: 'job3' }
     ];
-    assert.equals(this.jenkins._feedStatus(feed), 'OK');
+    assert.equals(this.jenkins._dashboardStatus({}, data), 'OK');
   },
-  'should return fail status when there is a fail on the latest build of one of the jobs': function () {
-    var feed = [
-      { title: 'somejob1 #123 (broken since this build)' },
-      { title: 'somejob2 #333 (stable)' },
-      { title: 'somejob1 #122 (stable)' }
+  'should return fail status when there is a failed job': function () {
+    var data = [
+      { status: 'OK', name: 'job1' },
+      { status: 'OK', name: 'job2' },
+      { status: 'FAIL', name: 'job3' }
     ];
-    assert.equals(this.jenkins._feedStatus(feed), 'FAIL');
+    assert.equals(this.jenkins._dashboardStatus({}, data), 'FAIL');
   },
-  'should return warn status when there is a warn on the latest build of one of the jobs but there is no fail': function () {
-    var feed = [
-      { title: 'somejob1 #123 (23 tests are still failing)' },
-      { title: 'somejob2 #333 (stable)' },
-      { title: 'somejob1 #122 (11 tests are still failing)' }
+  'should return warn status when there is a warn but there is no fail': function () {
+    var data = [
+      { status: 'ABORTED', name: 'job1' },
+      { status: 'OK', name: 'job2' },
+      { status: 'WARN', name: 'job3' }
     ];
-    assert.equals(this.jenkins._feedStatus(feed), 'WARN');
+    assert.equals(this.jenkins._dashboardStatus({}, data), 'WARN');
   },
-  'should return null status when latest build status of all jobs are neither ok, fail, or warn': function () {
-    var feed = [
-      { title: 'somejob1 #123 (foobar)' },
-      { title: 'somejob2 #333 (foobar)' },
-      { title: 'somejob1 #122 (foobar)' }
+  'should return aborted status when there is aborted job but no fail or warn': function () {
+    var data = [
+      { status: 'ABORTED', name: 'job1' },
+      { status: 'OK', name: 'job2' },
+      { status: 'OK', name: 'job3' }
     ];
-    assert.isNull(this.jenkins._feedStatus(feed));
-  }
-});
-
-buster.testCase('jenkins - _titleStatus', {
-  'should show correct status based on title info': function () {
-    var jenkins = new Jenkins();
-    assert.equals(jenkins._titleStatus('somejob #123 (aborted)'), 'ABORTED');
+    assert.equals(this.jenkins._dashboardStatus({}, data), 'ABORTED');
   },
-  'should show correct status based on keyword matches': function () {
-    var jenkins = new Jenkins();
-    assert.equals(jenkins._titleStatus('somejob #123 (stable)'), 'OK');
-    assert.equals(jenkins._titleStatus('somejob #123 (back to normal)'), 'OK');
-    assert.equals(jenkins._titleStatus('somejob #123 (broken for a long time)'), 'FAIL');
-    assert.equals(jenkins._titleStatus('somejob #123 (broken since this build)'), 'FAIL');
-    assert.equals(jenkins._titleStatus('somejob #123 (broken since build #100)'), 'FAIL');
-    assert.equals(jenkins._titleStatus('somejob #123 (1 test failure)'), 'FAIL');
-    assert.equals(jenkins._titleStatus('somejob #123 (23 test failures)'), 'FAIL');
-    assert.equals(jenkins._titleStatus('somejob #123 (23 tests are still failing)'), 'WARN');
-    assert.equals(jenkins._titleStatus('somejob #123 (3 less tests are failing (total 20))'), 'WARN');
-    assert.equals(jenkins._titleStatus('somejob #123 (1 test started to fail)'), 'WARN');
+  'should return null status when are neither ok, fail, or warn': function () {
+    var data = [
+      { status: 'foobar', name: 'job1' },
+      { status: 'foobar', name: 'job2' },
+      { status: 'foobar', name: 'job3' }
+    ];
+    assert.isNull(this.jenkins._dashboardStatus({}, data));
   }
 });
