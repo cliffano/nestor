@@ -479,6 +479,9 @@ buster.testCase('jenkins - dashboard', {
 });
 
 buster.testCase('jenkins - discover', {
+  setUp: function () {
+    this.mockTimer = this.useFakeTimers();
+  },
   'should close socket and pass error to callback when socket emits error event': function (done) {
     var closeCallCount = 0,
       mockSocket = {
@@ -559,6 +562,24 @@ buster.testCase('jenkins - discover', {
       done();
     });
     assert.equals(closeCallCount, 1);
+  },
+  'should timeout and pass error when no instance is discovered': function (done) {
+    var mockSocket = {
+        close: function () {},
+        on: function (event, cb) {},
+        send:  function (buf, offset, length, port, address, cb) {}
+      };
+    this.stub(dgram, 'createSocket', function (type) {
+      assert.equals(type, 'udp4');
+      return mockSocket;
+    });
+    var jenkins = new Jenkins('http://localhost:8080');
+    jenkins.discover('somehost', function cb(err, result) {
+      assert.equals(err.message, 'Unable to find any Jenkins instance on somehost');
+      assert.equals(result, undefined);
+      done();
+    });
+    this.mockTimer.tick(5000);
   }
 });
 

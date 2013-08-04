@@ -1,5 +1,5 @@
 ### 0.1.10-pre
-*
+* Add discover command timeout after 5 seconds
 
 ### 0.1.9
 * Add build-all and build-fail commands
