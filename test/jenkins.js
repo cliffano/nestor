@@ -840,26 +840,26 @@ buster.testCase('jenkins - monitor', {
   }
 });
 
-buster.testCase('jenkins - _colorStatus', {
+buster.testCase('jenkins - _statusByColor', {
   'should show the correct status for all supported colors': function () {
     var jenkins = new Jenkins();
-    assert.equals(jenkins._colorStatus('blue'), 'OK');
-    assert.equals(jenkins._colorStatus('green'), 'OK');
-    assert.equals(jenkins._colorStatus('grey'), 'ABORTED');
-    assert.equals(jenkins._colorStatus('red'), 'FAIL');
-    assert.equals(jenkins._colorStatus('yellow'), 'WARN');
+    assert.equals(jenkins._statusByColor('blue'), 'OK');
+    assert.equals(jenkins._statusByColor('green'), 'OK');
+    assert.equals(jenkins._statusByColor('grey'), 'ABORTED');
+    assert.equals(jenkins._statusByColor('red'), 'FAIL');
+    assert.equals(jenkins._statusByColor('yellow'), 'WARN');
   },
   'should show the correct status for actively running build': function () {
     var jenkins = new Jenkins();
-    assert.equals(jenkins._colorStatus('blue_anime'), 'OK');
+    assert.equals(jenkins._statusByColor('blue_anime'), 'OK');
   },
   'should uppercase status when it is unsupported': function () {
     var jenkins = new Jenkins();
-    assert.equals(jenkins._colorStatus('unknown'), 'UNKNOWN');
+    assert.equals(jenkins._statusByColor('unknown'), 'UNKNOWN');
   }
 });
 
-buster.testCase('jenkins - _dashboardStatus', {
+buster.testCase('jenkins - _statusByName', {
   setUp: function () {
     this.jenkins = new Jenkins();
   },
@@ -869,7 +869,7 @@ buster.testCase('jenkins - _dashboardStatus', {
       { status: 'OK', name: 'job2' },
       { status: 'OK', name: 'job3' }
     ];
-    assert.equals(this.jenkins._dashboardStatus({}, data), 'OK');
+    assert.equals(this.jenkins._statusByName({}, data), 'OK');
   },
   'should return fail status when there is a failed job': function () {
     var data = [
@@ -877,7 +877,7 @@ buster.testCase('jenkins - _dashboardStatus', {
       { status: 'OK', name: 'job2' },
       { status: 'FAIL', name: 'job3' }
     ];
-    assert.equals(this.jenkins._dashboardStatus({}, data), 'FAIL');
+    assert.equals(this.jenkins._statusByName({}, data), 'FAIL');
   },
   'should return warn status when there is a warn but there is no fail': function () {
     var data = [
@@ -885,7 +885,7 @@ buster.testCase('jenkins - _dashboardStatus', {
       { status: 'OK', name: 'job2' },
       { status: 'WARN', name: 'job3' }
     ];
-    assert.equals(this.jenkins._dashboardStatus({}, data), 'WARN');
+    assert.equals(this.jenkins._statusByName({}, data), 'WARN');
   },
   'should return aborted status when there is aborted job but no fail or warn': function () {
     var data = [
@@ -893,7 +893,7 @@ buster.testCase('jenkins - _dashboardStatus', {
       { status: 'OK', name: 'job2' },
       { status: 'OK', name: 'job3' }
     ];
-    assert.equals(this.jenkins._dashboardStatus({}, data), 'ABORTED');
+    assert.equals(this.jenkins._statusByName({}, data), 'ABORTED');
   },
   'should return null status when are neither ok, fail, or warn': function () {
     var data = [
@@ -901,6 +901,6 @@ buster.testCase('jenkins - _dashboardStatus', {
       { status: 'foobar', name: 'job2' },
       { status: 'foobar', name: 'job3' }
     ];
-    assert.isNull(this.jenkins._dashboardStatus({}, data));
+    assert.isNull(this.jenkins._statusByName({}, data));
   }
 });
