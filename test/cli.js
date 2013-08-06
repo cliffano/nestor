@@ -121,7 +121,7 @@ buster.testCase('cli - build-all', {
       actions.commands['build-all'].action();
     });
     this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'buildBy', function (criteria, cb) {
+    this.stub(Jenkins.prototype, 'filteredBuild', function (criteria, cb) {
       assert.isNull(criteria);
       cb();
     });
@@ -139,7 +139,7 @@ buster.testCase('cli - build-fail', {
       actions.commands['build-fail'].action();
     });
     this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'buildBy', function (criteria, cb) {
+    this.stub(Jenkins.prototype, 'filteredBuild', function (criteria, cb) {
       assert.equals(criteria, { status: 'FAIL' });
       cb();
     });

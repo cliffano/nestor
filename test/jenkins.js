@@ -150,7 +150,7 @@ buster.testCase('jenkins - build', {
   }
 });
 
-buster.testCase('jenkins - buildBy', {
+buster.testCase('jenkins - filteredBuild', {
   setUp: function () {
     this.mockConsole = this.mock(console);
   },
@@ -159,7 +159,7 @@ buster.testCase('jenkins - buildBy', {
     jenkins.dashboard = function (cb) {
       cb(new Error('some error'));
     };
-    jenkins.buildBy(null, function (err, result) {
+    jenkins.filteredBuild(null, function (err, result) {
       assert.equals(err.message, 'some error');
       done();
     });
@@ -178,7 +178,7 @@ buster.testCase('jenkins - buildBy', {
     jenkins.build = function (name, params, cb) {
       cb();
     };
-    jenkins.buildBy(null, function (err, result) {
+    jenkins.filteredBuild(null, function (err, result) {
       assert.isNull(err);
       done();
     });
@@ -196,7 +196,7 @@ buster.testCase('jenkins - buildBy', {
     jenkins.build = function (name, params, cb) {
       cb();
     };
-    jenkins.buildBy({ status: 'FAIL' }, function (err, result) {
+    jenkins.filteredBuild({ status: 'FAIL' }, function (err, result) {
       assert.isNull(err);
       done();
     });
