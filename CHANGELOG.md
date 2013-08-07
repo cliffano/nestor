@@ -1,4 +1,7 @@
-### 0.1.10-pre
+### 0.2.0
+*
+
+### 0.1.10
 * Add discover command timeout after 5 seconds
 * Add view dashboard support
 
