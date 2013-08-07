@@ -200,6 +200,23 @@ buster.testCase('jenkins - filteredBuild', {
       assert.isNull(err);
       done();
     });
+  },
+  'should pass error when an error occurs while executing the build': function (done) {
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.dashboard = function (cb) {
+      var data = [
+        { name: 'foo', status: 'FAIL' },
+        { name: 'bar', status: 'OK' }
+      ];
+      cb(null, data);
+    };
+    jenkins.build = function (name, params, cb) {
+      cb(new Error('some error'));
+    };
+    jenkins.filteredBuild({ status: 'FAIL' }, function (err, result) {
+      assert.equals(err.message, 'some error');
+      done();
+    });
   }
 });
 
