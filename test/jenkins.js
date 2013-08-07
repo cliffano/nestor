@@ -475,6 +475,38 @@ buster.testCase('jenkins - dashboard', {
       assert.equals(result[0].status, 'DISABLED');
       done();
     });
+  },
+  'should return statuses when view dashboard has jobs with known color value': function (done) {
+    var mockRequest = function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/view/someview/api/json');
+      opts.handlers[200]({ statusCode: 200, body: JSON.stringify(
+        { jobs: [
+          { name: 'job1', color: 'blue' },
+          { name: 'job2', color: 'green' },
+          { name: 'job3', color: 'grey' },
+          { name: 'job4', color: 'red' },
+          { name: 'job5', color: 'yellow' }
+        ]}
+      )}, cb);
+    };
+    this.stub(bag, 'request', mockRequest);
+    var jenkins = new Jenkins('http://localhost:8080');    
+    jenkins.dashboard({ viewName: 'someview' }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 5);
+      assert.equals(result[0].name, 'job1');
+      assert.equals(result[0].status, 'OK');
+      assert.equals(result[1].name, 'job2');
+      assert.equals(result[1].status, 'OK');
+      assert.equals(result[2].name, 'job3');
+      assert.equals(result[2].status, 'ABORTED');
+      assert.equals(result[3].name, 'job4');
+      assert.equals(result[3].status, 'FAIL');
+      assert.equals(result[4].name, 'job5');
+      assert.equals(result[4].status, 'WARN');
+      done();
+    });
   }
 });
 
@@ -799,7 +831,7 @@ buster.testCase('jenkins - monitor', {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.dashboard = function (cb) {
+    jenkins.dashboard = function (opts, cb) {
       var data = [
         { status: 'OK', name: 'job1' },
         { status: 'ABORTED', name: 'job2' },
@@ -817,7 +849,7 @@ buster.testCase('jenkins - monitor', {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.dashboard = function (cb) {
+    jenkins.dashboard = function (opts, cb) {
       cb(null, []);
     };
     jenkins.monitor({ jobName: 'somejob', schedule: '*/30 * * * * *' }, function (err, result) {
@@ -830,7 +862,7 @@ buster.testCase('jenkins - monitor', {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.dashboard = function (cb) {
+    jenkins.dashboard = function (opts, cb) {
       cb(new Error('some error'));
     };
     jenkins.monitor({ jobName: 'somejob' }, function (err, result) {

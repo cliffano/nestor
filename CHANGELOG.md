@@ -1,5 +1,6 @@
 ### 0.1.10-pre
 * Add discover command timeout after 5 seconds
+* Add view dashboard support
 
 ### 0.1.9
 * Add build-all and build-fail commands
