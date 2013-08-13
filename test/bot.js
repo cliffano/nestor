@@ -1,6 +1,9 @@
 var Bot = require('../lib/bot'),
   buster = require('buster'),
+  i18n = require('i18n'),
   irc = require('irc');
+
+i18n.setLocale('en');
 
 buster.testCase('bot - connect', {
   setUp: function () {
