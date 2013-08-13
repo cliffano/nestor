@@ -1,6 +1,9 @@
 var buster = require('buster'),
+  i18n = require('i18n'),
   NinjaBlocks = require('../../lib/notifiers/ninjablocks'),
   ninjaBlocks = require('ninja-blocks');
+
+i18n.setLocale('en');
 
 buster.testCase('ninjablocks - ninjablocks', {
   'should set token via constructor': function () {
