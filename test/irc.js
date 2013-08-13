@@ -1,7 +1,10 @@
 var Bot = require('../lib/bot'),
   buster = require('buster'),
+  i18n = require('i18n'),
   irc = require('../lib/irc'),
   Jenkins = new require('../lib/jenkins');
+
+i18n.setLocale('en');
 
 buster.testCase('irc - build', {
   'should say job started successfully when build is called  and job exists': function (done) {
