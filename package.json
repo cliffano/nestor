@@ -16,6 +16,7 @@
   "bin": {
     "nestor": "./bin/nestor"
   },
+  "preferGlobal": true,
   "repository": {
     "type": "git",
     "url": "http://github.com/cliffano/nestor.git"
