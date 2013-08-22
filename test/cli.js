@@ -2,13 +2,13 @@ var bag = require('bagofcli'),
   buster = require('buster'),
   BuildLight = require('../lib/notifiers/buildlight'),
   cli = require('../lib/cli'),
-  i18n = require('i18n'),
   irc = require('../lib/irc'),
   Jenkins = new require('../lib/jenkins'),
   NinjaBlocks = require('../lib/notifiers/ninjablocks'),
+  text = require('bagoftext'),
   util = require('util');
 
-i18n.setLocale('en');
+text.setLocale('en');
 
 buster.testCase('cli - exec', {
   'should contain commands with actions': function (done) {

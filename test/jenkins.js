@@ -3,11 +3,11 @@ var bag = require('bagofrequest'),
   cron = require('cron'),
   dgram = require('dgram'),
   feedparser = require('feedparser'),
-  i18n = require('i18n'),
   Jenkins = require('../lib/jenkins'),
-  request = require('request');
+  request = require('request'),
+  text = require('bagoftext');
 
-i18n.setLocale('en');
+text.setLocale('en');
 
 buster.testCase('jenkins - jenkins', {
   setUp: function () {
