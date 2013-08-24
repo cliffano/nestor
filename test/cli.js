@@ -308,23 +308,28 @@ buster.testCase('cli - executor', {
     });
   },
   'should log executor status when exec executor is called and there are some executors': function () {
-    this.mockConsole.expects('log').once().withExactArgs('+ master');
-    this.mockConsole.expects('log').once().withExactArgs('  - idle');
+    this.mockConsole.expects('log').once().withExactArgs('+ %s %s', 'master', '(1 idle executor)');
     this.mockConsole.expects('log').once().withExactArgs('  - %s | %s%%s', 'job1', 5, '');
     this.mockConsole.expects('log').once().withExactArgs('  - %s | %s%%s', undefined, 33, '');
-    this.mockConsole.expects('log').once().withExactArgs('+ slave');
+    this.mockConsole.expects('log').once().withExactArgs('+ %s %s', 'slave', '');
     this.mockConsole.expects('log').once().withExactArgs('  - %s | %s%%s', 'job2', 11, ' stuck!');
     this.mockProcess.expects('exit').once().withExactArgs(0);
     this.stub(Jenkins.prototype, 'executor', function (cb) {
       cb(null, {
-        master: [
-          { idle: true },
-          { idle: false, name: 'job1', progress: 5 },
-          { idle: false, progress: 33 }
-        ],
-        slave: [
-          { idle: false, stuck: true, name: 'job2' , progress: 11 }
-        ]
+        master: {
+          executors: [
+            { idle: true },
+            { idle: false, name: 'job1', progress: 5 },
+            { idle: false, progress: 33 }
+          ],
+          idleCount: 1
+        },
+        slave: {
+          executors: [
+            { idle: false, stuck: true, name: 'job2' , progress: 11 }
+          ],
+          idleCount: 0
+        }
       });
     });
     cli.exec();

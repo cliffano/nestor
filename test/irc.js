@@ -206,34 +206,43 @@ buster.testCase('irc - executor', {
     var result = [];
     this.stub(Jenkins.prototype, 'executor', function (cb) {
       cb(null, {
-        master: [
-          { idle: true },
-          { idle: false, name: 'job1', progress: 5 },
-          { idle: false, progress: 33 }
-        ],
-        slave: [
-          { idle: false, stuck: true, name: 'job2' , progress: 11 }
-        ]
+        master: {
+          executors: [
+            { idle: true },
+            { idle: false, name: 'job1', progress: 5 },
+            { idle: false, progress: 33 }
+          ],
+          idleCount: 1
+        },
+        slave: {
+          executors: [
+            { idle: false, stuck: true, name: 'job2' , progress: 11 }
+          ],
+          idleCount: 0
+        }
       });
     });
     this.stub(Bot.prototype, 'say', function () {
       result.push(arguments);
-      if (result.length === 6) {
-        assert.equals(result[0][0], '+ master');
-        assert.equals(result[1][0], '  - idle');
+      if (result.length === 5) {
+        assert.equals(result[0][0], '+ %s %s');
+        assert.equals(result[0][1], 'master');
+        assert.equals(result[0][2], '(1 idle executor)');
+        assert.equals(result[1][0], '  - %s | %s%%s');
+        assert.equals(result[1][1], 'job1');
+        assert.equals(result[1][2], 5);
+        assert.equals(result[1][3], '');
         assert.equals(result[2][0], '  - %s | %s%%s');
-        assert.equals(result[2][1], 'job1');
-        assert.equals(result[2][2], 5); 
+        assert.equals(result[2][1], undefined);
+        assert.equals(result[2][2], 33);
         assert.equals(result[2][3], '');
-        assert.equals(result[3][0], '  - %s | %s%%s');
-        assert.equals(result[3][1], undefined);
-        assert.equals(result[3][2], 33); 
-        assert.equals(result[3][3], '');
-        assert.equals(result[4][0], '+ slave');
-        assert.equals(result[5][0], '  - %s | %s%%s');
-        assert.equals(result[5][1], 'job2');
-        assert.equals(result[5][2], 11); 
-        assert.equals(result[5][3], ' stuck!');
+        assert.equals(result[3][0], '+ %s %s');
+        assert.equals(result[3][1], 'slave');
+        assert.equals(result[3][2], '');
+        assert.equals(result[4][0], '  - %s | %s%%s');
+        assert.equals(result[4][1], 'job2');
+        assert.equals(result[4][2], 11);
+        assert.equals(result[4][3], ' stuck!');
         done();
       }
     });

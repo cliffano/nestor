@@ -665,22 +665,24 @@ buster.testCase('jenkins - executor', {
       assert.isNull(err);
 
       // multiple executors on a master
-      assert.equals(result.master.length, 2);
-      assert.equals(result.master[0].progress, 88);
-      assert.equals(result.master[0].stuck, false);
-      assert.equals(result.master[0].idle, false);
-      assert.equals(result.master[0].name, 'job1');
-      assert.equals(result.master[1].progress, 0);
-      assert.equals(result.master[1].stuck, false);
-      assert.equals(result.master[1].idle, true);
-      assert.equals(result.master[1].name, undefined);
+      assert.equals(result.master.executors.length, 2);
+      assert.equals(result.master.executors[0].progress, 88);
+      assert.equals(result.master.executors[0].stuck, false);
+      assert.equals(result.master.executors[0].idle, false);
+      assert.equals(result.master.executors[0].name, 'job1');
+      assert.equals(result.master.executors[1].progress, 0);
+      assert.equals(result.master.executors[1].stuck, false);
+      assert.equals(result.master.executors[1].idle, true);
+      assert.equals(result.master.executors[1].name, undefined);
+      assert.equals(result.master.idleCount, 1);
 
       // single executor on a slave
-      assert.equals(result.slave.length, 1);
-      assert.equals(result.slave[0].progress, 88);
-      assert.equals(result.slave[0].stuck, true);
-      assert.equals(result.slave[0].idle, false);
-      assert.equals(result.slave[0].name, 'job2');
+      assert.equals(result.slave.executors.length, 1);
+      assert.equals(result.slave.executors[0].progress, 88);
+      assert.equals(result.slave.executors[0].stuck, true);
+      assert.equals(result.slave.executors[0].idle, false);
+      assert.equals(result.slave.executors[0].name, 'job2');
+      assert.equals(result.slave.idleCount, 0);
 
       done();
     });

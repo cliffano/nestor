@@ -31,6 +31,6 @@
   "Usage: %s <command> <arg1> ... <argN>": "Cara penggunaan: %s <perintah> <arg1> ... <argN>",
   "Username: ": "Pengguna: ",
   "Queue is empty": "Antrean kosong",
-  "idle": "diam",
+  "(%d idle executor)": "(%d eksekutor diam)",
   " stuck!": " berhenti!"
 }
