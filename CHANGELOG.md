@@ -1,3 +1,6 @@
+### 0.2.1
+*
+
 ### 0.2.0
 * Add l10n support, with en and id locales
 * Executor command collapses idle executors list into a summary
