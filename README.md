@@ -136,6 +136,14 @@ Jenkins URL can also be specified as an arg:
 
     nestor --url http://user:pass@host:port/path dashboard
 
+Translation
+-----------
+
+To add a new language translation:
+
+# Create a locale JSON file in conf/locales/ directory, with the locale's [ISO 639-1 code](http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) as file name.
+# Copy paste the content of the existing non-English locale file (anything other than en.json) and modify the translation values accordingly.
+
 Colophon
 --------
 
