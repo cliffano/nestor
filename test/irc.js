@@ -212,22 +212,22 @@ buster.testCase('irc - executor', {
             { idle: false, name: 'job1', progress: 5 },
             { idle: false, progress: 33 }
           ],
-          idleCount: 1
+          summary: '2 active, 1 idle'
         },
         slave: {
           executors: [
             { idle: false, stuck: true, name: 'job2' , progress: 11 }
           ],
-          idleCount: 0
+          summary: '1 active'
         }
       });
     });
     this.stub(Bot.prototype, 'say', function () {
       result.push(arguments);
       if (result.length === 5) {
-        assert.equals(result[0][0], '+ %s %s');
+        assert.equals(result[0][0], '+ %s | %s');
         assert.equals(result[0][1], 'master');
-        assert.equals(result[0][2], '(1 idle executor)');
+        assert.equals(result[0][2], '2 active, 1 idle');
         assert.equals(result[1][0], '  - %s | %s%%s');
         assert.equals(result[1][1], 'job1');
         assert.equals(result[1][2], 5);
@@ -236,9 +236,9 @@ buster.testCase('irc - executor', {
         assert.equals(result[2][1], undefined);
         assert.equals(result[2][2], 33);
         assert.equals(result[2][3], '');
-        assert.equals(result[3][0], '+ %s %s');
+        assert.equals(result[3][0], '+ %s | %s');
         assert.equals(result[3][1], 'slave');
-        assert.equals(result[3][2], '');
+        assert.equals(result[3][2], '1 active');
         assert.equals(result[4][0], '  - %s | %s%%s');
         assert.equals(result[4][1], 'job2');
         assert.equals(result[4][2], 11);
