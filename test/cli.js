@@ -1,4 +1,5 @@
 var buster = require('buster'),
+  _BuildLight = require('buildlight'),
   BuildLight = require('../lib/notifiers/buildlight'),
   _cli = require('bagofcli'),
   cli = require('../lib/cli'),
@@ -557,6 +558,7 @@ buster.testCase('cli - ninja', {
 buster.testCase('cli - buildlight', {
   setUp: function () {
     this.mockConsole = this.mock(console);
+    this.stub(_BuildLight.prototype, '_driver', function () {});
   },
   'should notify buildlight when there is no monitoring error': function (done) {
     this.stub(_cli, 'command', function (base, actions) {

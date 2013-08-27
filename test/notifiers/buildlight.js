@@ -3,18 +3,6 @@ var buster = require('buster'),
   _BuildLight = require('buildlight'),
   fs = require('fs');
 
-buster.testCase('buildlight - buildlight', {
-  'should set opts via constructor': function () {
-    var buildLight = new BuildLight({ scheme: ['red', 'green', 'blue'], usbled: '/some/usbled/path/' });
-    assert.equals(buildLight.opts.scheme, ['red', 'green', 'blue']);
-    assert.equals(buildLight.opts.usbled, '/some/usbled/path/');
-  },
-  'should default opts when unspecified': function () {
-    var buildLight = new BuildLight();
-    assert.equals(buildLight.opts, {});
-  }
-});
-
 buster.testCase('buildlight - notify', {
   setUp: function () {
     this.mockFs = this.mock(fs);

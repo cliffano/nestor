@@ -1,5 +1,6 @@
 ### 0.2.1
 * BuildLight notifier blinks red on build failure
+* Fix buildlight command memory leak
 
 ### 0.2.0
 * Add l10n support, with en and id locales
