@@ -19,6 +19,9 @@ buster.testCase('buildlight - notify', {
   setUp: function () {
     this.mockFs = this.mock(fs);
     this.stub(process, 'platform', 'linux');
+    this.stub(_BuildLight.prototype, 'unblink', function (cb) {
+      cb();
+    });
   },
   'should switch all colours off then switch one colour on on build light device based on notification status': function () {
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/red', 0);
