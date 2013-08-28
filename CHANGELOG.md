@@ -1,3 +1,6 @@
+### 0.2.2
+*
+
 ### 0.2.1
 * BuildLight notifier blinks red on build failure
 * Fix buildlight command memory leak
