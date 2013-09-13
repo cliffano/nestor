@@ -143,6 +143,7 @@ To add a new language translation:
 
 1. Create a locale JSON file in conf/locales/ directory, with the locale's [ISO 639-1 code](http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) as file name.
 2. Copy paste the content of the existing non-English locale file (anything other than en.json) and modify the translation values accordingly.
+3. Test by executing a command with LANG environment variable, e.g. `LANG=<code> nestor dashboard`
 
 Colophon
 --------
