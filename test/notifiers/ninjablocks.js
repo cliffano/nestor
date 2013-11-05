@@ -1,7 +1,9 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   NinjaBlocks = require('../../lib/notifiers/ninjablocks'),
   ninjaBlocks = require('ninja-blocks'),
-  text = require('bagoftext');
+  referee = require('referee'),
+  text = require('bagoftext'),
+  assert = referee.assert;
 
 text.setLocale('en');
 

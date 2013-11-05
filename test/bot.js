@@ -1,7 +1,9 @@
 var Bot = require('../lib/bot'),
-  buster = require('buster'),
+  buster = require('buster-node'),
   irc = require('irc'),
-  text = require('bagoftext');
+  referee = require('referee'),
+  text = require('bagoftext'),
+  assert = referee.assert;
 
 text.setLocale('en');
 

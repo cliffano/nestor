@@ -1,4 +1,4 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   _BuildLight = require('buildlight'),
   BuildLight = require('../lib/notifiers/buildlight'),
   _cli = require('bagofcli'),
@@ -6,8 +6,10 @@ var buster = require('buster'),
   irc = require('../lib/irc'),
   Jenkins = new require('../lib/jenkins'),
   NinjaBlocks = require('../lib/notifiers/ninjablocks'),
+  referee = require('referee'),
   text = require('bagoftext'),
-  util = require('util');
+  util = require('util'),
+  assert = referee.assert;
 
 text.setLocale('en');
 

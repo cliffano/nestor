@@ -1,5 +1,7 @@
-var buster = require('buster'),
-  ConsoleStream = require('../lib/consolestream');
+var buster = require('buster-node'),
+  ConsoleStream = require('../lib/consolestream'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('consolestream - consolestream', {
   'should be readable but not writable': function () {

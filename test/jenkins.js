@@ -1,11 +1,13 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   cron = require('cron'),
   dgram = require('dgram'),
   feedparser = require('feedparser'),
   Jenkins = require('../lib/jenkins'),
+  referee = require('referee'),
   req = require('bagofrequest'),
   request = require('request'),
-  text = require('bagoftext');
+  text = require('bagoftext'),
+  assert = referee.assert;
 
 text.setLocale('en');
 

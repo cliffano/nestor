@@ -1,8 +1,10 @@
 var Bot = require('../lib/bot'),
-  buster = require('buster'),
+  buster = require('buster-node'),
   irc = require('../lib/irc'),
   Jenkins = new require('../lib/jenkins'),
-  text = require('bagoftext');
+  referee = require('referee'),
+  text = require('bagoftext'),
+  assert = referee.assert;
 
 text.setLocale('en');
 

@@ -1,7 +1,9 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   BuildLight = require('../../lib/notifiers/buildlight'),
   _BuildLight = require('buildlight'),
-  fs = require('fs');
+  fs = require('fs'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('buildlight - notify', {
   setUp: function () {
