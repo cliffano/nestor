@@ -2,9 +2,13 @@
 .bob.json
 .DS_Store
 .git
+.gitignore
+.jshintrc
+.npmignore
 .travis.yml
 avatar.jpg
 node_modules
 npm-debug.log
+screenshots
 test
 test-integration
