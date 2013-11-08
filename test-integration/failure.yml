@@ -1,0 +1,4 @@
+- description: Command dashboard should display error when URL does not exist
+  command: JENKINS_URL=http://someinexistinghost ../../../../../bin/nestor dashboard
+  exitcode: 0
+  output: getaddrinfo ENOTFOUND
