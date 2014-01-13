@@ -2,6 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/cliffano/nestor.png?branch=master)](http://travis-ci.org/cliffano/nestor)
 [![Dependencies Status](https://david-dm.org/cliffano/nestor.png)](http://david-dm.org/cliffano/nestor)
+[![Coverage Status](https://coveralls.io/repos/cliffano/nestor/badge.png?branch=master)](https://coveralls.io/r/cliffano/nestor?branch=master)
 [![Published Version](https://badge.fury.io/js/nestor.png)](http://badge.fury.io/js/nestor)
 <br/>
 [![npm Badge](https://nodei.co/npm/nestor.png)](http://npmjs.org/package/nestor)
