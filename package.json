@@ -34,7 +34,7 @@
     "bagofcli": "~0.0.8",
     "bagofrequest": "~0.0.6",
     "bagoftext": "~0.0.3",
-    "buildlight": "~0.0.5",
+    "buildlight": "~0.0.6",
     "colors": "~0.6.2",
     "commander": "~2.0.0",
     "cron": "~1.0.1",

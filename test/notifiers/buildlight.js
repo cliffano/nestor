@@ -8,7 +8,6 @@ var buster = require('buster-node'),
 buster.testCase('buildlight - notify', {
   setUp: function () {
     this.mockFs = this.mock(fs);
-    this.stub(process, 'platform', 'linux');
     this.stub(_BuildLight.prototype, 'unblink', function (cb) {
       cb();
     });
@@ -18,14 +17,14 @@ buster.testCase('buildlight - notify', {
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/green', 0);
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/blue', 0);
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/green', 1);
-    var buildLight = new BuildLight({ scheme: ['red', 'green', 'blue'], usbled: '/some/usbled/path/' });
+    var buildLight = new BuildLight({ scheme: ['red', 'green', 'blue'], usbled: '/some/usbled/path/', platform: 'linux' });
     buildLight.notify('OK');
   },
   'should switch all colours on on build light device when notification status is warn': function () {
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/red', 1);
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/green', 1);
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/blue', 1);
-    var buildLight = new BuildLight({ scheme: ['red', 'green', 'blue'], usbled: '/some/usbled/path/' });
+    var buildLight = new BuildLight({ scheme: ['red', 'green', 'blue'], usbled: '/some/usbled/path/', platform: 'linux' });
     buildLight.notify('WARN');
   },
   'should switch all colours off then switch blue colour on on build light device when status is unknown': function () {
@@ -33,7 +32,7 @@ buster.testCase('buildlight - notify', {
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/green', 0);
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/blue', 0);
     this.mockFs.expects('writeFileSync').once().withExactArgs('/some/usbled/path/blue', 1);
-    var buildLight = new BuildLight({ scheme: ['red', 'green', 'blue'], usbled: '/some/usbled/path/' });
+    var buildLight = new BuildLight({ scheme: ['red', 'green', 'blue'], usbled: '/some/usbled/path/', platform: 'linux' });
     buildLight.notify('SOMEUNKNOWNSTATUS');
   }
 });
