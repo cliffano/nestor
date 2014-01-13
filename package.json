@@ -36,14 +36,14 @@
     "bagoftext": "~0.0.3",
     "buildlight": "~0.0.6",
     "colors": "~0.6.2",
-    "commander": "~2.0.0",
+    "commander": "~2.1.0",
     "cron": "~1.0.1",
     "feedparser": "~0.15.3",
     "irc": "~0.3.6",
-    "lodash": "~2.2.1",
+    "lodash": "~2.4.1",
     "ninja-blocks": "~0.1.3",
-    "request": "~2.27.0",
-    "xml2js": "~0.2.8"
+    "request": "~2.31.0",
+    "xml2js": "~0.4.1"
   },
   "devDependencies": {
     "buster-node": "~0.7.0",
