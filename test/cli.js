@@ -564,7 +564,7 @@ buster.testCase('cli - buildlight', {
   },
   'should notify buildlight when there is no monitoring error': function (done) {
     this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.buildlight.action({ job: 'somejob', schedule: '* * * * * *', scheme: 'red,green,blue', usbled: '/some/usbled/path' });
+      actions.commands.buildlight.action({ job: 'somejob', schedule: '* * * * * *', scheme: 'red,green,blue', usbled: '/some/usbled/path', blinkOnFailure: true });
     });
     this.stub(Jenkins.prototype, 'monitor', function (opts, cb) {
       assert.equals(opts.jobName, 'somejob');

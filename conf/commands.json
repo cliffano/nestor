@@ -102,7 +102,8 @@
         { "arg": "-v, --view <view>", "desc": "Jenkins view name" },
         { "arg": "-s, --schedule <schedule>", "desc": "Cron scheduling definition, default: 0 * * * * * (every minute)" },
         { "arg": "-c, --scheme <scheme>", "desc": "Comma-separated colour scheme, default: red,green,blue" },
-        { "arg": "-u, --usbled <usbled>", "desc": "Path to usbled installation, if not specified then it will try to find a usbled installation at /sys/bus/usb/drivers/usbled/" }
+        { "arg": "-u, --usbled <usbled>", "desc": "Path to usbled installation, if not specified then it will try to find a usbled installation at /sys/bus/usb/drivers/usbled/" },
+        { "arg": "-b, --blink-on-failure", "desc": "Blink light on build failure" }
       ]
     }
   }
