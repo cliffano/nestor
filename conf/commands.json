@@ -56,6 +56,35 @@
         { "name": "job", "rules": [ "notEmpty" ] }
       ]
     },
+    "create": {
+      "desc": "Create a new job with a specified config.xml",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] },
+        { "name": "config", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor create job path/to/config.xml"
+      ]
+    },
+    "copy": {
+      "desc": "Copy an existing job",
+      "args": [
+        { "name": "job1", "rules": [ "notEmpty" ] },
+        { "name": "job2", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor copy job1 job2"
+      ]
+    },
+    "delete": {
+      "desc": "Delete an existing job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor delete job"
+      ]
+    },
     "queue": {
       "desc": "View queued jobs"
     },

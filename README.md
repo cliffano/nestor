@@ -63,6 +63,18 @@ View job status reports:
 
     nestor job <job>
 
+Create a new job with a specified config.xml:
+
+    nestor create path/to/config.xml
+
+Copy an existing job1 to a new job2:
+
+    nestor copy job1 job2
+
+Delete an existing job:
+
+    nestor delete job
+
 View queued jobs:
 
     nestor queue
