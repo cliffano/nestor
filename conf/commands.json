@@ -56,6 +56,24 @@
         { "name": "job", "rules": [ "notEmpty" ] }
       ]
     },
+    "enable": {
+      "desc": "Enable a job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor enable job"
+      ]
+    },
+    "disable": {
+      "desc": "Disable a job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor disable job"
+      ]
+    },
     "create": {
       "desc": "Create a new job with a specified config.xml",
       "args": [

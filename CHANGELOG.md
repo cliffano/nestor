@@ -1,5 +1,5 @@
 ### 0.2.3-pre
-*
+* Add enable and disable commands
 
 ### 0.2.2
 * Change test lib to buster-node + referee
