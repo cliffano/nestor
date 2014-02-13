@@ -15,12 +15,12 @@
         { "arg": "-p, --pending <pending>", "desc": "Pending time (in milliseconds) before displaying console output, default: 5000" }
       ],
       "examples": [
-        "nestor build job \"param1=value1&param2=value2\"",
-        "nestor build --console job",
-        "nestor build --pending 5000 --console job",
-        "JENKINS_URL=http://host:8080 nestor build --interactive job",
-        "JENKINS_URL=http://host:8080 nestor build job",
-        "nestor build --url http://host:8080 job"
+        "nestor build <job> <\"param1=value1&param2=value2\">",
+        "nestor build --console <job>",
+        "nestor build --pending <5000> --console <job>",
+        "JENKINS_URL=http://host:8080 nestor build --interactive <job>",
+        "JENKINS_URL=http://host:8080 nestor build <job>",
+        "nestor build --url <http://host:8080> <job>"
       ]
     },
     "build-all": {
@@ -62,7 +62,7 @@
         { "name": "job", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor enable job"
+        "nestor enable <job>"
       ]
     },
     "disable": {
@@ -71,7 +71,7 @@
         { "name": "job", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor disable job"
+        "nestor disable <job>"
       ]
     },
     "create": {
@@ -101,7 +101,7 @@
         { "name": "job2", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor copy job1 job2"
+        "nestor copy <job1> <job2>"
       ]
     },
     "delete": {
@@ -110,7 +110,7 @@
         { "name": "job", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor delete job"
+        "nestor delete <job>"
       ]
     },
     "config": {
@@ -136,7 +136,7 @@
         { "name": "nick", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor irc host channel nick"
+        "nestor irc <host> <channel> <nick>"
       ]
     },
     "feed": {
@@ -146,8 +146,8 @@
         { "arg": "-v, --view <view>", "desc": "Jenkins view name" }
       ],
       "examples": [
-        "nestor --job job feed",
-        "nestor --view view feed"
+        "nestor --job <job> feed",
+        "nestor --view <view> feed"
       ]
     },
     "ninja": {
