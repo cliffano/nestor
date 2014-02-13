@@ -1,4 +1,7 @@
-### 0.2.3-pre
+### 0.2.4-pre
+*
+
+### 0.2.3
 * Add enable and disable commands
 * Add update and config commands
 
