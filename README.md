@@ -75,6 +75,10 @@ Create a new job with a specified config.xml:
 
     nestor create <job> <path/to/config.xml>
 
+Update an existing job with a specified config.xml:
+
+    nestor update <job> <path/to/config.xml>
+
 Copy an existing job1 to a new job2:
 
     nestor copy <job1> <job2>
@@ -82,6 +86,10 @@ Copy an existing job1 to a new job2:
 Delete an existing job:
 
     nestor delete <job>
+
+Fetch the config.xml of an existing job:
+
+    nestor config <job>
 
 View queued jobs:
 

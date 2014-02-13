@@ -81,7 +81,17 @@
         { "name": "config", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor create job path/to/config.xml"
+        "nestor create <job> <path/to/config.xml>"
+      ]
+    },
+    "update": {
+      "desc": "Update an existing job with a specified config.xml",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] },
+        { "name": "config", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor update <job> <path/to/config.xml>"
       ]
     },
     "copy": {
@@ -101,6 +111,15 @@
       ],
       "examples": [
         "nestor delete job"
+      ]
+    },
+    "config": {
+      "desc": "Fetch the config.xml of an existing job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor config <job>"
       ]
     },
     "queue": {
