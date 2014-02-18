@@ -91,6 +91,18 @@ Fetch the config.xml of an existing job:
 
     nestor config <job>
 
+Create a new view with a specified config.xml:
+
+    nestor create-view <view> <path/to/config.xml>
+
+Update an existing view with a specified config.xml:
+
+    nestor update-view <view> <path/to/config.xml>
+
+Fetch the config.xml of an existing view:
+
+    nestor fetch-view-config <view>
+
 View queued jobs:
 
     nestor queue

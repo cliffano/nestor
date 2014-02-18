@@ -1,5 +1,5 @@
 ### 0.2.4-pre
-*
+* Add create-view, update-view, and fetch-view-config commands
 
 ### 0.2.3
 * Add enable and disable commands

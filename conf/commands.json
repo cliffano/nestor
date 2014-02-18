@@ -75,7 +75,7 @@
       ]
     },
     "create": {
-      "desc": "Create a new job with a specified config.xml",
+      "desc": "Create a new job with specified config.xml",
       "args": [
         { "name": "job", "rules": [ "notEmpty" ] },
         { "name": "config", "rules": [ "notEmpty" ] }
@@ -85,7 +85,7 @@
       ]
     },
     "update": {
-      "desc": "Update an existing job with a specified config.xml",
+      "desc": "Update an existing job with specified config.xml",
       "args": [
         { "name": "job", "rules": [ "notEmpty" ] },
         { "name": "config", "rules": [ "notEmpty" ] }
@@ -120,6 +120,35 @@
       ],
       "examples": [
         "nestor config <job>"
+      ]
+    },
+    "create-view": {
+      "desc": "Create a new view with specified config.xml",
+      "args": [
+        { "name": "view", "rules": [ "notEmpty" ] },
+        { "name": "config", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor create-view <view> <path/to/config.xml>"
+      ]
+    },
+    "update-view": {
+      "desc": "Update an existing view with specified config.xml",
+      "args": [
+        { "name": "view", "rules": [ "notEmpty" ] },
+        { "name": "config", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor update <job> <path/to/config.xml>"
+      ]
+    },
+    "fetch-view-config": {
+      "desc": "Fetch the config.xml of an existing view",
+      "args": [
+        { "name": "view", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor fetch-view-config <view>"
       ]
     },
     "queue": {
