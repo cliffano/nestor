@@ -56,70 +56,70 @@
         { "name": "job", "rules": [ "notEmpty" ] }
       ]
     },
-    "enable": {
-      "desc": "Enable a job",
-      "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
-      ],
-      "examples": [
-        "nestor enable <job>"
-      ]
-    },
-    "disable": {
-      "desc": "Disable a job",
-      "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
-      ],
-      "examples": [
-        "nestor disable <job>"
-      ]
-    },
-    "create": {
+    "create-job": {
       "desc": "Create a new job with specified config.xml",
       "args": [
         { "name": "job", "rules": [ "notEmpty" ] },
         { "name": "config", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor create <job> <path/to/config.xml>"
+        "nestor create-job <job> <path/to/config.xml>"
       ]
     },
-    "update": {
+    "update-job": {
       "desc": "Update an existing job with specified config.xml",
       "args": [
         { "name": "job", "rules": [ "notEmpty" ] },
         { "name": "config", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor update <job> <path/to/config.xml>"
+        "nestor update-job <job> <path/to/config.xml>"
       ]
     },
-    "copy": {
+    "delete-job": {
+      "desc": "Delete an existing job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor delete-job <job>"
+      ]
+    },
+    "enable-job": {
+      "desc": "Enable a job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor enable-job <job>"
+      ]
+    },
+    "disable-job": {
+      "desc": "Disable a job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor disable-job <job>"
+      ]
+    },
+    "copy-job": {
       "desc": "Copy an existing job",
       "args": [
         { "name": "job1", "rules": [ "notEmpty" ] },
         { "name": "job2", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor copy <job1> <job2>"
+        "nestor copy-job <job1> <job2>"
       ]
     },
-    "delete": {
-      "desc": "Delete an existing job",
-      "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
-      ],
-      "examples": [
-        "nestor delete <job>"
-      ]
-    },
-    "config": {
+    "fetch-job-config": {
       "desc": "Fetch the config.xml of an existing job",
       "args": [
         { "name": "job", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor config <job>"
+        "nestor fetch-job-config <job>"
       ]
     },
     "create-view": {
