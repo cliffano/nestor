@@ -730,6 +730,44 @@ buster.testCase('jenkins - job', {
   }
 });
 
+buster.testCase('jenkins - last', {
+    'should pass build data and date when build exists': function (done) {
+        var mockRequest = function (method, url, opts, cb) {
+            assert.equals(method, 'get');
+            assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/api/json');
+            opts.handlers[200]({ statusCode: 200, body: JSON.stringify({
+                result: 'SUCCESS',
+                building: false,
+                timestamp: 1395318976080
+            })}, cb);
+        };
+        this.stub(req, 'request', mockRequest);
+        var jenkins = new Jenkins('http://localhost:8080');
+        jenkins.last('job1', function (err, result) {
+            assert.isNull(err);
+            assert.equals(result.result, 'SUCCESS');
+            assert.equals(result.building, false);
+            assert.equals(result.buildDate, '2014-03-20T12:36:16.080Z');
+            assert.greater(result.buildDateDistance.length, 0);
+            done();
+        });
+    },
+    'should pass error when build does not exist': function (done) {
+        var mockRequest = function (method, url, opts, cb) {
+            assert.equals(method, 'get');
+            assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/api/json');
+            opts.handlers[404]({ statusCode: 404, body: 'somenotfounderror' }, cb);
+        };
+        this.stub(req, 'request', mockRequest);
+        var jenkins = new Jenkins('http://localhost:8080');
+        jenkins.last('job1', function (err, result) {
+            assert.equals(err.message, 'No build could be found for job job1');
+            assert.equals(result, undefined);
+            done();
+        });
+    }
+});
+
 buster.testCase('jenkins - queue', {
   'should pass job names when queue is not empty': function (done) {
     var mockRequest = function (method, url, opts, cb) {

@@ -56,6 +56,12 @@
         { "name": "job", "rules": [ "notEmpty" ] }
       ]
     },
+    "last": {
+        "desc": "View basic data on a job's last build",
+        "args": [
+            { "name": "job", "rules": [ "notEmpty" ] }
+        ]
+    },
     "create-job": {
       "desc": "Create a new job with specified config.xml",
       "args": [
