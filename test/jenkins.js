@@ -7,7 +7,9 @@ var buster = require('buster-node'),
   req = require('bagofrequest'),
   request = require('request'),
   text = require('bagoftext'),
-  assert = referee.assert;
+  assert = referee.assert,
+  refute = referee.refute;
+
 
 text.setLocale('en');
 
@@ -737,6 +739,7 @@ buster.testCase('jenkins - last', {
             assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/api/json');
             opts.handlers[200]({ statusCode: 200, body: JSON.stringify({
                 result: 'SUCCESS',
+                duration: 1000,
                 building: false,
                 timestamp: 1395318976080
             })}, cb);
@@ -747,8 +750,29 @@ buster.testCase('jenkins - last', {
             assert.isNull(err);
             assert.equals(result.result, 'SUCCESS');
             assert.equals(result.building, false);
+            assert.equals(result.buildDate, '2014-03-20T12:36:17.080Z');
+            assert.match(result.buildDateDistance, /^Ended .+$/);
+            done();
+        });
+    },
+    'should give the time from when the build started if it is currently running': function (done) {
+        var mockRequest = function (method, url, opts, cb) {
+            assert.equals(method, 'get');
+            assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/api/json');
+            opts.handlers[200]({ statusCode: 200, body: JSON.stringify({
+                building: true,
+                duration: 1000,
+                timestamp: 1395318976080
+            })}, cb);
+        };
+        this.stub(req, 'request', mockRequest);
+        var jenkins = new Jenkins('http://localhost:8080');
+        jenkins.last('job1', function (err, result) {
+            assert.isNull(err);
+            refute.defined(result.result);
+            assert.equals(result.building, true);
             assert.equals(result.buildDate, '2014-03-20T12:36:16.080Z');
-            assert.greater(result.buildDateDistance.length, 0);
+            assert.match(result.buildDateDistance, /^Started .+$/);
             done();
         });
     },
