@@ -1,12 +1,15 @@
+- params:
+    nestor: ../../../../../bin/nestor
+
 - description: Command help should display help information
-  command: ../../../../../bin/nestor --help
+  command: '{nestor} --help'
   exitcode: 0
   output: 'Usage: nestor'
 
 - description: Command dashboard should display status of all jobs
-  command: JENKINS_URL=http://ci.jenkins-ci.org ../../../../../bin/nestor dashboard
+  command: 'JENKINS_URL=http://ci.jenkins-ci.org {nestor} dashboard'
   exitcode: 0
 
 - description: Command dashboard should display status of all jobs
-  command: ../../../../../bin/nestor dashboard --url http://ci.jenkins-ci.org
+  command: '{nestor} dashboard --url http://ci.jenkins-ci.org'
   exitcode: 0
