@@ -1,12 +1,12 @@
 ### 0.2.4-pre
 * Add create-view, update-view, and fetch-view-config commands
-* Rename create command to create-job
-* Rename update command to update-job
-* Rename enable command to enable-job
-* Rename disable command to disable-job
-* Rename copy command to copy-job
-* Rename delete command to delete-job
-* Rename config command to fetch-job-config
+* Add create-job command, create command is now an alias of create-job
+* Add update-job command, update command is now an alias of update-job
+* Add enable-job command, enable command is now an alias of enable-job
+* Add disable-job command, disable command is now an alias of disable-job
+* Add copy-job command, copy command is now an alias of copy-job
+* Add delete-job command, delete command is now an alias of delete-job
+* Add fetch-job-config command, config command is now an alias of fetch-job-config
 
 ### 0.2.3
 * Add enable and disable commands
