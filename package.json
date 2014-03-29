@@ -41,10 +41,10 @@
     "feedparser": "~0.15.3",
     "irc": "~0.3.6",
     "lodash": "~2.4.1",
+    "moment": "~2.5.1",
     "ninja-blocks": "~0.1.3",
     "request": "~2.34.0",
-    "xml2js": "~0.4.1",
-    "moment": "~2.5.1"
+    "xml2js": "~0.4.1"
   },
   "devDependencies": {
     "buster-node": "~0.7.0",
