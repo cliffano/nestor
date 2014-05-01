@@ -7,6 +7,7 @@
 * Add copy-job command, copy command is now an alias of copy-job
 * Add delete-job command, delete command is now an alias of delete-job
 * Add fetch-job-config command, config command is now an alias of fetch-job-config
+* Add last command (@kelveden)
 
 ### 0.2.3
 * Add enable and disable commands
