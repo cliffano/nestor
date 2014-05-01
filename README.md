@@ -87,19 +87,19 @@ Delete an existing job:
 
     nestor delete <job>
 
-Fetch the config.xml of an existing job:
+Fetch the config.xml of an existing job: (experimental)
 
     nestor config <job>
 
-Create a new view with a specified config.xml:
+Create a new view with a specified config.xml: (experimental)
 
     nestor create-view <view> <path/to/config.xml>
 
-Update an existing view with a specified config.xml:
+Update an existing view with a specified config.xml: (experimental)
 
     nestor update-view <view> <path/to/config.xml>
 
-Fetch the config.xml of an existing view:
+Fetch the config.xml of an existing view: (experimental)
 
     nestor fetch-view-config <view>
 
