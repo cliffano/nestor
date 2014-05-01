@@ -1,4 +1,7 @@
-### 0.2.4-pre
+### 0.2.5-pre
+*
+
+### 0.2.4
 * Add create-view, update-view, and fetch-view-config commands
 * Add create-job command, create command is now an alias of create-job
 * Add update-job command, update command is now an alias of update-job
