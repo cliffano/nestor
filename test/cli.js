@@ -355,51 +355,51 @@ buster.testCase('cli - executor', {
   }
 });
 
-buster.testCase('cli - job', {
-  setUp: function () {
-    this.mockConsole = this.mock(console);
-    this.mockProcess = this.mock(process);
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.job.action('job1');
-    });
-  },
-  'should log job name, status, and reports when job exists': function () {
-    this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'job1', 'OK'.green);
-    this.mockConsole.expects('log').once().withExactArgs(' - %s', 'Coverage 100%');
-    this.mockConsole.expects('log').once().withExactArgs(' - %s', 'All good!');
-    this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'job', function (name, cb) {
-      assert.equals(name, 'job1');
-      cb(null, {
-        status: 'OK',
-        reports: ['Coverage 100%', 'All good!']
-      });
-    });
-    cli.exec();
-  },
-  'should use grey colour when job status is unknown': function () {
-    this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'job1', 'UNKNOWN'.grey);
-    this.mockConsole.expects('log').once().withExactArgs(' - %s', 'Coverage 100%');
-    this.mockConsole.expects('log').once().withExactArgs(' - %s', 'All good!');
-    this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'job', function (name, cb) {
-      cb(null, {
-        status: 'UNKNOWN',
-        reports: ['Coverage 100%', 'All good!']
-      });
-    });
-    cli.exec();
-  },
-  'should log job not found error when job does not exist': function () {
-    this.mockConsole.expects('error').once().withExactArgs('someerror'.red);
-    this.mockProcess.expects('exit').once().withExactArgs(1);
-    this.stub(Jenkins.prototype, 'job', function (name, cb) {
-      assert.equals(name, 'job1');
-      cb(new Error('someerror'));
-    });
-    cli.exec();
-  }
-});
+// buster.testCase('cli - job', {
+//   setUp: function () {
+//     this.mockConsole = this.mock(console);
+//     this.mockProcess = this.mock(process);
+//     this.stub(_cli, 'command', function (base, actions) {
+//       actions.commands.job.action('job1');
+//     });
+//   },
+//   'should log job name, status, and reports when job exists': function () {
+//     this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'job1', 'OK'.green);
+//     this.mockConsole.expects('log').once().withExactArgs(' - %s', 'Coverage 100%');
+//     this.mockConsole.expects('log').once().withExactArgs(' - %s', 'All good!');
+//     this.mockProcess.expects('exit').once().withExactArgs(0);
+//     this.stub(Jenkins.prototype, 'job', function (name, cb) {
+//       assert.equals(name, 'job1');
+//       cb(null, {
+//         status: 'OK',
+//         reports: ['Coverage 100%', 'All good!']
+//       });
+//     });
+//     cli.exec();
+//   },
+//   'should use grey colour when job status is unknown': function () {
+//     this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'job1', 'UNKNOWN'.grey);
+//     this.mockConsole.expects('log').once().withExactArgs(' - %s', 'Coverage 100%');
+//     this.mockConsole.expects('log').once().withExactArgs(' - %s', 'All good!');
+//     this.mockProcess.expects('exit').once().withExactArgs(0);
+//     this.stub(Jenkins.prototype, 'job', function (name, cb) {
+//       cb(null, {
+//         status: 'UNKNOWN',
+//         reports: ['Coverage 100%', 'All good!']
+//       });
+//     });
+//     cli.exec();
+//   },
+//   'should log job not found error when job does not exist': function () {
+//     this.mockConsole.expects('error').once().withExactArgs('someerror'.red);
+//     this.mockProcess.expects('exit').once().withExactArgs(1);
+//     this.stub(Jenkins.prototype, 'job', function (name, cb) {
+//       assert.equals(name, 'job1');
+//       cb(new Error('someerror'));
+//     });
+//     cli.exec();
+//   }
+// });
 
 buster.testCase('cli - last', {
     setUp: function () {
