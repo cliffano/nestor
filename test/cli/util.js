@@ -6,7 +6,7 @@ var assert  = referee.assert;
 
 text.setLocale('en');
 
-buster.testCase('util - statusByColor', {
+buster.testCase('cli - util - statusByColor', {
   'should show the correct status for all supported colors': function () {
     assert.equals(util.statusByColor('blue'), 'OK');
     assert.equals(util.statusByColor('green'), 'OK');

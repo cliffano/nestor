@@ -8,7 +8,7 @@ var assert  = referee.assert;
 
 text.setLocale('en');
 
-buster.testCase('view', {
+buster.testCase('cli - view', {
   setUp: function () {
     this.mockConsole = this.mock(console);
     this.mockFs      = this.mock(fs);
