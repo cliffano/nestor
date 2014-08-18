@@ -59,6 +59,16 @@ buster.testCase('http - job', {
     });
     job.delete('somejob', done);
   },
+  'stop - should send request to API endpoint': function (done) {
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'post');
+      assert.equals(url, 'http://localhost:8080/job/somejob/lastBuild/stop');
+      assert.defined(opts.handlers[200]);
+      assert.defined(opts.handlers[404]);
+      cb();
+    });
+    job.stop('somejob', done);
+  },
   'enable - should send request to API endpoint': function (done) {
     this.stub(req, 'request', function (method, url, opts, cb) {
       assert.equals(method, 'post');

@@ -96,6 +96,17 @@ buster.testCase('cli - job', {
 
     job.delete(this.mockArgsCb)('somejob', 'config.xml');
   },
+  'stop - should log job stopped success message': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was stopped successfully', 'somejob');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'stopJob', function (name, cb) {
+      assert.equals(name, 'somejob');
+      cb();
+    });
+
+    job.stop(this.mockArgsCb)('somejob', 'config.xml');
+  },
   'enable - should log job enabled success message': function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was enabled successfully', 'somejob');
     this.mockProcess.expects('exit').once().withExactArgs(0);

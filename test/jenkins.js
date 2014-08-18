@@ -693,44 +693,44 @@ buster.testCase('jenkins - executor', {
   }
 });
 
-buster.testCase('jenkins - job', {
-  'should pass job status and results when job exists': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/job1/api/json');
-      opts.handlers[200]({ statusCode: 200, body: JSON.stringify({
-        color: 'blue',
-        healthReport: [
-          { description: 'Coverage is 100%' },
-          { description: 'All system is go!' }
-        ]
-      })}, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.job('job1', function (err, result) {
-      assert.isNull(err);
-      assert.equals(result.status, 'OK');
-      assert.equals(result.reports[0], 'Coverage is 100%');
-      assert.equals(result.reports[1], 'All system is go!');
-      done();
-    });
-  },
-  'should pass error when job does not exist': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/job1/api/json');
-      opts.handlers[404]({ statusCode: 404, body: 'somenotfounderror' }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.job('job1', function (err, result) {
-      assert.equals(err.message, 'Job job1 does not exist');
-      assert.equals(result, undefined);
-      done();
-    });
-  }
-});
+// buster.testCase('jenkins - job', {
+//   'should pass job status and results when job exists': function (done) {
+//     var mockRequest = function (method, url, opts, cb) {
+//       assert.equals(method, 'get');
+//       assert.equals(url, 'http://localhost:8080/job/job1/api/json');
+//       opts.handlers[200]({ statusCode: 200, body: JSON.stringify({
+//         color: 'blue',
+//         healthReport: [
+//           { description: 'Coverage is 100%' },
+//           { description: 'All system is go!' }
+//         ]
+//       })}, cb);
+//     };
+//     this.stub(req, 'request', mockRequest);
+//     var jenkins = new Jenkins('http://localhost:8080');    
+//     jenkins.job('job1', function (err, result) {
+//       assert.isNull(err);
+//       assert.equals(result.status, 'OK');
+//       assert.equals(result.reports[0], 'Coverage is 100%');
+//       assert.equals(result.reports[1], 'All system is go!');
+//       done();
+//     });
+//   },
+//   'should pass error when job does not exist': function (done) {
+//     var mockRequest = function (method, url, opts, cb) {
+//       assert.equals(method, 'get');
+//       assert.equals(url, 'http://localhost:8080/job/job1/api/json');
+//       opts.handlers[404]({ statusCode: 404, body: 'somenotfounderror' }, cb);
+//     };
+//     this.stub(req, 'request', mockRequest);
+//     var jenkins = new Jenkins('http://localhost:8080');    
+//     jenkins.job('job1', function (err, result) {
+//       assert.equals(err.message, 'Job job1 does not exist');
+//       assert.equals(result, undefined);
+//       done();
+//     });
+//   }
+// });
 
 buster.testCase('jenkins - last', {
     'should pass build data and date when build exists': function (done) {
