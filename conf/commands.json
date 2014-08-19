@@ -35,12 +35,6 @@
         { "name": "job", "rules": [ "notEmpty" ] }
       ]
     },
-    "stop": {
-      "desc": "Stop the currently running build",
-      "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
-      ]
-    },
     "dashboard": {
       "desc": "View status of all jobs"
     },
@@ -130,6 +124,18 @@
       ],
       "examples": [
         "nestor delete-job <job>"
+      ]
+    },
+    "stop": {
+      "desc": "Alias for stop-job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ]
+    },
+    "stop-job": {
+      "desc": "Stop the currently running build",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
       ]
     },
     "enable": {

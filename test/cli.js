@@ -189,34 +189,6 @@ buster.testCase('cli - console', {
   }
 });
 
-buster.testCase('cli - stop', {
-  setUp: function () {
-    this.mockConsole = this.mock(console);
-    this.mockProcess = this.mock(process);
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.stop.action('job1');
-    });
-  },
-  'should log job started successfully when exec stop is called  and job exists': function () {
-    this.mockConsole.expects('log').once().withExactArgs('Job %s was stopped successfully', 'job1');
-    this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'stop', function (jobName, cb) {
-      assert.equals(jobName, 'job1');
-      cb();
-    });
-    cli.exec();
-  },
-  'should log job not found error when exec stop is called and job does not exist': function () {
-    this.mockConsole.expects('error').once().withExactArgs('Job not found'.red);
-    this.mockProcess.expects('exit').once().withExactArgs(1);
-    this.stub(Jenkins.prototype, 'stop', function (jobName, cb) {
-      assert.equals(jobName, 'job1');
-      cb(new Error('Job not found'));
-    });
-    cli.exec();
-  }
-});
-
 buster.testCase('cli - dashboard', {
   setUp: function () {
     this.mockConsole = this.mock(console);

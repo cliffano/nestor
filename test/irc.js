@@ -59,7 +59,7 @@ buster.testCase('irc - stop', {
     });
   },
   'should say job started successfully when stop is called  and job exists': function (done) {
-    this.stub(Jenkins.prototype, 'stop', function (jobName, cb) {
+    this.stub(Jenkins.prototype, 'stopJob', function (jobName, cb) {
       assert.equals(jobName, 'job1');
       cb(null, 'job1');
     });

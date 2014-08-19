@@ -379,37 +379,6 @@ buster.testCase('jenkins - console', {
   }
 });
 
-buster.testCase('jenkins - stop', {
-  'should pass error not found when job does not exist': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/stop');
-      opts.handlers[404]({ statusCode: 404 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.stop('job1', function (err, result) {
-      assert.equals(err.message, 'Job job1 does not exist');
-      assert.equals(result, undefined);
-      done();
-    });
-  },
-  'should give status code 200 when there is no error': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/stop');
-      opts.handlers[200]({ statusCode: 200 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.stop('job1', function (err, result) {
-      assert.isNull(err);
-      assert.equals(result, undefined);
-      done();
-    });
-  }
-});
-
 buster.testCase('jenkins - dashboard', {
   'should return empty data when dashboard has no job': function (done) {
     var mockRequest = function (method, url, opts, cb) {
