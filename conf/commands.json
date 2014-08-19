@@ -50,17 +50,21 @@
     "executor": {
       "desc": "View executors' status (running builds)"
     },
-    "job": {
-      "desc": "View job status reports",
-      "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
-      ]
-    },
     "last": {
         "desc": "View basic data on a job's last build",
         "args": [
             { "name": "job", "rules": [ "notEmpty" ] }
         ]
+    },
+    "create": {
+      "desc": "Alias for create-job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] },
+        { "name": "config", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor create <job> <path/to/config.xml>"
+      ]
     },
     "create-job": {
       "desc": "Create a new job with specified config.xml",
@@ -70,6 +74,34 @@
       ],
       "examples": [
         "nestor create-job <job> <path/to/config.xml>"
+      ]
+    },
+    "job": {
+      "desc": "Alias for read-job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor job <job>"
+      ]
+    },
+    "read-job": {
+      "desc": "View job status reports",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor read-job <job>"
+      ]
+    },
+    "update": {
+      "desc": "Alias for update-job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] },
+        { "name": "config", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor update <job> <path/to/config.xml>"
       ]
     },
     "update-job": {
@@ -82,6 +114,15 @@
         "nestor update-job <job> <path/to/config.xml>"
       ]
     },
+    "delete": {
+      "desc": "Alias for delete-job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor job <job>"
+      ]
+    },
     "delete-job": {
       "desc": "Delete an existing job",
       "args": [
@@ -89,6 +130,15 @@
       ],
       "examples": [
         "nestor delete-job <job>"
+      ]
+    },
+    "enable": {
+      "desc": "Alias for enable-job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor enable <job>"
       ]
     },
     "enable-job": {
@@ -100,6 +150,15 @@
         "nestor enable-job <job>"
       ]
     },
+    "disable": {
+      "desc": "Alias for disable-job",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor disable <job>"
+      ]
+    },
     "disable-job": {
       "desc": "Disable a job",
       "args": [
@@ -109,6 +168,16 @@
         "nestor disable-job <job>"
       ]
     },
+    "copy": {
+      "desc": "Alias for copy-job",
+      "args": [
+        { "name": "job1", "rules": [ "notEmpty" ] },
+        { "name": "job2", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor copy <existing_job> <new_job>"
+      ]
+    },
     "copy-job": {
       "desc": "Copy an existing job",
       "args": [
@@ -116,7 +185,16 @@
         { "name": "job2", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor copy-job <job1> <job2>"
+        "nestor copy-job <existing_job> <new_job>"
+      ]
+    },
+    "config": {
+      "desc": "Alias for fetch-job-config",
+      "args": [
+        { "name": "job", "rules": [ "notEmpty" ] }
+      ],
+      "examples": [
+        "nestor config <job>"
       ]
     },
     "fetch-job-config": {
@@ -129,7 +207,7 @@
       ]
     },
     "create-view": {
-      "desc": "Create a new view with specified config.xml",
+      "desc": "EXPERIMENTAL - Create a new view with specified config.xml",
       "args": [
         { "name": "view", "rules": [ "notEmpty" ] },
         { "name": "config", "rules": [ "notEmpty" ] }
@@ -139,13 +217,13 @@
       ]
     },
     "update-view": {
-      "desc": "Update an existing view with specified config.xml",
+      "desc": "EXPERIMENTAL - Update an existing view with specified config.xml",
       "args": [
         { "name": "view", "rules": [ "notEmpty" ] },
         { "name": "config", "rules": [ "notEmpty" ] }
       ],
       "examples": [
-        "nestor update <job> <path/to/config.xml>"
+        "nestor update <view> <path/to/config.xml>"
       ]
     },
     "fetch-view-config": {
