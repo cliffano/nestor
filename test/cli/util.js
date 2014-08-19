@@ -8,20 +8,20 @@ text.setLocale('en');
 
 buster.testCase('cli - util - statusByColor', {
   'should show the correct status for all supported colors': function () {
-    assert.equals(util.statusByColor('blue'), 'OK');
-    assert.equals(util.statusByColor('green'), 'OK');
-    assert.equals(util.statusByColor('grey'), 'ABORTED');
-    assert.equals(util.statusByColor('red'), 'FAIL');
-    assert.equals(util.statusByColor('yellow'), 'WARN');
+    assert.equals(util.statusByColor('blue'), 'ok');
+    assert.equals(util.statusByColor('green'), 'ok');
+    assert.equals(util.statusByColor('grey'), 'aborted');
+    assert.equals(util.statusByColor('red'), 'fail');
+    assert.equals(util.statusByColor('yellow'), 'warn');
   },
   'should show the correct status for actively running build': function () {
-    assert.equals(util.statusByColor('blue_anime'), 'OK');
-    assert.equals(util.statusByColor('green_anime'), 'OK');
-    assert.equals(util.statusByColor('grey_anime'), 'ABORTED');
-    assert.equals(util.statusByColor('red_anime'), 'FAIL');
-    assert.equals(util.statusByColor('yellow_anime'), 'WARN');
+    assert.equals(util.statusByColor('blue_anime'), 'ok');
+    assert.equals(util.statusByColor('green_anime'), 'ok');
+    assert.equals(util.statusByColor('grey_anime'), 'aborted');
+    assert.equals(util.statusByColor('red_anime'), 'fail');
+    assert.equals(util.statusByColor('yellow_anime'), 'warn');
   },
-  'should return undefined when status is unsupported': function () {
-    assert.equals(util.statusByColor('fuchsia'), undefined);
+  'should return value as-is when status is a real status value': function () {
+    assert.equals(util.statusByColor('notbuilt'), 'notbuilt');
   }
 });

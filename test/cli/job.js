@@ -32,7 +32,7 @@ buster.testCase('cli - job', {
 
     job.create(this.mockArgsCb)('somejob', 'config.xml');
   },
-  'read - should log job status and health reports': function () {
+  'read - should log job status with correct color and health reports': function () {
     this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'OK'.blue);
     this.mockConsole.expects('log').once().withExactArgs(' - %s', 'somereport1');
     this.mockConsole.expects('log').once().withExactArgs(' - %s', 'somereport2');
@@ -40,34 +40,34 @@ buster.testCase('cli - job', {
 
     this.stub(Jenkins.prototype, 'readJob', function (name, cb) {
       assert.equals(name, 'somejob');
-      var body = {
+      var result = {
         color: 'blue',
         healthReport: [
           { description: 'somereport1' },
           { description: 'somereport2' }
         ]
       };
-      cb(null, { body: JSON.stringify(body) });
+      cb(null, JSON.stringify(result));
     });
 
     job.read(this.mockArgsCb)('somejob');
   },
-  'read - should log status as UNKNOWN in grey color when color is unsupported': function () {
-    this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'UNKNOWN'.grey);
+  'read - should log status as-is in grey color when color is status value': function () {
+    this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'NOTBUILT'.grey);
     this.mockConsole.expects('log').once().withExactArgs(' - %s', 'somereport1');
     this.mockConsole.expects('log').once().withExactArgs(' - %s', 'somereport2');
     this.mockProcess.expects('exit').once().withExactArgs(0);
 
     this.stub(Jenkins.prototype, 'readJob', function (name, cb) {
       assert.equals(name, 'somejob');
-      var body = {
-        color: 'fuchsia',
+      var result = {
+        color: 'notbuilt',
         healthReport: [
           { description: 'somereport1' },
           { description: 'somereport2' }
         ]
       };
-      cb(null, { body: JSON.stringify(body) });
+      cb(null, JSON.stringify(result));
     });
 
     job.read(this.mockArgsCb)('somejob');
