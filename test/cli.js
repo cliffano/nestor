@@ -421,32 +421,32 @@ buster.testCase('cli - last', {
     }
 });
 
-buster.testCase('cli - queue', {
-  setUp: function () {
-    this.mockConsole = this.mock(console);
-    this.mockProcess = this.mock(process);
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.queue.action();
-    });
-  },
-  'should log queued job names when exec queue is called and there are some queued jobs': function () {
-    this.mockConsole.expects('log').once().withExactArgs('- %s', 'job1');
-    this.mockConsole.expects('log').once().withExactArgs('- %s', 'job2');
-    this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'queue', function (cb) {
-      cb(null, ['job1', 'job2']);
-    });
-    cli.exec();
-  },
-  'should log queue empty message when exec queue is called and there is no queued job': function () {
-    this.mockConsole.expects('log').once().withExactArgs('Queue is empty');
-    this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'queue', function (cb) {
-      cb(null, []);
-    });
-    cli.exec();
-  }
-});
+// buster.testCase('cli - queue', {
+//   setUp: function () {
+//     this.mockConsole = this.mock(console);
+//     this.mockProcess = this.mock(process);
+//     this.stub(_cli, 'command', function (base, actions) {
+//       actions.commands.queue.action();
+//     });
+//   },
+//   'should log queued job names when exec queue is called and there are some queued jobs': function () {
+//     this.mockConsole.expects('log').once().withExactArgs('- %s', 'job1');
+//     this.mockConsole.expects('log').once().withExactArgs('- %s', 'job2');
+//     this.mockProcess.expects('exit').once().withExactArgs(0);
+//     this.stub(Jenkins.prototype, 'queue', function (cb) {
+//       cb(null, ['job1', 'job2']);
+//     });
+//     cli.exec();
+//   },
+//   'should log queue empty message when exec queue is called and there is no queued job': function () {
+//     this.mockConsole.expects('log').once().withExactArgs('Queue is empty');
+//     this.mockProcess.expects('exit').once().withExactArgs(0);
+//     this.stub(Jenkins.prototype, 'queue', function (cb) {
+//       cb(null, []);
+//     });
+//     cli.exec();
+//   }
+// });
 
 buster.testCase('cli - ver', {
   setUp: function () {
