@@ -23,5 +23,34 @@ buster.testCase('http - job', {
       cb();
     });
     jenkins.readQueue(done);
+  },
+  'version - should pass version header value if exists': function (done) {
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'head');
+      assert.equals(url, 'http://localhost:8080');
+      assert.defined(opts.handlers[200]);
+
+      var result = { headers: { 'x-jenkins': '1.2.3' }};
+      opts.handlers[200](result, function (err, result) {
+        assert.equals(err, null);
+        assert.equals(result, '1.2.3');
+        cb();
+      });
+    });
+    jenkins.version(done);
+  },
+  'version - should pass error if version header value does not exist': function (done) {
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'head');
+      assert.equals(url, 'http://localhost:8080');
+      assert.defined(opts.handlers[200]);
+
+      var result = { headers: {}};
+      opts.handlers[200](result, function (err, result) {
+        assert.equals(err.message, 'Not a Jenkins server');
+        cb();
+      });
+    });
+    jenkins.version(done);
   }
 });

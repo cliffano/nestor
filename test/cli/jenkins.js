@@ -43,5 +43,15 @@ buster.testCase('cli - jenkins', {
     });
 
     jenkins.readQueue(this.mockArgsCb)();
+  },
+  'version - should log version when exec ver is called and version exists': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. 1.2.3');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'version', function (cb) {
+      cb(null, '1.2.3');
+    });
+
+    jenkins.version(this.mockArgsCb)();
   }
 });

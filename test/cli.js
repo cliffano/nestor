@@ -448,32 +448,32 @@ buster.testCase('cli - last', {
 //   }
 // });
 
-buster.testCase('cli - ver', {
-  setUp: function () {
-    this.mockConsole = this.mock(console);
-    this.mockProcess = this.mock(process);
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.ver.action();
-    });
-    this.stub(process, 'env', 'en_AU.UTF-8');
-  },
-  'should log version when exec ver is called and version exists': function () {
-    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. 1.2.3');
-    this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'version', function (cb) {
-      cb(null, '1.2.3');
-    });
-    cli.exec();
-  },
-  'should log error when exec ver is called and version does not exist': function () {
-    this.mockConsole.expects('error').once().withExactArgs('someerror'.red);
-    this.mockProcess.expects('exit').once().withExactArgs(1);
-    this.stub(Jenkins.prototype, 'version', function (cb) {
-      cb(new Error('someerror'));
-    });
-    cli.exec();
-  }
-});
+// buster.testCase('cli - ver', {
+//   setUp: function () {
+//     this.mockConsole = this.mock(console);
+//     this.mockProcess = this.mock(process);
+//     this.stub(_cli, 'command', function (base, actions) {
+//       actions.commands.ver.action();
+//     });
+//     this.stub(process, 'env', 'en_AU.UTF-8');
+//   },
+//   'should log version when exec ver is called and version exists': function () {
+//     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. 1.2.3');
+//     this.mockProcess.expects('exit').once().withExactArgs(0);
+//     this.stub(Jenkins.prototype, 'version', function (cb) {
+//       cb(null, '1.2.3');
+//     });
+//     cli.exec();
+//   },
+//   'should log error when exec ver is called and version does not exist': function () {
+//     this.mockConsole.expects('error').once().withExactArgs('someerror'.red);
+//     this.mockProcess.expects('exit').once().withExactArgs(1);
+//     this.stub(Jenkins.prototype, 'version', function (cb) {
+//       cb(new Error('someerror'));
+//     });
+//     cli.exec();
+//   }
+// });
 
 buster.testCase('cli - irc', {
   setUp: function () {
