@@ -1,5 +1,5 @@
-### 0.2.5-pre
-*
+### 0.3.0-pre
+* Reorganise code structure
 
 ### 0.2.4
 * Add create-view, update-view, and fetch-view-config commands
