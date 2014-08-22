@@ -15,14 +15,14 @@ buster.testCase('http - job', {
   tearDown: function () {
     delete jenkins.opts;
   },
-  'readQueue - should send request to API endpoint': function (done) {
+  'queue - should send request to API endpoint': function (done) {
     this.stub(req, 'request', function (method, url, opts, cb) {
       assert.equals(method, 'get');
       assert.equals(url, 'http://localhost:8080/queue/api/json');
       assert.defined(opts.handlers[200]);
       cb();
     });
-    jenkins.readQueue(done);
+    jenkins.queue(done);
   },
   'version - should pass version header value if exists': function (done) {
     this.stub(req, 'request', function (method, url, opts, cb) {

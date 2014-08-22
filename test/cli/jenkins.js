@@ -18,23 +18,23 @@ buster.testCase('cli - jenkins', {
       cb(jenkins);
     };
   },
-  'readQueue - should log queue empty message when there is no item': function () {
+  'queue - should log queue empty message when there is no item': function () {
     this.mockConsole.expects('log').once().withExactArgs('Queue is empty');
     this.mockProcess.expects('exit').once().withExactArgs(0);
 
-    this.stub(Jenkins.prototype, 'readQueue', function (cb) {
+    this.stub(Jenkins.prototype, 'queue', function (cb) {
       var result = { items: [] };
       cb(null, JSON.stringify(result));
     });
 
-    jenkins.readQueue(this.mockArgsCb)();
+    jenkins.queue(this.mockArgsCb)();
   },
-  'readQueue - should log job names when result contains items': function () {
+  'queue - should log job names when result contains items': function () {
     this.mockConsole.expects('log').once().withExactArgs('- %s', 'job1');
     this.mockConsole.expects('log').once().withExactArgs('- %s', 'job2');
     this.mockProcess.expects('exit').once().withExactArgs(0);
 
-    this.stub(Jenkins.prototype, 'readQueue', function (cb) {
+    this.stub(Jenkins.prototype, 'queue', function (cb) {
       var result = { items: [
         { task: { name: 'job1' }},
         { task: { name: 'job2' }}
@@ -42,7 +42,7 @@ buster.testCase('cli - jenkins', {
       cb(null, JSON.stringify(result));
     });
 
-    jenkins.readQueue(this.mockArgsCb)();
+    jenkins.queue(this.mockArgsCb)();
   },
   'version - should log version when exec ver is called and version exists': function () {
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. 1.2.3');

@@ -722,46 +722,6 @@ buster.testCase('jenkins - last', {
     }
 });
 
-buster.testCase('jenkins - queue', {
-  'should pass job names when queue is not empty': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/queue/api/json');
-      opts.handlers[200]({ statusCode: 200, body: JSON.stringify({
-        items: [
-          { task: { name: 'job1' }},
-          { task: { name: 'job2' }}
-        ]
-      })}, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.queue(function (err, result) {
-      assert.isNull(err);
-      assert.equals(result.length, 2);
-      assert.equals(result[0], 'job1');
-      assert.equals(result[1], 'job2');
-      done();
-    });
-  },
-  'should pass empty job names when queue is empty': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/queue/api/json');
-      opts.handlers[200]({ statusCode: 200, body: JSON.stringify({
-        items: []
-      })}, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.queue(function (err, result) {
-      assert.isNull(err);
-      assert.equals(result.length, 0);
-      done();
-    });
-  }
-});
-
 buster.testCase('jenkins - feed', {
   setUp: function () {
     this.mockFeedParser = this.mock(feedparser);
