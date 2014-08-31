@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "async": "~0.2.10",
-    "bagofcli": "~0.0.8",
+    "bagofcli": "~0.1.0",
     "bagofrequest": "~0.0.6",
     "bagoftext": "~0.0.3",
     "buildlight": "~0.0.6",

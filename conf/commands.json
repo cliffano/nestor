@@ -7,7 +7,7 @@
     "build": {
       "desc": "Trigger a build with optional parameters",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] },
+        { "name": "job", "rules": [ "required" ] },
         { "name": "params", "optional": true }
       ],
       "options": [
@@ -32,7 +32,7 @@
     "console": {
       "desc": "Display latest build console output",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ]
     },
     "dashboard": {
@@ -47,14 +47,14 @@
     "last": {
         "desc": "View basic data on a job's last build",
         "args": [
-            { "name": "job", "rules": [ "notEmpty" ] }
+            { "name": "job", "rules": [ "required" ] }
         ]
     },
     "create": {
       "desc": "Alias for create-job",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] },
-        { "name": "config", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] },
+        { "name": "config", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor create <job> <path/to/config.xml>"
@@ -63,8 +63,8 @@
     "create-job": {
       "desc": "Create a new job with specified config.xml",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] },
-        { "name": "config", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] },
+        { "name": "config", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor create-job <job> <path/to/config.xml>"
@@ -73,7 +73,7 @@
     "job": {
       "desc": "Alias for read-job",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor job <job>"
@@ -82,7 +82,7 @@
     "read-job": {
       "desc": "View job status reports",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor read-job <job>"
@@ -91,8 +91,8 @@
     "update": {
       "desc": "Alias for update-job",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] },
-        { "name": "config", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] },
+        { "name": "config", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor update <job> <path/to/config.xml>"
@@ -101,8 +101,8 @@
     "update-job": {
       "desc": "Update an existing job with specified config.xml",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] },
-        { "name": "config", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] },
+        { "name": "config", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor update-job <job> <path/to/config.xml>"
@@ -111,7 +111,7 @@
     "delete": {
       "desc": "Alias for delete-job",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor job <job>"
@@ -120,7 +120,7 @@
     "delete-job": {
       "desc": "Delete an existing job",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor delete-job <job>"
@@ -129,19 +129,19 @@
     "stop": {
       "desc": "Alias for stop-job",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ]
     },
     "stop-job": {
       "desc": "Stop the currently running build",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ]
     },
     "enable": {
       "desc": "Alias for enable-job",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor enable <job>"
@@ -150,7 +150,7 @@
     "enable-job": {
       "desc": "Enable a job",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor enable-job <job>"
@@ -159,7 +159,7 @@
     "disable": {
       "desc": "Alias for disable-job",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor disable <job>"
@@ -168,7 +168,7 @@
     "disable-job": {
       "desc": "Disable a job",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor disable-job <job>"
@@ -177,8 +177,8 @@
     "copy": {
       "desc": "Alias for copy-job",
       "args": [
-        { "name": "job1", "rules": [ "notEmpty" ] },
-        { "name": "job2", "rules": [ "notEmpty" ] }
+        { "name": "job1", "rules": [ "required" ] },
+        { "name": "job2", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor copy <existing_job> <new_job>"
@@ -187,8 +187,8 @@
     "copy-job": {
       "desc": "Copy an existing job",
       "args": [
-        { "name": "job1", "rules": [ "notEmpty" ] },
-        { "name": "job2", "rules": [ "notEmpty" ] }
+        { "name": "job1", "rules": [ "required" ] },
+        { "name": "job2", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor copy-job <existing_job> <new_job>"
@@ -197,7 +197,7 @@
     "config": {
       "desc": "Alias for fetch-job-config",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor config <job>"
@@ -206,7 +206,7 @@
     "fetch-job-config": {
       "desc": "Fetch the config.xml of an existing job",
       "args": [
-        { "name": "job", "rules": [ "notEmpty" ] }
+        { "name": "job", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor fetch-job-config <job>"
@@ -215,8 +215,8 @@
     "create-view": {
       "desc": "EXPERIMENTAL - Create a new view with specified config.xml",
       "args": [
-        { "name": "view", "rules": [ "notEmpty" ] },
-        { "name": "config", "rules": [ "notEmpty" ] }
+        { "name": "view", "rules": [ "required" ] },
+        { "name": "config", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor create-view <view> <path/to/config.xml>"
@@ -225,8 +225,8 @@
     "update-view": {
       "desc": "EXPERIMENTAL - Update an existing view with specified config.xml",
       "args": [
-        { "name": "view", "rules": [ "notEmpty" ] },
-        { "name": "config", "rules": [ "notEmpty" ] }
+        { "name": "view", "rules": [ "required" ] },
+        { "name": "config", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor update <view> <path/to/config.xml>"
@@ -235,7 +235,7 @@
     "fetch-view-config": {
       "desc": "Fetch the config.xml of an existing view",
       "args": [
-        { "name": "view", "rules": [ "notEmpty" ] }
+        { "name": "view", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor fetch-view-config <view>"
@@ -250,9 +250,9 @@
     "irc": {
       "desc": "Start an IRC bot",
       "args": [
-        { "name": "host", "rules": [ "notEmpty" ] },
-        { "name": "channel", "rules": [ "notEmpty" ] },
-        { "name": "nick", "rules": [ "notEmpty" ] }
+        { "name": "host", "rules": [ "required" ] },
+        { "name": "channel", "rules": [ "required" ] },
+        { "name": "nick", "rules": [ "required" ] }
       ],
       "examples": [
         "nestor irc <host> <channel> <nick>"
