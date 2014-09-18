@@ -136,14 +136,6 @@ Monitor build status and notify Ninja Blocks RGB LED device:
     export NINJABLOCKS_TOKEN=<token_from_https://a.ninja.is/hacking>
     nestor ninja
 
-Monitor build status and notify Delcom USB Visual Indicator build light device:
-
-    nestor buildlight
-    
-Monitor build status on a Delcom build light with custom view and usbled path:
-
-    nestor buildlight --view <view> --usbled /sys/bus/usb/drivers/usbled/2-1.5:1.0
-
 Programmatically:
 
     var nestor = new (require('nestor'))(

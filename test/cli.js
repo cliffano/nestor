@@ -1,6 +1,4 @@
 var buster = require('buster-node'),
-  _BuildLight = require('buildlight'),
-  BuildLight = require('../lib/notifiers/buildlight'),
   _cli = require('bagofcli'),
   cli = require('../lib/cli'),
   irc = require('../lib/irc'),
@@ -39,7 +37,6 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands.irc.action);
       assert.defined(actions.commands.feed.action);
       assert.defined(actions.commands.ninja.action);
-      assert.defined(actions.commands.buildlight.action);
       done();
     };
     this.stub(_cli, 'command', mockCommand);
@@ -578,45 +575,6 @@ buster.testCase('cli - ninja', {
       cb(null, 'OK');
     });
     this.stub(NinjaBlocks.prototype, 'notify', function (result) {
-      assert.equals(result, 'OK');
-      done();
-    });
-    cli.exec();
-  }
-});
-
-buster.testCase('cli - buildlight', {
-  setUp: function () {
-    this.mockConsole = this.mock(console);
-    this.stub(_BuildLight.prototype, '_driver', function () {});
-  },
-  'should notify buildlight when there is no monitoring error': function (done) {
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.buildlight.action({ job: 'somejob', schedule: '* * * * * *', scheme: 'red,green,blue', usbled: '/some/usbled/path', blinkOnFailure: true });
-    });
-    this.stub(Jenkins.prototype, 'monitor', function (opts, cb) {
-      assert.equals(opts.jobName, 'somejob');
-      assert.equals(opts.viewName, undefined);
-      assert.equals(opts.schedule, '* * * * * *');
-      cb(null, 'OK');
-    });
-    this.stub(BuildLight.prototype, 'notify', function (result) {
-      assert.equals(result, 'OK');
-      done();
-    });
-    cli.exec();
-  },
-  'should monitor using default settings': function (done) {
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.buildlight.action({});
-    });
-    this.stub(Jenkins.prototype, 'monitor', function (opts, cb) {
-      assert.equals(opts.jobName, undefined);
-      assert.equals(opts.viewName, undefined);
-      assert.equals(opts.schedule, undefined);
-      cb(null, 'OK');
-    });
-    this.stub(BuildLight.prototype, 'notify', function (result) {
       assert.equals(result, 'OK');
       done();
     });
