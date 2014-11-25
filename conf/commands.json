@@ -268,17 +268,6 @@
         "nestor --job <job> feed",
         "nestor --view <view> feed"
       ]
-    },
-    "ninja": {
-      "desc": "Display latest build status on Ninja Blocks RGB LED",
-      "options": [
-        { "arg": "-j, --job <job>", "desc": "Jenkins job name" },
-        { "arg": "-v, --view <view>", "desc": "Jenkins view name" },
-        { "arg": "-s, --schedule <schedule>", "desc": "Cron scheduling definition, default: 0 * * * * * (every minute)" }
-      ],
-      "examples": [
-        "export NINJABLOCKS_TOKEN=token nestor ninja"
-      ]
     }
   }
 }

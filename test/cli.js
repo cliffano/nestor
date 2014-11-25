@@ -3,7 +3,6 @@ var buster = require('buster-node'),
   cli = require('../lib/cli'),
   irc = require('../lib/irc'),
   Jenkins = new require('../lib/jenkins'),
-  NinjaBlocks = require('../lib/notifiers/ninjablocks'),
   referee = require('referee'),
   text = require('bagoftext'),
   util = require('util'),
@@ -36,7 +35,6 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands.ver.action);
       assert.defined(actions.commands.irc.action);
       assert.defined(actions.commands.feed.action);
-      assert.defined(actions.commands.ninja.action);
       done();
     };
     this.stub(_cli, 'command', mockCommand);
@@ -526,57 +524,6 @@ buster.testCase('cli - feed', {
       assert.equals(opts.jobName, 'somejob');
       assert.equals(opts.viewName, undefined);
       cb(new Error('some error'));
-    });
-    cli.exec();
-  }
-});
-
-buster.testCase('cli - ninja', {
-  setUp: function () {
-    this.mockConsole = this.mock(console);
-  },
-  'should log monitoring error': function () {
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.ninja.action({ job: 'somejob', schedule: '* * * * * *' });
-    });
-    this.mockConsole.expects('error').once().withExactArgs('some error');
-    this.stub(Jenkins.prototype, 'monitor', function (opts, cb) {
-      assert.equals(opts.jobName, 'somejob');
-      assert.equals(opts.viewName, undefined);
-      assert.equals(opts.schedule, '* * * * * *');
-      cb(new Error('some error'));
-    });
-    cli.exec();
-  },
-  'should notify ninjablocks when there is no monitoring error': function (done) {
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.ninja.action({ job: 'somejob', schedule: '* * * * * *' });
-    });
-    this.stub(Jenkins.prototype, 'monitor', function (opts, cb) {
-      assert.equals(opts.jobName, 'somejob');
-      assert.equals(opts.viewName, undefined);
-      assert.equals(opts.schedule, '* * * * * *');
-      cb(null, 'OK');
-    });
-    this.stub(NinjaBlocks.prototype, 'notify', function (result) {
-      assert.equals(result, 'OK');
-      done();
-    });
-    cli.exec();
-  },
-  'should set job and schedule to null when there is no string argument': function (done) {
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.ninja.action();
-    });
-    this.stub(Jenkins.prototype, 'monitor', function (opts, cb) {
-      assert.equals(opts.jobName, undefined);
-      assert.equals(opts.viewName, undefined);
-      assert.equals(opts.schedule, undefined);
-      cb(null, 'OK');
-    });
-    this.stub(NinjaBlocks.prototype, 'notify', function (result) {
-      assert.equals(result, 'OK');
-      done();
     });
     cli.exec();
   }
