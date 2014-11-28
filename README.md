@@ -185,13 +185,15 @@ To add a new language translation:
 Colophon
 --------
 
-* [Monitor Jenkins From The Terminal](http://blog.cliffano.com/2013/09/13/monitor-jenkins-from-the-terminal/)
-* [Jenkins Build Status On Ninja Blocks RGB LED](http://blog.cliffano.com/2013/04/08/jenkins-build-status-on-ninja-blocks-rgb-led/)
+[Developer's Guide](http://cliffano.github.io/developers_guide.html#nodejs)
+
+Articles:
+
 * [Nestor – A Faster And Simpler CLI For Jenkins](http://blog.cliffano.com/2011/10/22/nestor-a-faster-and-simpler-cli-for-jenkins/)
+* [Monitor Jenkins From The Terminal](http://blog.cliffano.com/2013/09/13/monitor-jenkins-from-the-terminal/)
 * [Using Node.js To Discover Jenkins On The Network](http://blog.cliffano.com/2011/08/04/using-nodejs-to-discover-jenkins-on-the-network/)
 
-Related Projects
-----------------
+Related Projects:
 
 * [nestor-buildlight](http://github.com/cliffano/nestor-buildlight) - CLI for Jenkins build light notifier
 * [nestor-ninjablocks](http://github.com/cliffano/nestor-ninjablocks) - CLI for Jenkins Ninja Blocks notifier
