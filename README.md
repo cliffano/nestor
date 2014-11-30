@@ -187,6 +187,14 @@ Colophon
 
 [Developer's Guide](http://cliffano.github.io/developers_guide.html#nodejs)
 
+Build reports:
+
+* [Code complexity report](http://cliffano.github.io/nestor/bob/complexity/plato/index.html)
+* [Unit tests report](http://cliffano.github.io/nestor/bob/test/buster.out)
+* [Test coverage report](http://cliffano.github.io/nestor/bob/coverage/buster-istanbul/lcov-report/lib/index.html)
+* [Integration tests report](http://cliffano.github.io/nestor/bob/test-integration/cmdt.out)
+* [API Documentation](http://cliffano.github.io/nestor/bob/doc/dox-foundation/index.html)
+
 Articles:
 
 * [Nestor – A Faster And Simpler CLI For Jenkins](http://blog.cliffano.com/2011/10/22/nestor-a-faster-and-simpler-cli-for-jenkins/)
