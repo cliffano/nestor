@@ -214,69 +214,6 @@ buster.testCase('cli - dashboard', {
   }
 });
 
-buster.testCase('cli - discover', {
-  setUp: function () {
-    this.mockConsole = this.mock(console);
-    this.mockProcess = this.mock(process);
-  },
-  'should log version and url when exec discover is called and there is a running Jenkins instance': function () {
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.discover.action();
-    });
-    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'http://localhost:8080/');
-    this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'discover', function (host, cb) {
-      assert.equals(host, 'localhost');
-      cb(null, {
-        hudson: {
-          version: ['1.2.3'],
-          url: ['http://localhost:8080/'],
-          'server-id': ['362f249fc053c1ede86a218587d100ce'],
-          'slave-port': ['55325']
-        }
-      });
-    });
-    cli.exec();
-  },
-  'should log version and url when exec discover is called with specified host': function () {
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.discover.action('somehost', {});
-    });
-    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'http://localhost:8080/');
-    this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'discover', function (host, cb) {
-      assert.equals(host, 'somehost');
-      cb(null, {
-        hudson: {
-          version: ['1.2.3'],
-          url: ['http://localhost:8080/'],
-          'server-id': ['362f249fc053c1ede86a218587d100ce'],
-          'slave-port': ['55325']
-        }
-      });
-    });
-    cli.exec();
-  },
-  'should log host instead of url when exec discover result does not include any url': function () {
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.discover.action();
-    });
-    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'localhost');
-    this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'discover', function (host, cb) {
-      assert.equals(host, 'localhost');
-      cb(null, {
-        hudson: {
-          version: ['1.2.3'],
-          'server-id': ['362f249fc053c1ede86a218587d100ce'],
-          'slave-port': ['55325']
-        }
-      });
-    });
-    cli.exec();
-  }
-});
-
 buster.testCase('cli - executor', {
   setUp: function () {
     this.mockConsole = this.mock(console);
