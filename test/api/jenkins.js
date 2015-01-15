@@ -1,6 +1,6 @@
 var buster  = require('buster-node');
 var dgram   = require('dgram');
-var jenkins = require('../../lib/http/jenkins');
+var jenkins = require('../../lib/api/jenkins');
 var referee = require('referee');
 var req     = require('bagofrequest');
 var text    = require('bagoftext');

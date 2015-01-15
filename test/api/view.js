@@ -1,5 +1,5 @@
 var buster  = require('buster-node');
-var view    = require('../../lib/http/view');
+var view    = require('../../lib/api/view');
 var referee = require('referee');
 var req     = require('bagofrequest');
 var text    = require('bagoftext');

@@ -1,5 +1,5 @@
 var buster  = require('buster-node');
-var job     = require('../../lib/http/job');
+var job     = require('../../lib/api/job');
 var referee = require('referee');
 var req     = require('bagofrequest');
 var text    = require('bagoftext');

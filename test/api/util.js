@@ -1,5 +1,5 @@
 var buster  = require('buster-node');
-var util    = require('../../lib/http/util');
+var util    = require('../../lib/api/util');
 var referee = require('referee');
 var text    = require('bagoftext');
 var assert  = referee.assert;
