@@ -12,7 +12,7 @@
 * Add copy-job command, copy command is now an alias of copy-job
 * Add delete-job command, delete command is now an alias of delete-job
 * Add fetch-job-config command, config command is now an alias of fetch-job-config
-* Add last command (@kelveden)
+* Add last command [Alistair Dutton](https://github.com/kelveden)
 
 ### 0.2.3
 * Add enable and disable commands
@@ -69,7 +69,7 @@
 * Move proxy environment variable handling to bag.http.request and bag.http.proxy
 * Add feed command
 * Add jenkins#monitor and ninja command
-* Add jenkins#consoleStream (Whyme Lyu)
+* Add jenkins#consoleStream [Whyme Lyu](https://github.com/5long)
 * Add -p/--pending flag to build command
 
 ### 0.1.1
