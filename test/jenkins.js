@@ -186,7 +186,7 @@ buster.testCase('jenkins - filteredBuild', {
       cb();
     };
     jenkins.filteredBuild(null, function (err, result) {
-      assert.isNull(err);
+      assert.equals(err, undefined);
       done();
     });
   },
@@ -204,7 +204,7 @@ buster.testCase('jenkins - filteredBuild', {
       cb();
     };
     jenkins.filteredBuild({ status: 'FAIL' }, function (err, result) {
-      assert.isNull(err);
+      assert.equals(err, undefined);
       done();
     });
   },
