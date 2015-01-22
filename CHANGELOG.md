@@ -1,4 +1,5 @@
 ### 0.3.0-pre
+* Modify Jenkins module to pass Jenkins REST API as-is, update method names (NOTE: backward incompatible with <= 0.2.x)
 * Reorganise code structure
 * Move buildlight support to http://github.com/cliffano/nestor-buildlight
 * Move ninjablocks support to http://github.com/cliffano/nestor-ninjablocks
