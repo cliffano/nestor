@@ -3,6 +3,7 @@
 * Reorganise code structure
 * Move buildlight support to http://github.com/cliffano/nestor-buildlight
 * Move ninjablocks support to http://github.com/cliffano/nestor-ninjablocks
+* dashboard and job commands no longer force status display in uppercase
 
 ### 0.2.4
 * Add create-view, update-view, and fetch-view-config commands
