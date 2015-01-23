@@ -72,48 +72,48 @@ buster.testCase('irc - stop', {
   }
 });
 
-buster.testCase('irc - dashboard', {
-  setUp: function () {
-    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
-      assert.equals(host, 'somehost');
-      assert.equals(channel, 'somechannel');
-      assert.equals(opts.nick, 'somenick');
-      this.commands.dashboard();
-    });
-  },
-  'should say jobs status and name when dashboard is called and Jenkins result has jobs': function (done) {
-    var result = [];
-    this.stub(Jenkins.prototype, 'dashboard', function (cb) {
-      cb(null, [
-        { status: 'OK', name: 'job1' },
-        { status: 'FAIL', name: 'job2' }
-      ]);
-    });
-    this.stub(Bot.prototype, 'say', function () {
-      result.push(arguments);
-      if (result.length === 2) {
-        assert.equals(result[0][0], '%s - %s');
-        assert.equals(result[0][1], 'OK');
-        assert.equals(result[0][2], 'job1');
-        assert.equals(result[1][0], '%s - %s');
-        assert.equals(result[1][1], 'FAIL');
-        assert.equals(result[1][2], 'job2');
-        done();
-      }
-    });
-    irc.start('somehost', 'somechannel', 'somenick');
-  },
-  'should say no job when dashboard is called and Jenkins result has no job': function (done) {
-    this.stub(Jenkins.prototype, 'dashboard', function (cb) {
-      cb(null, []);
-    });
-    this.stub(Bot.prototype, 'say', function (format, data) {
-      assert.equals(format, 'Jobless Jenkins');
-      done();
-    });
-    irc.start('somehost', 'somechannel', 'somenick');
-  }
-});
+// buster.testCase('irc - dashboard', {
+//   setUp: function () {
+//     this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
+//       assert.equals(host, 'somehost');
+//       assert.equals(channel, 'somechannel');
+//       assert.equals(opts.nick, 'somenick');
+//       this.commands.dashboard();
+//     });
+//   },
+//   'should say jobs status and name when dashboard is called and Jenkins result has jobs': function (done) {
+//     var result = [];
+//     this.stub(Jenkins.prototype, 'dashboard', function (cb) {
+//       cb(null, [
+//         { status: 'OK', name: 'job1' },
+//         { status: 'FAIL', name: 'job2' }
+//       ]);
+//     });
+//     this.stub(Bot.prototype, 'say', function () {
+//       result.push(arguments);
+//       if (result.length === 2) {
+//         assert.equals(result[0][0], '%s - %s');
+//         assert.equals(result[0][1], 'OK');
+//         assert.equals(result[0][2], 'job1');
+//         assert.equals(result[1][0], '%s - %s');
+//         assert.equals(result[1][1], 'FAIL');
+//         assert.equals(result[1][2], 'job2');
+//         done();
+//       }
+//     });
+//     irc.start('somehost', 'somechannel', 'somenick');
+//   },
+//   'should say no job when dashboard is called and Jenkins result has no job': function (done) {
+//     this.stub(Jenkins.prototype, 'dashboard', function (cb) {
+//       cb(null, []);
+//     });
+//     this.stub(Bot.prototype, 'say', function (format, data) {
+//       assert.equals(format, 'Jobless Jenkins');
+//       done();
+//     });
+//     irc.start('somehost', 'somechannel', 'somenick');
+//   }
+// });
 
 buster.testCase('irc - discover', {
   'should say version and url when discover is called and there is a running Jenkins instance': function (done) {
@@ -195,72 +195,72 @@ buster.testCase('irc - discover', {
   }
 });
 
-buster.testCase('irc - executor', {
-  setUp: function () {
-    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
-      assert.equals(host, 'somehost');
-      assert.equals(channel, 'somechannel');
-      assert.equals(opts.nick, 'somenick');
-      this.commands.executor();
-    });
-  },
-  'should say executor status when executor is called and there are some executors': function (done) {
-    var result = [];
-    this.stub(Jenkins.prototype, 'executor', function (cb) {
-      cb(null, {
-        master: {
-          executors: [
-            { idle: true },
-            { idle: false, name: 'job1', progress: 5 },
-            { idle: false, progress: 33 }
-          ],
-          summary: '2 active, 1 idle'
-        },
-        slave: {
-          executors: [
-            { idle: false, stuck: true, name: 'job2' , progress: 11 }
-          ],
-          summary: '1 active'
-        }
-      });
-    });
-    this.stub(Bot.prototype, 'say', function () {
-      result.push(arguments);
-      if (result.length === 5) {
-        assert.equals(result[0][0], '+ %s | %s');
-        assert.equals(result[0][1], 'master');
-        assert.equals(result[0][2], '2 active, 1 idle');
-        assert.equals(result[1][0], '  - %s | %s%%s');
-        assert.equals(result[1][1], 'job1');
-        assert.equals(result[1][2], 5);
-        assert.equals(result[1][3], '');
-        assert.equals(result[2][0], '  - %s | %s%%s');
-        assert.equals(result[2][1], undefined);
-        assert.equals(result[2][2], 33);
-        assert.equals(result[2][3], '');
-        assert.equals(result[3][0], '+ %s | %s');
-        assert.equals(result[3][1], 'slave');
-        assert.equals(result[3][2], '1 active');
-        assert.equals(result[4][0], '  - %s | %s%%s');
-        assert.equals(result[4][1], 'job2');
-        assert.equals(result[4][2], 11);
-        assert.equals(result[4][3], ' stuck!');
-        done();
-      }
-    });
-    irc.start('somehost', 'somechannel', 'somenick');
-  },
-  'should say no executor found when executor is called and there is no executor': function (done) {
-    this.stub(Jenkins.prototype, 'executor', function (cb) {
-      cb(null, {});
-    });
-    this.stub(Bot.prototype, 'say', function (format, data) {
-      assert.equals(format, 'No executor found');
-      done();
-    });
-    irc.start('somehost', 'somechannel', 'somenick');
-  }
-});
+// buster.testCase('irc - executor', {
+//   setUp: function () {
+//     this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
+//       assert.equals(host, 'somehost');
+//       assert.equals(channel, 'somechannel');
+//       assert.equals(opts.nick, 'somenick');
+//       this.commands.executor();
+//     });
+//   },
+//   'should say executor status when executor is called and there are some executors': function (done) {
+//     var result = [];
+//     this.stub(Jenkins.prototype, 'executor', function (cb) {
+//       cb(null, {
+//         master: {
+//           executors: [
+//             { idle: true },
+//             { idle: false, name: 'job1', progress: 5 },
+//             { idle: false, progress: 33 }
+//           ],
+//           summary: '2 active, 1 idle'
+//         },
+//         slave: {
+//           executors: [
+//             { idle: false, stuck: true, name: 'job2' , progress: 11 }
+//           ],
+//           summary: '1 active'
+//         }
+//       });
+//     });
+//     this.stub(Bot.prototype, 'say', function () {
+//       result.push(arguments);
+//       if (result.length === 5) {
+//         assert.equals(result[0][0], '+ %s | %s');
+//         assert.equals(result[0][1], 'master');
+//         assert.equals(result[0][2], '2 active, 1 idle');
+//         assert.equals(result[1][0], '  - %s | %s%%s');
+//         assert.equals(result[1][1], 'job1');
+//         assert.equals(result[1][2], 5);
+//         assert.equals(result[1][3], '');
+//         assert.equals(result[2][0], '  - %s | %s%%s');
+//         assert.equals(result[2][1], undefined);
+//         assert.equals(result[2][2], 33);
+//         assert.equals(result[2][3], '');
+//         assert.equals(result[3][0], '+ %s | %s');
+//         assert.equals(result[3][1], 'slave');
+//         assert.equals(result[3][2], '1 active');
+//         assert.equals(result[4][0], '  - %s | %s%%s');
+//         assert.equals(result[4][1], 'job2');
+//         assert.equals(result[4][2], 11);
+//         assert.equals(result[4][3], ' stuck!');
+//         done();
+//       }
+//     });
+//     irc.start('somehost', 'somechannel', 'somenick');
+//   },
+//   'should say no executor found when executor is called and there is no executor': function (done) {
+//     this.stub(Jenkins.prototype, 'executor', function (cb) {
+//       cb(null, {});
+//     });
+//     this.stub(Bot.prototype, 'say', function (format, data) {
+//       assert.equals(format, 'No executor found');
+//       done();
+//     });
+//     irc.start('somehost', 'somechannel', 'somenick');
+//   }
+// });
 
 buster.testCase('irc - job', {
   setUp: function () {

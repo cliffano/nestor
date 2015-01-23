@@ -28,6 +28,15 @@ buster.testCase('http - view', {
     });
     view.create('someview', '<xml>some config</xml>', done);
   },
+  'read - should send request to API endpoint': function (done) {
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/view/someview/api/json');
+      assert.defined(opts.handlers[200]);
+      cb();
+    });
+    view.read('someview', done);
+  },
   'update - should send request to API endpoint': function (done) {
     this.stub(req, 'request', function (method, url, opts, cb) {
       assert.equals(method, 'post');

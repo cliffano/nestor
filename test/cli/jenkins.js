@@ -18,6 +18,66 @@ buster.testCase('cli - jenkins', {
       cb(jenkins);
     };
   },
+  'dashboard - should log Jobless Jenkins when exec dashboard is called and there is no job': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Jobless Jenkins');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'info', function (cb) {
+      var result = { jobs: [] };
+      cb(null, JSON.stringify(result));
+    });
+
+    jenkins.dashboard(this.mockArgsCb)();
+  },
+  'dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs': function () {
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'ok'.blue, 'job1');
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'ok'.green, 'job2');
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'aborted'.grey, 'job3');
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'fail'.red, 'job4');
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'warn'.yellow, 'job5');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'info', function (cb) {
+      var result = { jobs: [
+          { name: 'job1', color: 'blue' },
+          { name: 'job2', color: 'green' },
+          { name: 'job3', color: 'grey' },
+          { name: 'job4', color: 'red' },
+          { name: 'job5', color: 'yellow' }
+        ] };
+      cb(null, JSON.stringify(result));
+    });
+
+    jenkins.dashboard(this.mockArgsCb)();
+  },
+  'dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs with animated value': function () {
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'aborted'.grey, 'job1');
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'fail'.red, 'job2');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'info', function (cb) {
+      var result = { jobs: [
+          { name: 'job1', color: 'grey_anime' },
+          { name: 'job2', color: 'red_anime' },
+        ] };
+      cb(null, JSON.stringify(result));
+    });
+
+    jenkins.dashboard(this.mockArgsCb)();
+  },
+  'dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs with unknown color value': function () {
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'someunknownstatus'.grey, 'job1');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'info', function (cb) {
+      var result = { jobs: [
+          { name: 'job1', color: 'someunknownstatus' }
+        ] };
+      cb(null, JSON.stringify(result));
+    });
+
+    jenkins.dashboard(this.mockArgsCb)();
+  },
   'discover - should log version and url when exec discover is called and there is a running Jenkins instance': function () {
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'http://localhost:8080/');
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -70,6 +130,52 @@ buster.testCase('cli - jenkins', {
     });
 
     jenkins.discover(this.mockArgsCb)();
+  },
+  'executor - should log no executor found when exec executor is called and there is no executor': function () {
+    this.mockConsole.expects('log').once().withExactArgs('No executor found');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'computer', function (cb) {
+      var result = { computer: [] };
+      cb(null, JSON.stringify(result));
+    });
+
+    jenkins.executor(this.mockArgsCb)();
+  },
+  'executor - should pass correct idle, stuck, and progress status': function () {
+    this.mockConsole.expects('log').once().withExactArgs('+ %s | %s', 'master', '1 active, 1 idle');
+    this.mockConsole.expects('log').once().withExactArgs('  - %s | %s%%s', 'job1', 88, '');
+    this.mockConsole.expects('log').once().withExactArgs('+ %s | %s', 'slave1', '1 active');
+    this.mockConsole.expects('log').once().withExactArgs('  - %s | %s%%s', 'job2', 88, ' stuck!');
+    this.mockConsole.expects('log').once().withExactArgs('+ %s | %s', 'slave2', '1 idle');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'computer', function (cb) {
+      var result = { computer: [
+          {
+            displayName: 'master',
+            executors: [
+              { idle: false, likelyStuck: false, progress: 88, currentExecutable: { url: 'http://localhost:8080/job/job1/19/' } },
+              { idle: true, likelyStuck: false, progress: 0 }
+            ]
+          },
+          {
+            displayName: 'slave1',
+            executors: [
+              { idle: false, likelyStuck: true, progress: 88, currentExecutable: { url: 'http://localhost:8080/job/job2/30/' } }
+            ]
+          },
+          {
+            displayName: 'slave2',
+            executors: [
+              { idle: true, likelyStuck: false, progress: 0 }
+            ]
+          }
+        ]};
+      cb(null, JSON.stringify(result));
+    });
+
+    jenkins.executor(this.mockArgsCb)();
   },
   'queue - should log queue empty message when there is no item': function () {
     this.mockConsole.expects('log').once().withExactArgs('Queue is empty');

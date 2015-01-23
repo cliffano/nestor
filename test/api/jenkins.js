@@ -18,6 +18,15 @@ buster.testCase('http - jenkins', {
   tearDown: function () {
     delete jenkins.opts;
   },
+  'computer - should send request to API endpoint': function (done) {
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/computer/api/json');
+      assert.defined(opts.handlers[200]);
+      cb();
+    });
+    jenkins.computer(done);
+  },
   'discover - should close socket and pass error to callback when socket emits error event': function (done) {
     var closeCallCount = 0,
       mockSocket = {
@@ -112,6 +121,15 @@ buster.testCase('http - jenkins', {
       done();
     });
     this.mockTimer.tick(5000);
+  },
+  'info - should send request to API endpoint': function (done) {
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/api/json');
+      assert.defined(opts.handlers[200]);
+      cb();
+    });
+    jenkins.info(done);
   },
   'queue - should send request to API endpoint': function (done) {
     this.stub(req, 'request', function (method, url, opts, cb) {
