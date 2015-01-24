@@ -21,7 +21,7 @@ buster.testCase('api - util', {
       assert.equals(result.foo, 'bar');
       done();
     }
-    util.passThroughSuccess({ body: { foo: 'bar' } }, cb);
+    util.passThroughSuccessJson({ body: '{ "foo": "bar" }' }, cb);
   },
   'htmlError - should pass error with message parsed from Jenkins HTML error page': function (done) {
     function cb(err, result) {
