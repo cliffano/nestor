@@ -47,7 +47,7 @@ buster.testCase('cli - job', {
           { description: 'somereport2' }
         ]
       };
-      cb(null, JSON.stringify(result));
+      cb(null, result);
     });
 
     job.read(this.mockArgsCb)('somejob');
@@ -67,7 +67,7 @@ buster.testCase('cli - job', {
           { description: 'somereport2' }
         ]
       };
-      cb(null, JSON.stringify(result));
+      cb(null, result);
     });
 
     job.read(this.mockArgsCb)('somejob');

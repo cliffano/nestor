@@ -24,7 +24,7 @@ buster.testCase('cli - jenkins', {
 
     this.stub(Jenkins.prototype, 'info', function (cb) {
       var result = { jobs: [] };
-      cb(null, JSON.stringify(result));
+      cb(null, result);
     });
 
     jenkins.dashboard(this.mockArgsCb)();
@@ -45,7 +45,7 @@ buster.testCase('cli - jenkins', {
           { name: 'job4', color: 'red' },
           { name: 'job5', color: 'yellow' }
         ] };
-      cb(null, JSON.stringify(result));
+      cb(null, result);
     });
 
     jenkins.dashboard(this.mockArgsCb)();
@@ -60,7 +60,7 @@ buster.testCase('cli - jenkins', {
           { name: 'job1', color: 'grey_anime' },
           { name: 'job2', color: 'red_anime' },
         ] };
-      cb(null, JSON.stringify(result));
+      cb(null, result);
     });
 
     jenkins.dashboard(this.mockArgsCb)();
@@ -73,7 +73,7 @@ buster.testCase('cli - jenkins', {
       var result = { jobs: [
           { name: 'job1', color: 'someunknownstatus' }
         ] };
-      cb(null, JSON.stringify(result));
+      cb(null, result);
     });
 
     jenkins.dashboard(this.mockArgsCb)();
@@ -198,7 +198,7 @@ buster.testCase('cli - jenkins', {
         { task: { name: 'job1' }},
         { task: { name: 'job2' }}
         ] };
-      cb(null, JSON.stringify(result));
+      cb(null, result);
     });
 
     jenkins.queue(this.mockArgsCb)();
