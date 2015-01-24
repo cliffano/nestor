@@ -6,7 +6,7 @@ var assert  = referee.assert;
 
 text.setLocale('en');
 
-buster.testCase('http - util', {
+buster.testCase('api - util', {
   'passThroughSuccess - should pass result body': function (done) {
     function cb(err, result) {
       assert.isNull(err);
@@ -14,6 +14,14 @@ buster.testCase('http - util', {
       done();
     }
     util.passThroughSuccess({ body: 'somebody' }, cb);
+  },
+  'passThroughSuccessJson - should pass result JSON body as an object': function (done) {
+    function cb(err, result) {
+      assert.isNull(err);
+      assert.equals(result.foo, 'bar');
+      done();
+    }
+    util.passThroughSuccess({ body: { foo: 'bar' } }, cb);
   },
   'htmlError - should pass error with message parsed from Jenkins HTML error page': function (done) {
     function cb(err, result) {

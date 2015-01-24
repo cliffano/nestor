@@ -8,7 +8,7 @@ var assert  = referee.assert;
 
 text.setLocale('en');
 
-buster.testCase('http - jenkins', {
+buster.testCase('api - jenkins', {
   setUp: function () {
     jenkins.url  = 'http://localhost:8080';
     jenkins.opts = { handlers: {} };

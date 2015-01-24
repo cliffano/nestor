@@ -137,7 +137,7 @@ buster.testCase('cli - jenkins', {
 
     this.stub(Jenkins.prototype, 'computer', function (cb) {
       var result = { computer: [] };
-      cb(null, JSON.stringify(result));
+      cb(null, result);
     });
 
     jenkins.executor(this.mockArgsCb)();
@@ -172,7 +172,7 @@ buster.testCase('cli - jenkins', {
             ]
           }
         ]};
-      cb(null, JSON.stringify(result));
+      cb(null, result);
     });
 
     jenkins.executor(this.mockArgsCb)();
