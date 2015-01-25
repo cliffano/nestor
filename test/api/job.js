@@ -7,7 +7,7 @@ var assert  = referee.assert;
 
 text.setLocale('en');
 
-buster.testCase('http - job', {
+buster.testCase('api - job', {
   setUp: function () {
     job.url  = 'http://localhost:8080';
     job.opts = { handlers: {} };

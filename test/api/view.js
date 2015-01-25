@@ -7,7 +7,7 @@ var assert  = referee.assert;
 
 text.setLocale('en');
 
-buster.testCase('http - view', {
+buster.testCase('api - view', {
   setUp: function () {
     view.url  = 'http://localhost:8080';
     view.opts = { handlers: {} };
