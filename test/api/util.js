@@ -39,6 +39,14 @@ buster.testCase('api - util', {
     }
     util.jobNotFoundError('somejob')(null, cb);
   },
+  'jobRequireParamsError - should pass job require params error message': function (done) {
+    function cb(err, result) {
+      assert.equals(err.message, 'Job somejob requires build parameters');
+      assert.equals(result, undefined);
+      done();
+    }
+    util.jobRequireParamsError('somejob')(null, cb);
+  },
   'viewNotFoundError - should pass view does not exist error message': function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'View someview does not exist');
