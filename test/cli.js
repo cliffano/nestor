@@ -1,7 +1,6 @@
 var buster = require('buster-node'),
   _cli = require('bagofcli'),
   cli = require('../lib/cli'),
-  irc = require('../lib/irc'),
   Jenkins = new require('../lib/jenkins'),
   referee = require('referee'),
   text = require('bagoftext'),
@@ -33,7 +32,6 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands['fetch-job-config'].action);
       assert.defined(actions.commands.queue.action);
       assert.defined(actions.commands.ver.action);
-      assert.defined(actions.commands.irc.action);
       assert.defined(actions.commands.feed.action);
       done();
     };
@@ -124,19 +122,6 @@ buster.testCase('cli - last', {
         });
         cli.exec();
     }
-});
-
-buster.testCase('cli - irc', {
-  setUp: function () {
-    this.mockIrc = this.mock(irc);
-  },
-  'should start irc bot with nick option when irc command is called with host, channel, and nick args only': function () {
-    this.mockIrc.expects('start').once().withExactArgs('somehost', 'somechannel', 'somenick');
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands.irc.action('somehost', 'somechannel', 'somenick');
-    });
-    cli.exec();
-  }
 });
 
 buster.testCase('cli - feed', {
