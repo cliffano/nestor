@@ -1,11 +1,11 @@
-var buster  = require('buster-node');
-var job     = require('../../lib/api/job');
-var referee = require('referee');
-var req     = require('bagofrequest');
-var text    = require('bagoftext');
-var assert  = referee.assert;
-
-text.setLocale('en');
+var buster        = require('buster-node');
+var ConsoleStream = require('../../lib/api/consolestream');
+var job           = require('../../lib/api/job');
+var referee       = require('referee');
+var req           = require('bagofrequest');
+var request       = require('request');
+var text          = require('bagoftext');
+var assert        = referee.assert;
 
 buster.testCase('api - job', {
   setUp: function () {
@@ -68,6 +68,146 @@ buster.testCase('api - job', {
       cb();
     });
     job.stop('somejob', done);
+  },
+  'build - should send request to API endpoint without parameters when not supplied': function (done) {
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'post');
+      assert.equals(url, 'http://localhost:8080/job/somejob/build');
+      assert.equals(opts.queryStrings.token, 'nestor');
+      assert.equals(opts.queryStrings.json, '{"parameter":[]}');
+      assert.defined(opts.handlers[200]);
+      assert.defined(opts.handlers[201]);
+      assert.defined(opts.handlers[404]);
+      assert.defined(opts.handlers[405]);
+      cb();
+    });
+    job.build('somejob', {}, done);
+  },
+  'build - should send request to API endpoint with parameters when supplied': function (done) {
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'post');
+      assert.equals(url, 'http://localhost:8080/job/somejob/build');
+      assert.equals(opts.queryStrings.token, 'nestor');
+      assert.equals(opts.queryStrings.json, '{"parameter":[{"name":"someparam1","value":"somevalue1"},{"name":"someparam2","value":"somevalue2"}]}');
+      assert.defined(opts.handlers[200]);
+      assert.defined(opts.handlers[201]);
+      assert.defined(opts.handlers[404]);
+      assert.defined(opts.handlers[405]);
+      cb();
+    });
+    job.build('somejob', { someparam1: 'somevalue1', someparam2: 'somevalue2' }, done);
+  },
+  'streamConsole - should send request to API endpoint': function (done) {
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/somejob/lastBuild/logText/progressiveText');
+      assert.equals(opts.queryStrings.start, 0);
+      assert.defined(opts.handlers[200]);
+      assert.defined(opts.handlers[404]);
+      cb();
+    });
+    job.streamConsole('somejob', 88000, done);
+  },
+  'streamConsole - should display console output once when there is no more text': function (done) {
+    this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
+      if (event === 'data') {
+        assert.equals(value, 'Console output 1');
+      } else if (event === 'end') {
+        assert.equals(value, undefined);
+      }
+    });
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      var result = {
+        statusCode: 200,
+        body: 'Console output 1',
+        headers: { 'x-more-data': 'false', 'x-text-size': 20 }
+      };
+      opts.handlers[200](result, done);
+    });
+    job.streamConsole('somejob', 0, done);
+  },
+  'streamConsole - should display no console output once when result does not have any body': function (done) {
+    this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
+      assert.equals(value, undefined);
+    });
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      var result = {
+        statusCode: 200,
+        headers: { 'x-more-data': 'false', 'x-text-size': 20 }
+      };
+      opts.handlers[200](result, done);
+    });
+    job.streamConsole('somejob', 0, done);
+  },
+  'streamConsole - should display console output once when there is more text but an error occurs': function (done) {
+    var mockRequest = this.mock(request);
+    mockRequest.expects('get').once().callsArgWith(1, new Error('some error'));
+    this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
+      if (event === 'data') {
+        assert.equals(value, 'Console output 1');
+      } else if (event === 'end') {
+        assert.equals(value, undefined);
+      }
+    });
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      var result = {
+        statusCode: 200,
+        body: 'Console output 1',
+        headers: { 'x-more-data': 'true', 'x-text-size': 20 }
+      };
+      opts.handlers[200](result, done);
+    });
+    job.streamConsole('somejob', 0, done);
+  },
+  'streamConsole - should display console output multiple times when there is more text': function (done) {
+    var mockRequest = this.mock(request);
+    mockRequest.expects('get').once().callsArgWith(1, null, {
+      statusCode: 200,
+      body: 'Console output',
+      headers: { 'x-more-data': 'false', 'x-text-size': 20 }
+    });
+    this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
+      if (event === 'data') {
+        assert.equals(value, 'Console output');
+      } else if (event === 'end') {
+        assert.equals(value, undefined);
+      }
+    });
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      var result = {
+        statusCode: 200,
+        body: 'Console output',
+        headers: { 'x-more-data': 'true', 'x-text-size': 20 }
+      };
+      opts.handlers[200](result, done);
+    });
+    job.streamConsole('somejob', 0, done);
+  },
+  'streamConsole - should display console output once when the second text is undefined': function (done) {
+    var mockRequest = this.mock(request);
+    mockRequest.expects('get').once().callsArgWith(1, null, {
+      statusCode: 200,
+      headers: { 'x-more-data': 'false', 'x-text-size': 20 }
+    });
+    this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
+      if (event === 'data') {
+        assert.equals(value, 'Console output 1');
+      } else if (event === 'end') {
+        assert.equals(value, undefined);
+      }
+    });
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      var result = {
+        statusCode: 200,
+        body: 'Console output 1',
+        headers: { 'x-more-data': 'true', 'x-text-size': 20 }
+      };
+      opts.handlers[200](result, done);
+    });
+    this.stub(req, 'proxy', function (url) {
+      return 'http://someproxy:8080';
+    });
+    job.streamConsole('somejob', 0, done);
   },
   'enable - should send request to API endpoint': function (done) {
     this.stub(req, 'request', function (method, url, opts, cb) {

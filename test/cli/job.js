@@ -96,6 +96,55 @@ buster.testCase('cli - job', {
 
     job.delete(this.mockArgsCb)('somejob', 'config.xml');
   },
+  'build - should log job started success message': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'somejob');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(params.param1, 'value1');
+      assert.equals(params.param2, 'value2');
+      cb();
+    });
+
+    job.build(this.mockArgsCb)('somejob', 'param1=value1&param2=value2', {});
+  },
+  'build - should pass to console call': function (done) {
+    this.timeout = 5010;
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'somejob');
+
+    var self = this;
+    this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(params, {});
+      cb();
+    });
+
+    this.stub(Jenkins.prototype, 'streamJobConsole', function (name, interval, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(interval, 0);
+      return {
+        pipe: function (stream, opts) {
+          assert.defined(stream);
+          assert.equals(opts.end, false);
+          done();
+        }
+      };
+    });
+
+    job.build(this.mockArgsCb)('somejob', { console: true });
+  },
+  'build - should log job started success message with no args and no params': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'somejob');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {
+      assert.equals(name, 'somejob');
+      cb();
+    });
+
+    job.build(this.mockArgsCb)('somejob', {});
+  },
   'stop - should log job stopped success message': function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was stopped successfully', 'somejob');
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -106,6 +155,22 @@ buster.testCase('cli - job', {
     });
 
     job.stop(this.mockArgsCb)('somejob', 'config.xml');
+  },
+  'console - should pipe console output stream to stdout': function () {
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'streamJobConsole', function (name, interval, cb) {
+      assert.equals(name, 'somejob');
+      return {
+        pipe: function (stream, opts) {
+          assert.defined(stream);
+          assert.equals(opts.end, false);
+          cb();
+        }
+      };
+    });
+
+    job.console(this.mockArgsCb)('somejob');
   },
   'enable - should log job enabled success message': function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was enabled successfully', 'somejob');

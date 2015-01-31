@@ -8,46 +8,46 @@ var Bot = require('../lib/bot'),
 
 text.setLocale('en');
 
-buster.testCase('irc - build', {
-  'should say job started successfully when build is called  and job exists': function (done) {
-    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
-      assert.equals(host, 'somehost');
-      assert.equals(channel, 'somechannel');
-      assert.equals(opts.nick, 'somenick');
-      this.commands.build('job1', 'foo=bar&foo1=bar1');
-    });
-    this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
-      assert.equals(jobName, 'job1');
-      assert.equals(params, 'foo=bar&foo1=bar1');
-      cb();
-    });
-    this.stub(Bot.prototype, 'say', function (format, data) {
-      assert.equals(format, 'Job %s was started successfully');
-      assert.equals(data, 'job1');
-      done();
-    });
-    irc.start('somehost', 'somechannel', 'somenick');
-  },
-  'should say job started successfully when build is called  without params': function (done) {
-    this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
-      assert.equals(host, 'somehost');
-      assert.equals(channel, 'somechannel');
-      assert.equals(opts.nick, 'somenick');
-      this.commands.build('job1');
-    });
-    this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
-      assert.equals(jobName, 'job1');
-      assert.equals(params, undefined);
-      cb();
-    });
-    this.stub(Bot.prototype, 'say', function (format, data) {
-      assert.equals(format, 'Job %s was started successfully');
-      assert.equals(data, 'job1');
-      done();
-    });
-    irc.start('somehost', 'somechannel', 'somenick');
-  }
-});
+// buster.testCase('irc - build', {
+//   'should say job started successfully when build is called  and job exists': function (done) {
+//     this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
+//       assert.equals(host, 'somehost');
+//       assert.equals(channel, 'somechannel');
+//       assert.equals(opts.nick, 'somenick');
+//       this.commands.build('job1', 'foo=bar&foo1=bar1');
+//     });
+//     this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
+//       assert.equals(jobName, 'job1');
+//       assert.equals(params, 'foo=bar&foo1=bar1');
+//       cb();
+//     });
+//     this.stub(Bot.prototype, 'say', function (format, data) {
+//       assert.equals(format, 'Job %s was started successfully');
+//       assert.equals(data, 'job1');
+//       done();
+//     });
+//     irc.start('somehost', 'somechannel', 'somenick');
+//   },
+//   'should say job started successfully when build is called  without params': function (done) {
+//     this.stub(Bot.prototype, 'connect', function (host, channel, opts) {
+//       assert.equals(host, 'somehost');
+//       assert.equals(channel, 'somechannel');
+//       assert.equals(opts.nick, 'somenick');
+//       this.commands.build('job1');
+//     });
+//     this.stub(Jenkins.prototype, 'build', function (jobName, params, cb) {
+//       assert.equals(jobName, 'job1');
+//       assert.equals(params, undefined);
+//       cb();
+//     });
+//     this.stub(Bot.prototype, 'say', function (format, data) {
+//       assert.equals(format, 'Job %s was started successfully');
+//       assert.equals(data, 'job1');
+//       done();
+//     });
+//     irc.start('somehost', 'somechannel', 'somenick');
+//   }
+// });
 
 buster.testCase('irc - stop', {
   setUp: function () {

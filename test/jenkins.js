@@ -13,149 +13,66 @@ var buster = require('buster-node'),
 
 text.setLocale('en');
 
-buster.testCase('jenkins - jenkins', {
-  setUp: function () {
-    this.stub(process, 'env', {});
-  },
-  'should use url when specified': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(url, 'http://jenkins-ci.org:8080/job/job1/build');
-      opts.handlers[401]({ statusCode: 401 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://jenkins-ci.org:8080');
-    jenkins.build('job1', undefined, function (err, result) {
-      done();
-    });
-  },
-  'should use default url when no url specified': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(url, 'http://localhost:8080/job/job1/build');
-      opts.handlers[401]({ statusCode: 401 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins();
-    jenkins.build('job1', undefined, function (err, result) {
-      done();
-    });
-  },
-  'should use proxy when proxy is set': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(url, 'http://localhost:8080/job/job1/build');
-      opts.handlers[401]({ statusCode: 401 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins();
-    jenkins.build('job1', undefined, function (err, result) {
-      done();
-    });
-  },
-  'should pass authentication failed error to callback when result has status code 401': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      opts.handlers[401]({ statusCode: 401 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.build('job1', undefined, function (err, result) {
-      assert.equals(err.message, 'Authentication failed - incorrect username and/or password in Jenkins URL');
-      done();
-    });
-  },
-  'should pass authentication required error to callback when result has status code 403': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      opts.handlers[403]({ statusCode: 403 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.build('job1', undefined, function (err, result) {
-      assert.equals(err.message, 'Jenkins requires authentication - set username and password in Jenkins URL');
-      done();
-    });
-  }
-});
-
-buster.testCase('jenkins - build', {
-  'should pass error not found when job does not exist': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/job1/build');
-      assert.equals(opts.queryStrings.token, 'nestor');
-      assert.equals(opts.queryStrings.json, '{"parameter":[]}');
-      opts.handlers[404]({ statusCode: 404 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.build('job1', undefined, function (err, result) {
-      assert.equals(err.message, 'Job job1 does not exist');
-      assert.equals(result, undefined);
-      done();
-    });
-  },
-  'should pass error not allowed job requires build parameters': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/job1/build');
-      assert.equals(opts.queryStrings.token, 'nestor');
-      assert.equals(opts.queryStrings.json, '{"parameter":[]}');
-      opts.handlers[405]({ statusCode: 405 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.build('job1', undefined, function (err, result) {
-      assert.equals(err.message, 'Job job1 requires build parameters');
-      assert.equals(result, undefined);
-      done();
-    });
-  },
-  'should use post method when job is not parameterised': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/job1/build');
-      assert.equals(opts.queryStrings.token, 'nestor');
-      assert.equals(opts.queryStrings.json, '{"parameter":[]}');
-      opts.handlers[200]({ statusCode: 200 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.build('job1', undefined, function (err, result) {
-      assert.equals(err, undefined);
-      assert.equals(result, undefined);
-      done();
-    });
-  },
-  'should use post method when job is parameterised': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/job1/build');
-      assert.equals(opts.queryStrings.token, 'nestor');
-      assert.equals(opts.queryStrings.json, '{"parameter":[{"name":"foo","value":"bar"},{"name":"abc","value":"xyz"}]}');
-      opts.handlers[200]({ statusCode: 200 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.build('job1', 'foo=bar&abc=xyz', function (err, result) {
-      assert.equals(err, undefined);
-      assert.equals(result, undefined);
-      done();
-    });
-  },
-  'should handle response 201 when job is created': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/job1/build');
-      assert.equals(opts.queryStrings.token, 'nestor');
-      assert.equals(opts.queryStrings.json, '{"parameter":[{"name":"foo","value":"bar"},{"name":"abc","value":"xyz"}]}');
-      opts.handlers[201]({ statusCode: 201 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.build('job1', 'foo=bar&abc=xyz', function (err, result) {
-      assert.equals(err, undefined);
-      assert.equals(result, undefined);
-      done();
-    });
-  }
-});
+// buster.testCase('jenkins - jenkins', {
+//   setUp: function () {
+//     this.stub(process, 'env', {});
+//   },
+//   'should use url when specified': function (done) {
+//     var mockRequest = function (method, url, opts, cb) {
+//       assert.equals(url, 'http://jenkins-ci.org:8080/job/job1/build');
+//       opts.handlers[401]({ statusCode: 401 }, cb);
+//     };
+//     this.stub(req, 'request', mockRequest);
+//     var jenkins = new Jenkins('http://jenkins-ci.org:8080');
+//     jenkins.build('job1', undefined, function (err, result) {
+//       done();
+//     });
+//   },
+//   'should use default url when no url specified': function (done) {
+//     var mockRequest = function (method, url, opts, cb) {
+//       assert.equals(url, 'http://localhost:8080/job/job1/build');
+//       opts.handlers[401]({ statusCode: 401 }, cb);
+//     };
+//     this.stub(req, 'request', mockRequest);
+//     var jenkins = new Jenkins();
+//     jenkins.build('job1', undefined, function (err, result) {
+//       done();
+//     });
+//   },
+//   'should use proxy when proxy is set': function (done) {
+//     var mockRequest = function (method, url, opts, cb) {
+//       assert.equals(url, 'http://localhost:8080/job/job1/build');
+//       opts.handlers[401]({ statusCode: 401 }, cb);
+//     };
+//     this.stub(req, 'request', mockRequest);
+//     var jenkins = new Jenkins();
+//     jenkins.build('job1', undefined, function (err, result) {
+//       done();
+//     });
+//   },
+//   'should pass authentication failed error to callback when result has status code 401': function (done) {
+//     var mockRequest = function (method, url, opts, cb) {
+//       opts.handlers[401]({ statusCode: 401 }, cb);
+//     };
+//     this.stub(req, 'request', mockRequest);
+//     var jenkins = new Jenkins('http://localhost:8080');    
+//     jenkins.build('job1', undefined, function (err, result) {
+//       assert.equals(err.message, 'Authentication failed - incorrect username and/or password in Jenkins URL');
+//       done();
+//     });
+//   },
+//   'should pass authentication required error to callback when result has status code 403': function (done) {
+//     var mockRequest = function (method, url, opts, cb) {
+//       opts.handlers[403]({ statusCode: 403 }, cb);
+//     };
+//     this.stub(req, 'request', mockRequest);
+//     var jenkins = new Jenkins('http://localhost:8080');    
+//     jenkins.build('job1', undefined, function (err, result) {
+//       assert.equals(err.message, 'Jenkins requires authentication - set username and password in Jenkins URL');
+//       done();
+//     });
+//   }
+// });
 
 buster.testCase('jenkins - filteredBuild', {
   setUp: function () {
@@ -224,158 +141,6 @@ buster.testCase('jenkins - filteredBuild', {
       assert.equals(err.message, 'some error');
       done();
     });
-  }
-});
-
-buster.testCase('jenkins - consoleStream', {
-  setUp: function () {
-    this.mockConsole = this.mock(console);
-  },
-  'should pass error not found when job does not exist': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
-      opts.handlers[404]({ statusCode: 404 }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');    
-    jenkins.consoleStream('job1', function (err, result) {
-      assert.equals(err.message, 'Job job1 does not exist');
-      assert.equals(result, undefined);
-      done();
-    });
-  },
-  'should display a single console output when there is no more text': function (done) {
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
-      opts.handlers[200]({ statusCode: 200, body: 'Job started by Foo', headers: { 'x-more-data': 'false' } }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080'),
-      read = [];
-    jenkins.consoleStream('job1', function (err, result) {
-      assert.equals(err, undefined);
-      assert.equals(result, undefined);
-      assert.equals(read, ['Job started by Foo']);
-      done();
-    }).on('data', read.push.bind(read));
-  },
-  'should not display anything if there is only a single console output with no value (e.g. build step sleeping for several seconds)': function (done) {
-    this.mockConsole.expects('log').never();
-    var mockRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
-      opts.handlers[200]({ statusCode: 200, body: undefined, headers: { 'x-more-data': 'false' } }, cb);
-    };
-    this.stub(req, 'request', mockRequest);
-    var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.consoleStream('job1', function (err, result) {
-      assert.equals(err, undefined);
-      assert.equals(result, undefined);
-      done();
-    }).on('data', function() {
-      assert(false, "There should be no data");
-    });
-  },
-  'should display console output until there is no more text': function (done) {
-    // only first request uses bag.http.request
-    var mockBagRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
-      opts.handlers[200]({
-        statusCode: 200,
-        body: 'Console output 1',
-        headers: { 'x-more-data': 'true', 'x-text-size': 10 } 
-      }, cb);
-    };
-    // the subsequent request uses request module
-    var mockRequest = this.mock(request);
-    mockRequest.expects('get').once().callsArgWith(1, null, {
-      statusCode: 200,
-      body: 'Console output 2',
-      headers: { 'x-more-data': 'false', 'x-text-size': 20 }
-    });
-    this.stub(req, 'request', mockBagRequest);
-    this.stub(req, 'proxy', function (url) { return 'http://someproxy'; });
-    var jenkins = new Jenkins('http://localhost:8080'),
-      read = [];
-    jenkins.consoleStream('job1', { interval: 1 }, function (err, result) {
-      assert.equals(err, undefined);
-      assert.equals(result, undefined);
-      assert.equals(read, ['Console output 1', 'Console output 2']);
-      done();
-    }).on('data', read.push.bind(read));
-  },
-  'should not display chunked console output when result body is undefined': function (done) {
-    // only first request uses bag.http.request
-    var mockBagRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
-      opts.handlers[200]({
-        statusCode: 200,
-        body: 'Console output 1',
-        headers: { 'x-more-data': 'true', 'x-text-size': 10 } 
-      }, cb);
-    };
-    // the subsequent request uses request module
-    var mockRequest = this.mock(request);
-    mockRequest.expects('get').once().callsArgWith(1, null, {
-      statusCode: 200,
-      headers: { 'x-more-data': 'false', 'x-text-size': 20 }
-    });
-    this.stub(req, 'request', mockBagRequest);
-    this.stub(req, 'proxy', function () { return undefined; });
-    var jenkins = new Jenkins('http://localhost:8080'),
-      read = [];
-    jenkins.consoleStream('job1', { interval: 1 }, function (err, result) {
-      assert.equals(err, undefined);
-      assert.equals(result, undefined);
-      done();
-    }).on('data', read.push.bind(read));
-  },
-  'should pass error when chunking console output has an error': function (done) {
-    // only first request uses bag.http.request
-    var mockBagRequest = function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/job1/lastBuild/logText/progressiveText');
-      opts.handlers[200]({
-        statusCode: 200,
-        body: 'Console output 1',
-        headers: { 'x-more-data': 'true', 'x-text-size': 10 } 
-      }, cb);
-    };
-    // the subsequent request uses request module
-    var mockRequest = this.mock(request);
-    mockRequest.expects('get').once().callsArgWith(1, new Error('someerror'));
-    this.stub(req, 'request', mockBagRequest);
-    this.stub(req, 'proxy', function () { return undefined; });
-    var jenkins = new Jenkins('http://localhost:8080'),
-      read = [];
-    jenkins.consoleStream('job1', { interval: 1 }, function (err, result) {
-      assert.equals(err.message, 'someerror');
-      assert.equals(result, undefined);
-      assert.equals(read, ['Console output 1']);
-      done();
-    }).on('data', read.push.bind(read));
-  }
-});
-
-buster.testCase('jenkins - console', {
-  'should pipe console stream to standard output': function (done) {
-    var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.consoleStream = function (jobName, opts, cb) {
-      assert.equals(jobName, 'somejob');
-      assert.equals(opts.interval, 10000);
-      return {
-        pipe: function (dest, opts) {
-          assert.equals(dest, process.stdout);
-          assert.isFalse(opts.end);
-          done();
-        }
-      };
-    };
-    jenkins.console('somejob', { interval: 10000 });
   }
 });
 
