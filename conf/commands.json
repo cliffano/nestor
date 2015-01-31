@@ -241,17 +241,6 @@
     "ver": {
       "desc": "View Jenkins version number"
     },
-    "irc": {
-      "desc": "Start an IRC bot",
-      "args": [
-        { "name": "host", "rules": [ "required" ] },
-        { "name": "channel", "rules": [ "required" ] },
-        { "name": "nick", "rules": [ "required" ] }
-      ],
-      "examples": [
-        "nestor irc <host> <channel> <nick>"
-      ]
-    },
     "feed": {
       "desc": "Retrieve Jenkins feed",
       "options": [
