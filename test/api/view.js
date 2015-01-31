@@ -1,9 +1,10 @@
-var buster  = require('buster-node');
-var view    = require('../../lib/api/view');
-var referee = require('referee');
-var req     = require('bagofrequest');
-var text    = require('bagoftext');
-var assert  = referee.assert;
+var buster     = require('buster-node');
+var feedparser = require('feedparser');
+var view       = require('../../lib/api/view');
+var referee    = require('referee');
+var req        = require('bagofrequest');
+var text       = require('bagoftext');
+var assert     = referee.assert;
 
 text.setLocale('en');
 
@@ -57,5 +58,12 @@ buster.testCase('api - view', {
       cb();
     });
     view.fetchConfig('someview', done);
+  },
+  'parseFeed - should parse feed from API endpoint': function (done) {
+    this.stub(feedparser, 'parseUrl', function (url, cb) {
+      assert.equals(url, 'http://localhost:8080/view/someview/rssAll');
+      cb();
+    });
+    view.parseFeed('someview', done);
   }
 });

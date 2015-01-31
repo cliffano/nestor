@@ -177,6 +177,38 @@ buster.testCase('cli - jenkins', {
 
     jenkins.executor(this.mockArgsCb)();
   },
+  'feed - should parse job feed when job arg is provided': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Some title 1');
+    this.mockConsole.expects('log').once().withExactArgs('Some title 2');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'parseJobFeed', function (name, cb) {
+      assert.equals(name, 'somejob');
+      var result = [
+        { title: 'Some title 1' },
+        { title: 'Some title 2' }
+      ];
+      cb(null, result);
+    });
+
+    jenkins.feed(this.mockArgsCb)({ job: 'somejob' });
+  },
+  'feed - should parse view feed when view arg is provided': function () {
+    this.mockConsole.expects('log').once().withExactArgs('Some title 1');
+    this.mockConsole.expects('log').once().withExactArgs('Some title 2');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'parseViewFeed', function (name, cb) {
+      assert.equals(name, 'someview');
+      var result = [
+        { title: 'Some title 1' },
+        { title: 'Some title 2' }
+      ];
+      cb(null, result);
+    });
+
+    jenkins.feed(this.mockArgsCb)({ view: 'someview' });
+  },
   'queue - should log queue empty message when there is no item': function () {
     this.mockConsole.expects('log').once().withExactArgs('Queue is empty');
     this.mockProcess.expects('exit').once().withExactArgs(0);

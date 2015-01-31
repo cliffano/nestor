@@ -134,54 +134,6 @@ buster.testCase('jenkins - last', {
     }
 });
 
-buster.testCase('jenkins - feed', {
-  setUp: function () {
-    this.mockFeedParser = this.mock(feedparser);
-  },
-  'should parse jenkins feed articles when job name is not provided': function (done) {
-    this.mockFeedParser.expects('parseUrl').once().withArgs('http://localhost:8080/rssAll').callsArgWith(1, null, null, [ { title: 'some title 1' }, { title: 'some title 2' }]);
-    var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.feed(undefined, function (err, result) {
-      assert.isNull(err);
-      assert.equals(result.length, 2);
-      assert.equals(result[0].title, 'some title 1');
-      assert.equals(result[1].title, 'some title 2');
-      done();
-    });
-  },
-  'should parse job feed articles when job name is provided': function (done) {
-    this.mockFeedParser.expects('parseUrl').once().withArgs('http://localhost:8080/job/somejob/rssAll').callsArgWith(1, null, null, [ { title: 'some title 1' }, { title: 'some title 2' }]);
-    var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.feed({ jobName: 'somejob' }, function (err, result) {
-      assert.isNull(err);
-      assert.equals(result.length, 2);
-      assert.equals(result[0].title, 'some title 1');
-      assert.equals(result[1].title, 'some title 2');
-      done();
-    });
-  },
-  'should parse view feed articles when view name is provided': function (done) {
-    this.mockFeedParser.expects('parseUrl').once().withArgs('http://localhost:8080/view/someview/rssAll').callsArgWith(1, null, null, [ { title: 'some title 1' }, { title: 'some title 2' }]);
-    var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.feed({ viewName: 'someview' }, function (err, result) {
-      assert.isNull(err);
-      assert.equals(result.length, 2);
-      assert.equals(result[0].title, 'some title 1');
-      assert.equals(result[1].title, 'some title 2');
-      done();
-    });
-  },
-  'should error to callback when an error occurs': function (done) {
-    this.mockFeedParser.expects('parseUrl').once().withArgs('http://localhost:8080/job/somejob/rssAll').callsArgWith(1, new Error('some error'));
-    var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.feed({ jobName: 'somejob' }, function (err, result) {
-      assert.equals(err.message, 'some error');
-      assert.equals(result, undefined);
-      done();
-    });
-  }
-});
-
 buster.testCase('jenkins - monitor', {
   'should call notify callback with last article title when result exists': function (done) {
     this.stub(cron.CronJob.prototype, 'start', function () {

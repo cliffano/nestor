@@ -1,10 +1,11 @@
-var buster  = require('buster-node');
-var dgram   = require('dgram');
-var jenkins = require('../../lib/api/jenkins');
-var referee = require('referee');
-var req     = require('bagofrequest');
-var text    = require('bagoftext');
-var assert  = referee.assert;
+var buster     = require('buster-node');
+var dgram      = require('dgram');
+var feedparser = require('feedparser');
+var jenkins    = require('../../lib/api/jenkins');
+var referee    = require('referee');
+var req        = require('bagofrequest');
+var text       = require('bagoftext');
+var assert     = referee.assert;
 
 text.setLocale('en');
 
@@ -130,6 +131,13 @@ buster.testCase('api - jenkins', {
       cb();
     });
     jenkins.info(done);
+  },
+  'parseFeed - should parse feed from API endpoint': function (done) {
+    this.stub(feedparser, 'parseUrl', function (url, cb) {
+      assert.equals(url, 'http://localhost:8080/rssAll');
+      cb();
+    });
+    jenkins.parseFeed(done);
   },
   'queue - should send request to API endpoint': function (done) {
     this.stub(req, 'request', function (method, url, opts, cb) {
