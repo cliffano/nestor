@@ -119,10 +119,6 @@ View Jenkins version number:
 
     nestor ver
 
-Start an IRC bot:
-
-    nestor irc <host> <channel> [nick]
-
 View builds feed of all jobs:
 
     nestor feed 
