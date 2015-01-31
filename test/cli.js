@@ -14,8 +14,6 @@ buster.testCase('cli - exec', {
     var mockCommand = function (base, actions) {
       assert.defined(base);
       assert.defined(actions.commands.build.action);
-      assert.defined(actions.commands['build-all'].action);
-      assert.defined(actions.commands['build-fail'].action);
       assert.defined(actions.commands.console.action);
       assert.defined(actions.commands.stop.action);
       assert.defined(actions.commands.dashboard.action);
@@ -36,42 +34,6 @@ buster.testCase('cli - exec', {
       done();
     };
     this.stub(_cli, 'command', mockCommand);
-    cli.exec();
-  }
-});
-
-buster.testCase('cli - build-all', {
-  setUp: function () {
-    this.mockConsole = this.mock(console);
-    this.mockProcess = this.mock(process);
-  },
-  'should log job started successfully when exec build is called and job exists': function () {
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands['build-all'].action();
-    });
-    this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'filteredBuild', function (criteria, cb) {
-      assert.isNull(criteria);
-      cb();
-    });
-    cli.exec();
-  }
-});
-
-buster.testCase('cli - build-fail', {
-  setUp: function () {
-    this.mockConsole = this.mock(console);
-    this.mockProcess = this.mock(process);
-  },
-  'should log job started successfully when exec build is called and job exists': function () {
-    this.stub(_cli, 'command', function (base, actions) {
-      actions.commands['build-fail'].action();
-    });
-    this.mockProcess.expects('exit').once().withExactArgs(0);
-    this.stub(Jenkins.prototype, 'filteredBuild', function (criteria, cb) {
-      assert.equals(criteria, { status: 'FAIL' });
-      cb();
-    });
     cli.exec();
   }
 });

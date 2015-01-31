@@ -4,7 +4,7 @@
 * Move buildlight support to http://github.com/cliffano/nestor-buildlight
 * Move ninjablocks support to http://github.com/cliffano/nestor-ninjablocks
 * Display job status in lowercase
-* Remove irc command
+* Remove build-all, build-fail, and irc commands
 
 ### 0.2.4
 * Add create-view, update-view, and fetch-view-config commands
