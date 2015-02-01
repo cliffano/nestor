@@ -41,6 +41,16 @@ buster.testCase('api - job', {
     });
     job.read('somejob', done);
   },
+  'readLatest - should send request to API endpoint': function (done) {
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/job/somejob/lastBuild/api/json');
+      assert.defined(opts.handlers[200]);
+      assert.defined(opts.handlers[404]);
+      cb();
+    });
+    job.readLatest('somejob', done);
+  },
   'update - should send request to API endpoint': function (done) {
     this.stub(req, 'request', function (method, url, opts, cb) {
       assert.equals(method, 'post');

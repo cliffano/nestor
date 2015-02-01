@@ -1,10 +1,11 @@
-var buster  = require('buster-node');
-var fs      = require('fs');
-var Jenkins = require('../../lib/jenkins');
-var job     = require('../../lib/cli/job');
-var referee = require('referee');
-var text    = require('bagoftext');
-var assert  = referee.assert;
+var buster     = require('buster-node');
+var fs         = require('fs');
+var Jenkins    = require('../../lib/jenkins');
+var job        = require('../../lib/cli/job');
+var proxyquire = require('proxyquire');
+var referee    = require('referee');
+var text       = require('bagoftext');
+var assert     = referee.assert;
 
 text.setLocale('en');
 
@@ -71,6 +72,58 @@ buster.testCase('cli - job', {
     });
 
     job.read(this.mockArgsCb)('somejob');
+  },
+  'readLatest - should display yellow building status and start time description': function () {
+    this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'building'.yellow);
+    this.mockConsole.expects('log').once().withExactArgs(' - %s', 'Started sometime ago');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    var mockMoment = function () {
+      return {
+        fromNow: function() {
+          return 'sometime ago'; 
+        }
+      };
+    };
+    var job = proxyquire('../../lib/cli/job.js', { moment: mockMoment });
+
+    this.stub(Jenkins.prototype, 'readLatestJob', function (name, cb) {
+      assert.equals(name, 'somejob');
+      var result = {
+        building: true,
+        timestamp: 1422789191389
+      };
+      cb(null, result);
+    });
+
+    job.readLatest(this.mockArgsCb)('somejob');
+  },
+  'readLatest - should display completed status and finish time description': function () {
+    this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'success'.green);
+    this.mockConsole.expects('log').once().withExactArgs(' - %s', 'Finished sometime ago');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    var mockMoment = function () {
+      return {
+        fromNow: function() {
+          return 'sometime ago'; 
+        }
+      };
+    };
+    var job = proxyquire('../../lib/cli/job.js', { moment: mockMoment });
+
+    this.stub(Jenkins.prototype, 'readLatestJob', function (name, cb) {
+      assert.equals(name, 'somejob');
+      var result = {
+        building : false,
+        result   : 'SUCCESS',
+        timestamp: 1422789191389,
+        duration : 10
+      };
+      cb(null, result);
+    });
+
+    job.readLatest(this.mockArgsCb)('somejob');
   },
   'update - should log job updated success message': function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was updated successfully', 'somejob');

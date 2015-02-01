@@ -23,6 +23,14 @@ buster.testCase('cli - util - colorByStatus', {
   },
   'should show grey color when Jenkins color is a status': function () {
     assert.equals(util.colorByStatus('somestatus', 'somestatus'), 'grey');
+  },
+  'should show color based ons status when Jenkins color is not provided and status is known': function () {
+    assert.equals(util.colorByStatus('failure'), 'red');
+    assert.equals(util.colorByStatus('success'), 'green');
+    assert.equals(util.colorByStatus('building'), 'yellow');
+  },
+  'should show grey color when Jenkins color is not provided and status is unknown': function () {
+    assert.equals(util.colorByStatus('somestatus'), 'grey');
   }
 });
 
