@@ -5,6 +5,7 @@
 * Move ninjablocks support to http://github.com/cliffano/nestor-ninjablocks
 * Display job status in lowercase
 * Remove build-all, build-fail, and irc commands
+* Modify monitor to accept job, view, and schedule args, and return status in lowercase
 
 ### 0.2.4
 * Add create-view, update-view, and fetch-view-config commands

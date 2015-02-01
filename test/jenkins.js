@@ -135,113 +135,54 @@ buster.testCase('jenkins - last', {
 });
 
 buster.testCase('jenkins - monitor', {
-  'should call notify callback with last article title when result exists': function (done) {
+  'should monitor the latest job on Jenkins instance when no job or view opt specified': function (done) {
     this.stub(cron.CronJob.prototype, 'start', function () {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.dashboard = function (opts, cb) {
-      var data = [
-        { status: 'OK', name: 'job1' },
-        { status: 'ABORTED', name: 'job2' },
-        { status: 'OK', name: 'job3' }
-      ];
-      cb(null, data);
-    };
-    jenkins.monitor({ jobName: 'job2', schedule: '*/30 * * * * *' }, function (err, result) {
+    this.stub(Jenkins.prototype, 'info', function (cb) {
+      var result = { jobs: [
+        { color: 'blue' },
+        { color: 'red' }
+      ]};
+      cb(null, result);
+    });
+    jenkins.monitor({ schedule: '*/30 * * * * *' }, function (err, result) {
       assert.isNull(err);
-      assert.equals(result, 'ABORTED');
+      assert.equals(result, 'ok');
     });
   },
-  'should call notify callback when there is no job but there is no monitoring error as well': function (done) {
+  'should monitor the latest job on a view when view opt is specified': function (done) {
     this.stub(cron.CronJob.prototype, 'start', function () {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.dashboard = function (opts, cb) {
-      cb(null, []);
-    };
-    jenkins.monitor({ jobName: 'somejob', schedule: '*/30 * * * * *' }, function (err, result) {
+    this.stub(Jenkins.prototype, 'readView', function (name, cb) {
+      assert.equals(name, 'someview');
+      var result = { jobs: [
+        { color: 'blue' },
+        { color: 'red' }
+      ]};
+      cb(null, result);
+    });
+    jenkins.monitor({ view: 'someview', schedule: '*/30 * * * * *' }, function (err, result) {
       assert.isNull(err);
-      assert.isNull(result);
+      assert.equals(result, 'ok');
     });
   },
-  'should call notify callback with undefined result and error when an error occurs while getting dashboard data': function (done) {
+  'should monitor the latest job when job opt is specified': function (done) {
     this.stub(cron.CronJob.prototype, 'start', function () {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    jenkins.dashboard = function (opts, cb) {
-      cb(new Error('some error'));
-    };
-    jenkins.monitor({ jobName: 'somejob' }, function (err, result) {
-      assert.equals(err.message, 'some error');
-      assert.equals(result, undefined);
+    this.stub(Jenkins.prototype, 'readJob', function (name, cb) {
+      assert.equals(name, 'somejob');
+      var result = { color: 'blue' };
+      cb(null, result);
     });
-  }
-});
-
-buster.testCase('jenkins - _statusByColor', {
-  'should show the correct status for all supported colors': function () {
-    var jenkins = new Jenkins();
-    assert.equals(jenkins._statusByColor('blue'), 'OK');
-    assert.equals(jenkins._statusByColor('green'), 'OK');
-    assert.equals(jenkins._statusByColor('grey'), 'ABORTED');
-    assert.equals(jenkins._statusByColor('red'), 'FAIL');
-    assert.equals(jenkins._statusByColor('yellow'), 'WARN');
-  },
-  'should show the correct status for actively running build': function () {
-    var jenkins = new Jenkins();
-    assert.equals(jenkins._statusByColor('blue_anime'), 'OK');
-  },
-  'should uppercase status when it is unsupported': function () {
-    var jenkins = new Jenkins();
-    assert.equals(jenkins._statusByColor('unknown'), 'UNKNOWN');
-  }
-});
-
-buster.testCase('jenkins - _statusByName', {
-  setUp: function () {
-    this.jenkins = new Jenkins();
-  },
-  'should return ok status all jobs are successful': function () {
-    var data = [
-      { status: 'OK', name: 'job1' },
-      { status: 'OK', name: 'job2' },
-      { status: 'OK', name: 'job3' }
-    ];
-    assert.equals(this.jenkins._statusByName({}, data), 'OK');
-  },
-  'should return fail status when there is a failed job': function () {
-    var data = [
-      { status: 'OK', name: 'job1' },
-      { status: 'OK', name: 'job2' },
-      { status: 'FAIL', name: 'job3' }
-    ];
-    assert.equals(this.jenkins._statusByName({}, data), 'FAIL');
-  },
-  'should return warn status when there is a warn but there is no fail': function () {
-    var data = [
-      { status: 'ABORTED', name: 'job1' },
-      { status: 'OK', name: 'job2' },
-      { status: 'WARN', name: 'job3' }
-    ];
-    assert.equals(this.jenkins._statusByName({}, data), 'WARN');
-  },
-  'should return aborted status when there is aborted job but no fail or warn': function () {
-    var data = [
-      { status: 'ABORTED', name: 'job1' },
-      { status: 'OK', name: 'job2' },
-      { status: 'OK', name: 'job3' }
-    ];
-    assert.equals(this.jenkins._statusByName({}, data), 'ABORTED');
-  },
-  'should return null status when are neither ok, fail, or warn': function () {
-    var data = [
-      { status: 'foobar', name: 'job1' },
-      { status: 'foobar', name: 'job2' },
-      { status: 'foobar', name: 'job3' }
-    ];
-    assert.isNull(this.jenkins._statusByName({}, data));
+    jenkins.monitor({ job: 'somejob', schedule: '*/30 * * * * *' }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result, 'ok');
+    });
   }
 });
