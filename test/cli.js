@@ -1,11 +1,11 @@
-var buster = require('buster-node'),
-  _cli = require('bagofcli'),
-  cli = require('../lib/cli'),
-  Jenkins = new require('../lib/jenkins'),
-  referee = require('referee'),
-  text = require('bagoftext'),
-  util = require('util'),
-  assert = referee.assert;
+var buster    = require('buster-node');
+var _cli      = require('bagofcli');
+var cli       = require('../lib/cli');
+var commander = require('commander');
+var Jenkins   = require('../lib/jenkins');
+var referee   = require('referee');
+var text      = require('bagoftext');
+var assert    = referee.assert;
 
 text.setLocale('en');
 
@@ -13,24 +13,34 @@ buster.testCase('cli - exec', {
   'should contain commands with actions': function (done) {
     var mockCommand = function (base, actions) {
       assert.defined(base);
-      assert.defined(actions.commands.build.action);
-      assert.defined(actions.commands.console.action);
-      assert.defined(actions.commands.stop.action);
       assert.defined(actions.commands.dashboard.action);
       assert.defined(actions.commands.discover.action);
       assert.defined(actions.commands.executor.action);
-      assert.defined(actions.commands.job.action);
-      assert.defined(actions.commands.last.action);
-      assert.defined(actions.commands['create-job'].action);
-      assert.defined(actions.commands['update-job'].action);
-      assert.defined(actions.commands['delete-job'].action);
-      assert.defined(actions.commands['enable-job'].action);
-      assert.defined(actions.commands['disable-job'].action);
-      assert.defined(actions.commands['copy-job'].action);
-      assert.defined(actions.commands['fetch-job-config'].action);
+      assert.defined(actions.commands.feed.action);
       assert.defined(actions.commands.queue.action);
       assert.defined(actions.commands.ver.action);
-      assert.defined(actions.commands.feed.action);
+      assert.defined(actions.commands.create.action);
+      assert.defined(actions.commands['create-job'].action);
+      assert.defined(actions.commands.job.action);
+      assert.defined(actions.commands['read-job'].action);
+      assert.defined(actions.commands.last.action);
+      assert.defined(actions.commands.update.action);
+      assert.defined(actions.commands['update-job'].action);
+      assert.defined(actions.commands['delete'].action);
+      assert.defined(actions.commands['delete-job'].action);
+      assert.defined(actions.commands.build.action);
+      assert.defined(actions.commands['build-job'].action);
+      assert.defined(actions.commands.stop.action);
+      assert.defined(actions.commands['stop-job'].action);
+      assert.defined(actions.commands.console.action);
+      assert.defined(actions.commands.enable.action);
+      assert.defined(actions.commands['enable-job'].action);
+      assert.defined(actions.commands.disable.action);
+      assert.defined(actions.commands['disable-job'].action);
+      assert.defined(actions.commands.copy.action);
+      assert.defined(actions.commands['copy-job'].action);
+      assert.defined(actions.commands.config.action);
+      assert.defined(actions.commands['fetch-job-config'].action);
       done();
     };
     this.stub(_cli, 'command', mockCommand);
@@ -38,50 +48,61 @@ buster.testCase('cli - exec', {
   }
 });
 
-// buster.testCase('cli - last', {
-//     setUp: function () {
-//         this.mockConsole = this.mock(console);
-//         this.mockProcess = this.mock(process);
-//         this.stub(_cli, 'command', function (base, actions) {
-//             actions.commands.last.action('job1');
-//         });
-//     },
-//     'should log job name, build status and build date when job exists': function () {
-//         this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'job1', 'SUCCESS'.green);
-//         this.mockConsole.expects('log').once().withExactArgs(' - %s [%s]', 'My date', 'My distance');
-//         this.mockProcess.expects('exit').once().withExactArgs(0);
-//         this.stub(Jenkins.prototype, 'last', function (name, cb) {
-//             assert.equals(name, 'job1');
-//             cb(null, {
-//                 buildDate: "My date",
-//                 buildDateDistance: "My distance",
-//                 building: false,
-//                 result: "SUCCESS"
-//             });
-//         });
-//         cli.exec();
-//     },
-//     'should log status as BUILDING if job is currently being built': function () {
-//         this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'job1', 'BUILDING'.yellow);
-//         this.mockConsole.expects('log').atLeast(1);
-//         this.mockProcess.expects('exit').once().withExactArgs(0);
-//         this.stub(Jenkins.prototype, 'last', function (name, cb) {
-//             assert.equals(name, 'job1');
-//             cb(null, {
-//                 buildDate: "My date",
-//                 buildDateDistance: "My distance",
-//                 building: true
-//             });
-//         });
-//         cli.exec();
-//     },
-//     'should log not found error when build does not exist': function () {
-//         this.mockConsole.expects('error').once().withExactArgs('someerror'.red);
-//         this.mockProcess.expects('exit').once().withExactArgs(1);
-//         this.stub(Jenkins.prototype, 'last', function (name, cb) {
-//             assert.equals(name, 'job1');
-//             cb(new Error('someerror'));
-//         });
-//         cli.exec();
-//     }
-// });
+buster.testCase('cli - exec', {
+  'should pass URL as-is when there is no interactive arg specified': function (done) {
+    var args = {
+      parent: {
+        url: 'http://someserver:8080'
+      }
+    };
+    cli.__exec(args, function (jenkins) {
+      assert.equals(jenkins.url, 'http://someserver:8080');
+      done();
+    });
+  },
+  'should use environment variable as Jenkins URL when there is no interactive arg specified and URL parameter is not specified': function (done) {
+    this.stub(process, 'env', {
+      JENKINS_URL: 'http://someserver:8080'
+    });
+    var args = {
+      parent: {
+      }
+    };
+    cli.__exec(args, function (jenkins) {
+      assert.equals(jenkins.url, 'http://someserver:8080');
+      done();
+    });
+  },
+  'should use default Jenkins URL when there is no interactive arg specified and no environment variable Jenkins URL': function (done) {
+    this.stub(process, 'env', {
+      JENKINS_URL: null
+    });
+    var args = {
+    };
+    cli.__exec(args, function (jenkins) {
+      assert.equals(jenkins.url, 'http://localhost:8080');
+      done();
+    });
+  },
+  'should pass username and password to Jenkins URL when interactive arg is set': function (done) {
+    // can't stub or mock commander prompt and password due to buster taking them as non property
+    commander.prompt = function (text, cb) {
+      assert.equals(text, 'Username: ');
+      cb('someuser');
+    };
+    commander.password = function (text, cb) {
+      assert.equals(text, 'Password: ');
+      cb('somepass');
+    };
+    var args = {
+      parent: {
+        url: 'http://someserver:8080',
+        interactive: true
+      }
+    };
+    cli.__exec(args, function (jenkins) {
+      assert.equals(jenkins.url, 'http://someuser:somepass@someserver:8080/');
+      done();
+    });
+  }
+});
