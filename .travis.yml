@@ -1,8 +1,11 @@
+sudo: false
 language: node_js
 node_js:
+  - "0.11"
   - "0.10"
-  - 0.8
 before_install:
   - npm update -g npm
-  - npm install -g bob --loglevel error
-script: "bob build"
+  - npm install -g bob coveralls --loglevel error
+script:
+  - bob build
+  - cat .bob/coverage/buster-istanbul/lcov.info | coveralls
