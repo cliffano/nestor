@@ -1,4 +1,7 @@
-### 0.3.1-pre
+### 0.3.2-pre
+*
+
+### 0.3.1
 * Monitor Jenkins instance and view checks all jobs instead of just the first job
 
 ### 0.3.0
