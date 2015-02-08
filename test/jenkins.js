@@ -40,7 +40,7 @@ buster.testCase('jenkins - jenkins', {
 });
 
 buster.testCase('jenkins - monitor', {
-  'should monitor the latest job on Jenkins instance when no job or view opt specified': function (done) {
+  'should monitor all jobs on Jenkins instance when no job or view opt specified': function (done) {
     this.stub(cron.CronJob.prototype, 'start', function () {
       done();
     });
@@ -48,7 +48,45 @@ buster.testCase('jenkins - monitor', {
     this.stub(Jenkins.prototype, 'info', function (cb) {
       var result = { jobs: [
         { color: 'blue' },
-        { color: 'red' }
+        { color: 'red' },
+        { color: 'yellow' },
+        { color: 'notbuilt' }
+      ]};
+      cb(null, result);
+    });
+    jenkins.monitor({ schedule: '*/30 * * * * *' }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result, 'fail');
+    });
+  },
+  'should result in status non-success when a job has non-success color but no red and yellow': function (done) {
+    this.stub(cron.CronJob.prototype, 'start', function () {
+      done();
+    });
+    var jenkins = new Jenkins('http://localhost:8080');
+    this.stub(Jenkins.prototype, 'info', function (cb) {
+      var result = { jobs: [
+        { color: 'blue' },
+        { color: 'notbuilt' },
+        { color: 'blue' }
+      ]};
+      cb(null, result);
+    });
+    jenkins.monitor({ schedule: '*/30 * * * * *' }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result, 'notbuilt');
+    });
+  },
+  'should result in status success when a job has all blue or green color': function (done) {
+    this.stub(cron.CronJob.prototype, 'start', function () {
+      done();
+    });
+    var jenkins = new Jenkins('http://localhost:8080');
+    this.stub(Jenkins.prototype, 'info', function (cb) {
+      var result = { jobs: [
+        { color: 'blue' },
+        { color: 'green' },
+        { color: 'blue' }
       ]};
       cb(null, result);
     });
@@ -57,7 +95,7 @@ buster.testCase('jenkins - monitor', {
       assert.equals(result, 'ok');
     });
   },
-  'should monitor the latest job on a view when view opt is specified': function (done) {
+  'should result in status warn when view opt is specified and a job has yellow color but no red': function (done) {
     this.stub(cron.CronJob.prototype, 'start', function () {
       done();
     });
@@ -66,13 +104,13 @@ buster.testCase('jenkins - monitor', {
       assert.equals(name, 'someview');
       var result = { jobs: [
         { color: 'blue' },
-        { color: 'red' }
+        { color: 'yellow' }
       ]};
       cb(null, result);
     });
     jenkins.monitor({ view: 'someview', schedule: '*/30 * * * * *' }, function (err, result) {
       assert.isNull(err);
-      assert.equals(result, 'ok');
+      assert.equals(result, 'warn');
     });
   },
   'should pass error when an error occurs while monitoring a view': function (done) {

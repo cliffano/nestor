@@ -1,5 +1,5 @@
 ### 0.3.1-pre
-*
+* Monitor Jenkins instance and view checks all jobs instead of just the first job
 
 ### 0.3.0
 * Modify Jenkins module to pass Jenkins REST API as-is, update method names (NOTE: backward incompatible with <= 0.2.x)
