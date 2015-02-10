@@ -4,6 +4,9 @@ var referee = require('referee');
 var assert = referee.assert;
 
 buster.testCase('consolestream - consolestream', {
+  setUp: function () {
+    this.mock({});
+  },
   'should be readable but not writable': function () {
     var consoleStream = new ConsoleStream();
     assert.isTrue(consoleStream.readable);

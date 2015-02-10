@@ -7,6 +7,9 @@ var assert  = referee.assert;
 text.setLocale('en');
 
 buster.testCase('api - util', {
+  setUp: function () {
+    this.mock({});
+  },
   'passThroughSuccess - should pass result body': function (done) {
     function cb(err, result) {
       assert.isNull(err);

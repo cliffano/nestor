@@ -12,6 +12,7 @@ buster.testCase('api - view', {
   setUp: function () {
     view.url  = 'http://localhost:8080';
     view.opts = { handlers: {} };
+    this.mock({});
   },
   tearDown: function () {
     delete view.opts;

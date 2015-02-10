@@ -15,6 +15,7 @@ buster.testCase('api - jenkins', {
     jenkins.opts = { handlers: {} };
 
     this.mockTimer = this.useFakeTimers();
+    this.mock({});
   },
   tearDown: function () {
     delete jenkins.opts;

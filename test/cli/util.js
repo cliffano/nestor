@@ -7,6 +7,9 @@ var assert  = referee.assert;
 text.setLocale('en');
 
 buster.testCase('cli - util - colorByStatus', {
+  setUp: function () {
+    this.mock({});
+  },
   'should show the correct color when Jenkins color contains non-status and not animated color': function () {
     assert.equals(util.colorByStatus('somestatus', 'blue'), 'blue');
     assert.equals(util.colorByStatus('somestatus', 'green'), 'green');
@@ -35,6 +38,9 @@ buster.testCase('cli - util - colorByStatus', {
 });
 
 buster.testCase('cli - util - statusByColor', {
+  setUp: function () {
+    this.mock({});
+  },
   'should show the correct status for all supported colors': function () {
     assert.equals(util.statusByColor('blue'), 'ok');
     assert.equals(util.statusByColor('green'), 'ok');

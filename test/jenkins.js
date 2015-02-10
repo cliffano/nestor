@@ -17,6 +17,7 @@ buster.testCase('jenkins - jenkins', {
   setUp: function () {
     this.stub(process, 'env', {});
     this.jenkins = new Jenkins();
+    this.mock({});
   },
   'should use custom url when specified': function () {
     var jenkins = new Jenkins('http://jenkins-ci.org:8080');
@@ -40,6 +41,9 @@ buster.testCase('jenkins - jenkins', {
 });
 
 buster.testCase('jenkins - monitor', {
+  setUp: function () {
+    this.mock({});
+  },
   'should monitor all jobs on Jenkins instance when no job or view opt specified': function (done) {
     this.stub(cron.CronJob.prototype, 'start', function () {
       done();

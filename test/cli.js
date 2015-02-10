@@ -10,6 +10,9 @@ var assert    = referee.assert;
 text.setLocale('en');
 
 buster.testCase('cli - exec', {
+  setUp: function () {
+    this.mock({});
+  },
   'should contain commands with actions': function (done) {
     var mockCommand = function (base, actions) {
       assert.defined(base);
@@ -49,6 +52,9 @@ buster.testCase('cli - exec', {
 });
 
 buster.testCase('cli - exec', {
+  setUp: function () {
+    this.mock({});
+  },
   'should pass URL as-is when there is no interactive arg specified': function (done) {
     var args = {
       parent: {
