@@ -2,8 +2,8 @@
 
 [![Build Status](https://img.shields.io/travis/cliffano/nestor.svg)](http://travis-ci.org/cliffano/nestor)
 [![Dependencies Status](https://img.shields.io/david/cliffano/nestor.svg)](http://david-dm.org/cliffano/nestor)
-[![Coverage Status](https://coveralls.io/repos/cliffano/nestor/badge.png?branch=master)](https://coveralls.io/r/cliffano/nestor?branch=master)
-[![Published Version](https://badge.fury.io/js/nestor.png)](http://badge.fury.io/js/nestor)
+[![Coverage Status](https://img.shields.io/coveralls/cliffano/nestor.svg)](https://coveralls.io/r/cliffano/nestor?branch=master)
+[![Published Version](https://img.shields.io/npm/v/nestor.svg)](http://www.npmjs.com/package/nestor)
 <br/>
 [![npm Badge](https://nodei.co/npm/nestor.png)](http://npmjs.org/package/nestor)
 
