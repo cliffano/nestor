@@ -192,4 +192,5 @@ Articles:
 Related Projects:
 
 * [nestor-buildlight](http://github.com/cliffano/nestor-buildlight) - CLI for Jenkins build light notifier
+* [nestor-lifx](http://github.com/cliffano/nestor-lifx) - CLI for Jenkins LIFX notifier
 * [nestor-ninjablocks](http://github.com/cliffano/nestor-ninjablocks) - CLI for Jenkins Ninja Blocks notifier
