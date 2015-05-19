@@ -4,7 +4,9 @@
   "keywords": [
     "jenkins",
     "ci",
-    "cli"
+    "cli",
+    "api",
+    "client"
   ],
   "version": "0.3.2",
   "homepage": "http://github.com/cliffano/nestor",
