@@ -17,5 +17,8 @@
   },
   "doc": {
     "type": "dox-foundation"
+  },
+  "site": {
+    "type": "gh-pages-cli"
   }
 }
