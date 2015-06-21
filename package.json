@@ -32,22 +32,22 @@
     "test": "./test"
   },
   "dependencies": {
-    "async": "^0.9.0",
-    "bagofcli": "^0.2.1",
-    "bagofrequest": "^0.1.0",
-    "bagoftext": "^0.1.0",
-    "colors": "^1.1.0",
+    "async": "^1.2.1",
+    "bagofcli": "^0.2.2",
+    "bagofrequest": "^0.1.1",
+    "bagoftext": "^0.1.1",
+    "colors": "^1.1.2",
     "commander": "^2.8.1",
     "cron": "^1.0.9",
     "feedparser": "^0.15.3",
-    "lodash": "^3.7.0",
-    "moment": "^2.10.2",
-    "request": "^2.55.0",
-    "xml2js": "^0.4.8"
+    "lodash": "^3.9.3",
+    "moment": "^2.10.3",
+    "request": "^2.58.0",
+    "xml2js": "^0.4.9"
   },
   "devDependencies": {
     "buster-node": "^0.7.1",
-    "proxyquire": "^1.4.0",
+    "proxyquire": "^1.5.0",
     "referee": "^1.1.1"
   },
   "scripts": {},
