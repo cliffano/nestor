@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib/cli/jenkins.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib/cli/jenkins.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">81.47</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">170</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">26.26</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.13</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">var _       = require(&#039;lodash&#039;);
+var cli     = require(&#039;bagofcli&#039;);
+var Jenkins = require(&#039;../jenkins&#039;);
+var text    = require(&#039;bagoftext&#039;);
+var util    = require(&#039;./util&#039;);
+
+/**
+ * Get a handler that calls Jenkins API to get a list of all jobs on the Jenkins instance.
+ *
+ * @param {Function} cb: callback for argument handling
+ * @return Jenkins API handler function
+ */
+function dashboard(cb) {
+  return function (args) {
+    function resultCb(result) {
+      var jobs = result.jobs;
+      if (_.isEmpty(jobs)) {
+        console.log(text.__(&#039;Jobless Jenkins&#039;));
+      } else {
+        jobs.forEach(function (job) {
+          var status = util.statusByColor(job.color);
+          var color  = util.colorByStatus(status, job.color);
+          console.log(&#039;%s - %s&#039;, text.__(status)[color], job.name);
+        });
+      }
+    }
+    function jenkinsCb(jenkins) {
+      jenkins.info(cli.exitCb(null, resultCb));
+    }
+    cb(args, jenkinsCb);
+  };
+}
+
+/**
+ * Get a handler that calls Jenkins API to discover a Jenkins instance on specified host.
+ *
+ * @param {Function} cb: callback for argument handling
+ * @return Jenkins API handler function
+ */
+function discover(cb) {
+  return function (host, args) {
+    if (!args) {
+      args = host || {};
+      host = &#039;localhost&#039;;
+    }
+    function resultCb(result) {
+      console.log(text.__(&#039;Jenkins ver. %s is running on %s&#039;),
+          result.hudson.version[0],
+          (result.hudson.url &amp;&amp; result.hudson.url[0]) ? result.hudson.url[0] : host);
+    }
+    function jenkinsCb(jenkins) {
+      jenkins.discover(host, cli.exitCb(null, resultCb));
+    }
+    cb(args, jenkinsCb);
+  };
+}
+
+/**
+ * Get a handler that calls Jenkins API to display executors information per computer
+ *
+ * @param {Function} cb: callback for argument handling
+ * @return Jenkins API handler function
+ */
+function executor(cb) {
+  return function (args) {
+    function resultCb(result) {
+
+      var computers = result.computer;
+
+      if (_.isEmpty(computers)) {
+        console.log(text.__(&#039;No executor found&#039;));
+      } else {
+
+        var data = Jenkins.executorSummary(computers);
+
+        _.keys(data).forEach(function (computer) {
+          console.log(&#039;+ %s | %s&#039;, computer, data[computer].summary);
+          data[computer].executors.forEach(function (executor) {
+            if (!executor.idle) {
+              console.log(&#039;  - %s | %s%%s&#039;, executor.name, executor.progress, (executor.stuck) ? text.__(&#039; stuck!&#039;) : &#039;&#039;);
+            }
+          });
+        });
+
+      }
+    }
+    function jenkinsCb(jenkins) {
+      jenkins.computer(cli.exitCb(null, resultCb));
+    }
+    cb(args, jenkinsCb);
+  };
+}
+
+/**
+ * Get a handler that calls Jenkins API to retrieve feed.
+ * Feed contains articles.
+ *
+ * @param {Function} cb: callback for argument handling
+ * @return Jenkins API handler function
+ */
+function feed(cb) {
+  return function (args) {
+    function resultCb(result) {
+      result.forEach(function (article) {
+        console.log(article.title);
+      });
+    }
+    function jenkinsCb(jenkins) {
+      if (args.job) {
+        jenkins.parseJobFeed(args.job, cli.exitCb(null, resultCb));
+      } else if (args.view) {
+        jenkins.parseViewFeed(args.view, cli.exitCb(null, resultCb));
+      } else {
+        jenkins.parseFeed(cli.exitCb(null, resultCb));
+      }
+    }
+    cb(args, jenkinsCb);
+  };
+}
+
+/**
+ * Get a handler that calls Jenkins API to read the queue.
+ * Queue contains a list of jobs that are queued waiting for a free executor.
+ *
+ * @param {Function} cb: callback for argument handling
+ * @return Jenkins API handler function
+ */
+function queue(cb) {
+  return function (args) {
+    function resultCb(result) {
+      var items = result.items;
+      if (_.isEmpty(items)) {
+        console.log(text.__(&#039;Queue is empty&#039;));
+      } else {
+        items.forEach(function (item) {
+            console.log(&#039;- %s&#039;, item.task.name);
+        });        
+      }
+    }
+    function jenkinsCb(jenkins) {
+      jenkins.queue(cli.exitCb(null, resultCb));
+    }
+    cb(args, jenkinsCb);
+  };
+}
+
+/**
+ * Get a handler that calls Jenkins API to read the Jenkins version.
+ *
+ * @param {Function} cb: callback for argument handling
+ * @return Jenkins API handler function
+ */
+function version(cb) {
+  return function (args) {
+    function resultCb(result) {
+      console.log(text.__(&#039;Jenkins ver. %s&#039;, result));
+    }
+    function jenkinsCb(jenkins) {
+      jenkins.version(cli.exitCb(null, resultCb));
+    }
+    cb(args, jenkinsCb);
+  };
+}
+
+exports.dashboard = dashboard;
+exports.discover  = discover;
+exports.executor  = executor;
+exports.feed      = feed;
+exports.queue     = queue;
+exports.version   = version;</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

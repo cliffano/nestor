@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib/cli.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib/cli.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">54.77</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">76</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">20.27</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.16</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">var cli       = require(&#039;bagofcli&#039;);
+var commander = require(&#039;commander&#039;);
+var Jenkins   = require(&#039;./jenkins&#039;);
+var jenkins   = require(&#039;./cli/jenkins&#039;);
+var job       = require(&#039;./cli/job&#039;);
+var text      = require(&#039;bagoftext&#039;);
+var _url      = require(&#039;url&#039;);
+var view      = require(&#039;./cli/view&#039;);
+
+function __exec(args, cb) {
+  // use url flag or JENKINS_URL environment variable if provided
+  var url = (args &amp;&amp; args.parent) ? (args.parent.url || process.env.JENKINS_URL) : undefined;
+
+  // if URL value and interactive flag are specified, then prompt for authentication details
+  if (url &amp;&amp; args.parent &amp;&amp; args.parent.interactive) {
+    commander.prompt(text.__(&#039;Username: &#039;), function (user) {
+      commander.password(text.__(&#039;Password: &#039;), function (pass) {
+        var parsedUrl = _url.parse(url);
+        parsedUrl.auth = user + &#039;:&#039; + pass;
+        url = _url.format(parsedUrl);
+        cb(new Jenkins(url));
+      });
+    });
+
+  // otherwise fallback to default URL
+  } else {
+    cb(new Jenkins(url));
+  }
+}
+
+/**
+ * Execute Nestor CLI.
+ */
+function exec() {
+
+  var actions = {
+    commands: {
+      &#039;dashboard&#039;        : { action: jenkins.dashboard(__exec) },
+      &#039;discover&#039;         : { action: jenkins.discover(__exec) },
+      &#039;executor&#039;         : { action: jenkins.executor(__exec) },
+      &#039;feed&#039;             : { action: jenkins.feed(__exec) },
+      &#039;queue&#039;            : { action: jenkins.queue(__exec) },
+      &#039;ver&#039;              : { action: jenkins.version(__exec) },
+      &#039;create&#039;           : { action: job.create(__exec) },
+      &#039;create-job&#039;       : { action: job.create(__exec) },
+      &#039;job&#039;              : { action: job.read(__exec) },
+      &#039;read-job&#039;         : { action: job.read(__exec) },
+      &#039;last&#039;             : { action: job.readLatest(__exec) },
+      &#039;update&#039;           : { action: job.update(__exec) },
+      &#039;update-job&#039;       : { action: job.update(__exec) },
+      &#039;delete&#039;           : { action: job.delete(__exec) },
+      &#039;delete-job&#039;       : { action: job.delete(__exec) },
+      &#039;build&#039;            : { action: job.build(__exec) },
+      &#039;build-job&#039;        : { action: job.build(__exec) },
+      &#039;stop&#039;             : { action: job.stop(__exec) },
+      &#039;stop-job&#039;         : { action: job.stop(__exec) },
+      &#039;console&#039;          : { action: job.console(__exec) },
+      &#039;enable&#039;           : { action: job.enable(__exec) },
+      &#039;enable-job&#039;       : { action: job.enable(__exec) },
+      &#039;disable&#039;          : { action: job.disable(__exec) },
+      &#039;disable-job&#039;      : { action: job.disable(__exec) },
+      &#039;copy&#039;             : { action: job.copy(__exec) },
+      &#039;copy-job&#039;         : { action: job.copy(__exec) },
+      &#039;config&#039;           : { action: job.fetchConfig(__exec) },
+      &#039;fetch-job-config&#039; : { action: job.fetchConfig(__exec) },
+      &#039;create-view&#039;      : { action: view.create(__exec) },
+      &#039;update-view&#039;      : { action: view.update(__exec) },
+      &#039;fetch-view-config&#039;: { action: view.fetchConfig(__exec) }
+    }
+  };
+
+  cli.command(__dirname, actions);
+}
+
+exports.exec   = exec;
+exports.__exec = __exec;</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

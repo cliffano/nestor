@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for lib/jenkins.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../prettify.css">
+    <link rel="stylesheet" href="../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header high">
+    <h1>Code coverage report for <span class="entity">lib/jenkins.js</span></h1>
+    <h2>
+        Statements: <span class="metric">100% <small>(102 / 102)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">100% <small>(37 / 37)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">100% <small>(11 / 11)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">100% <small>(102 / 102)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">lib/</a> &#187; jenkins.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">50</span>
+<span class="cline-any cline-yes">50</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var cron    = require('cron');
+var jenkins = require('./api/jenkins');
+var job     = require('./api/job');
+var text    = require('bagoftext');
+var util    = require('./cli/util');
+var view    = require('./api/view');
+&nbsp;
+text.initLocales(__dirname);
+&nbsp;
+/**
+ * class Jenkins
+ *
+ * @param {String} url: Jenkins URL, fallback to JENKINS_URL environment variable, otherwise default to http://localhost:8080
+ */
+function Jenkins(url) {
+&nbsp;
+  function _authFail(result, cb) {
+    cb(new Error(text.__('Authentication failed - incorrect username and/or password in Jenkins URL')));
+  }
+&nbsp;
+  function _authRequire(result, cb) {
+    cb(new Error(text.__('Jenkins requires authentication - set username and password in Jenkins URL')));
+  }
+&nbsp;
+  this.url = url || process.env.JENKINS_URL || 'http://localhost:8080';
+  this.opts = {
+    handlers: {
+      401: _authFail,
+      403: _authRequire
+    }
+  };
+}
+&nbsp;
+/**
+ * Summarise executor information from computers array.
+ *
+ * @param {Array} computers: computers array, part of Jenkins#computer result
+ * @return executor summary object
+ */
+function executorSummary(computers) {
+&nbsp;
+  var data = {};
+&nbsp;
+  computers.forEach(function (computer) {
+&nbsp;
+    var idleCount   = 0;
+    var activeCount = 0;
+&nbsp;
+    data[computer.displayName] = { executors: [] };
+&nbsp;
+    computer.executors.forEach(function (executor) {
+&nbsp;
+      data[computer.displayName].executors.push({
+        idle: executor.idle,
+        stuck: executor.likelyStuck,
+        progress: executor.progress,
+        name: (!executor.idle) ?
+          executor.currentExecutable.url.replace(/.*\/job\//, '').replace(/\/.*/, '') :
+          undefined
+      });
+&nbsp;
+      if (executor.idle) {
+        idleCount += 1;
+      } else {
+        activeCount += 1;
+      }
+    });
+&nbsp;
+    var summary = [];
+    if (activeCount &gt; 0) {
+      summary.push(text.__('%d active', activeCount)); 
+    }
+    if (idleCount &gt; 0) {
+      summary.push(text.__('%d idle', idleCount));
+    }
+&nbsp;
+    data[computer.displayName].summary = summary.join(', ');
+  });
+&nbsp;
+  return data;
+}
+&nbsp;
+/**
+ * Monitor Jenkins latest build status on a set interval.
+ *
+ * @param {Object} opts: optional
+ * - job: Jenkins job name
+ * - view: Jenkins view name
+ * - schedule: cron scheduling definition in standard * * * * * * format, default: 0 * * * * * (every minute)
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function monitor(opts, cb) {
+  var self = this;
+&nbsp;
+  function singleJobResultCb(err, result) {
+    if (!err) {
+      result = util.statusByColor(result.color);
+    }
+    cb(err, result);    
+  }
+&nbsp;
+  // when there are multiple jobs, status is derived following these rules:
+  // - fail if any job has Jenkins color red
+  // - warn if any job has Jenkins color yellow but no red
+  // - non-success (e.g. notbuilt) if any job has Jenkins color status but no red and yellow
+  // - success only if all jobs are either blue or green
+  function multiJobsResultCb(err, result) {
+    if (!err) {
+      
+      var hasRed        = false;
+      var hasYellow     = false;
+      var hasNonSuccess = false;
+      var hasSuccess    = false;
+&nbsp;
+      var successColor;
+      var nonSuccessColor;
+&nbsp;
+      result.jobs.forEach(function (job) {
+        if (job.color === 'red') {
+          hasRed = true;
+        }
+        if (job.color === 'yellow') {
+          hasYellow = true;
+        }
+        if (['red', 'yellow', 'blue', 'green'].indexOf(job.color) === -1) {
+          hasNonSuccess   = true;
+          nonSuccessColor = job.color;
+        }
+        if (job.color === 'blue' || job.color === 'green') {
+          hasSuccess   = true;
+          successColor = job.color;
+        }
+      });
+&nbsp;
+      var resultColor;
+      if (hasRed) {
+        resultColor = 'red';
+      } else if (hasYellow) {
+        resultColor = 'yellow';
+      } else if (hasNonSuccess) {
+        resultColor = nonSuccessColor;
+      } else {
+        resultColor = successColor;
+      }
+&nbsp;
+      result = util.statusByColor(resultColor);
+    }
+    cb(err, result);
+  }
+&nbsp;
+  function _notify() {
+    if (opts.job) {
+      self.readJob(opts.job, singleJobResultCb);
+    } else if (opts.view) {
+      self.readView(opts.view, multiJobsResultCb);
+    } else {
+      self.info(multiJobsResultCb);
+    }
+  }
+&nbsp;
+  _notify();
+  new cron.CronJob(opts.schedule || '0 * * * * *', _notify).start();
+}
+&nbsp;
+Jenkins.prototype.discover         = jenkins.discover;
+Jenkins.prototype.computer         = jenkins.computer; 
+Jenkins.prototype.info             = jenkins.info;
+Jenkins.prototype.monitor          = monitor;
+Jenkins.prototype.parseFeed        = jenkins.parseFeed;
+Jenkins.prototype.queue            = jenkins.queue;
+Jenkins.prototype.version          = jenkins.version;
+&nbsp;
+Jenkins.prototype.createJob        = job.create;
+Jenkins.prototype.readJob          = job.read;
+Jenkins.prototype.readLatestJob    = job.readLatest;
+Jenkins.prototype.updateJob        = job.update;
+Jenkins.prototype.deleteJob        = job.delete;
+Jenkins.prototype.buildJob         = job.build;
+Jenkins.prototype.stopJob          = job.stop;
+Jenkins.prototype.streamJobConsole = job.streamConsole;
+Jenkins.prototype.enableJob        = job.enable;
+Jenkins.prototype.disableJob       = job.disable;
+Jenkins.prototype.copyJob          = job.copy;
+Jenkins.prototype.fetchJobConfig   = job.fetchConfig;
+Jenkins.prototype.parseJobFeed     = job.parseFeed;
+&nbsp;
+Jenkins.prototype.createView       = view.create;
+Jenkins.prototype.readView         = view.read;
+Jenkins.prototype.updateView       = view.update;
+Jenkins.prototype.fetchViewConfig  = view.fetchConfig;
+Jenkins.prototype.parseViewFeed    = view.parseFeed;
+&nbsp;
+Jenkins.executorSummary = executorSummary;
+&nbsp;
+module.exports = Jenkins;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Jun 21 2015 12:48:31 GMT+1000 (AEST)</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

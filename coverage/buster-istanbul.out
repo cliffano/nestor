@@ -1,0 +1,78 @@
+Running tests ...
+[1A[KRunning 99 tests in 1 runtime ...
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 16% done[0m
+[1A[K[1m[32mRunning 99 tests in 1 runtime ... 79% done[0m
+[1A[K[1m[32m99 tests, 428 assertions, 1 runtime ... OK[0m
+-----------------------|-----------|-----------|-----------|-----------|
+File                   |   % Stmts |% Branches |   % Funcs |   % Lines |
+-----------------------|-----------|-----------|-----------|-----------|
+   lib/                |       100 |       100 |       100 |       100 |
+      cli.js           |       100 |       100 |       100 |       100 |
+      jenkins.js       |       100 |       100 |       100 |       100 |
+   lib/api/            |       100 |       100 |       100 |       100 |
+      consolestream.js |       100 |       100 |       100 |       100 |
+      jenkins.js       |       100 |       100 |       100 |       100 |
+      job.js           |       100 |       100 |       100 |       100 |
+      util.js          |       100 |       100 |       100 |       100 |
+      view.js          |       100 |       100 |       100 |       100 |
+   lib/cli/            |       100 |       100 |       100 |       100 |
+      jenkins.js       |       100 |       100 |       100 |       100 |
+      job.js           |       100 |       100 |       100 |       100 |
+      util.js          |       100 |       100 |       100 |       100 |
+      view.js          |       100 |       100 |       100 |       100 |
+-----------------------|-----------|-----------|-----------|-----------|
+All files              |       100 |       100 |       100 |       100 |
+-----------------------|-----------|-----------|-----------|-----------|
+
+
+=============================== Coverage summary ===============================
+Statements   : 100% ( 609/609 )
+Branches     : 100% ( 102/102 )
+Functions    : 100% ( 162/162 )
+Lines        : 100% ( 609/609 )
+================================================================================
