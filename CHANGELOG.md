@@ -1,5 +1,5 @@
 ### 0.3.2-pre
-*
+* Add build reports to readme
 
 ### 0.3.1
 * Monitor Jenkins instance and view checks all jobs instead of just the first job
