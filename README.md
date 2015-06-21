@@ -177,11 +177,11 @@ Colophon
 
 Build reports:
 
-* [Code complexity report](http://cliffano.github.io/nestor/bob/complexity/plato/index.html)
-* [Unit tests report](http://cliffano.github.io/nestor/bob/test/buster.out)
-* [Test coverage report](http://cliffano.github.io/nestor/bob/coverage/buster-istanbul/lcov-report/lib/index.html)
-* [Integration tests report](http://cliffano.github.io/nestor/bob/test-integration/cmdt.out)
-* [API Documentation](http://cliffano.github.io/nestor/bob/doc/dox-foundation/index.html)
+* [Code complexity report](http://cliffano.github.io/nestor/complexity/plato/index.html)
+* [Unit tests report](http://cliffano.github.io/nestor/test/buster.out)
+* [Test coverage report](http://cliffano.github.io/nestor/coverage/buster-istanbul/lcov-report/lib/index.html)
+* [Integration tests report](http://cliffano.github.io/nestor/test-integration/cmdt.out)
+* [API Documentation](http://cliffano.github.io/nestor/doc/dox-foundation/index.html)
 
 Articles:
 
