@@ -53,7 +53,7 @@ buster.testCase('cli - exec', {
 
 buster.testCase('cli - exec', {
   setUp: function () {
-    this.mock({});
+    this.mockCli = this.mock(_cli);
   },
   'should pass URL as-is when there is no interactive arg specified': function (done) {
     var args = {
@@ -91,15 +91,7 @@ buster.testCase('cli - exec', {
     });
   },
   'should pass username and password to Jenkins URL when interactive arg is set': function (done) {
-    // can't stub or mock commander prompt and password due to buster taking them as non property
-    commander.prompt = function (text, cb) {
-      assert.equals(text, 'Username: ');
-      cb('someuser');
-    };
-    commander.password = function (text, cb) {
-      assert.equals(text, 'Password: ');
-      cb('somepass');
-    };
+    this.mockCli.expects('lookupConfig').once().withArgs(['Username', 'Password'], { prompt: true }).callsArgWith(2, null, { Username: 'someuser', Password: 'somepass' });
     var args = {
       parent: {
         url: 'http://someserver:8080',
