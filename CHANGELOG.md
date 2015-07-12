@@ -1,4 +1,7 @@
-### 0.3.2-pre
+### 0.3.3-pre
+*
+
+### 0.3.2
 * Add build reports to readme
 * Fix broken build command when no parameter is specified
 * Fix broken auth username and password prompt with interactive flag
