@@ -1,5 +1,6 @@
 ### 0.3.2-pre
 * Add build reports to readme
+* Fix broken build command when no parameter is specified
 
 ### 0.3.1
 * Monitor Jenkins instance and view checks all jobs instead of just the first job
