@@ -1,5 +1,5 @@
 ### 0.3.3-pre
-*
+* Add SSL certificate support [Benedikt Arnold](https://github.com/benediktarnold)
 
 ### 0.3.2
 * Add build reports to readme
