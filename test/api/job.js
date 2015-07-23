@@ -153,8 +153,6 @@ buster.testCase('api - job', {
     job.streamConsole('somejob', 0, done);
   },
   'streamConsole - should display console output once when there is more text but an error occurs': function (done) {
-    var mockRequest = this.mock(request);
-    mockRequest.expects('get').once().callsArgWith(1, new Error('some error'));
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
       if (event === 'data') {
         assert.equals(value, 'Console output 1');
@@ -163,22 +161,20 @@ buster.testCase('api - job', {
       }
     });
     this.stub(req, 'request', function (method, url, opts, cb) {
-      var result = {
-        statusCode: 200,
-        body: 'Console output 1',
-        headers: { 'x-more-data': 'true', 'x-text-size': 20 }
-      };
-      opts.handlers[200](result, done);
+      if(opts.queryStrings.start === 0){
+        var result = {
+          statusCode: 200,
+          body: 'Console output 1',
+          headers: { 'x-more-data': 'true', 'x-text-size': 20 }
+        };
+        opts.handlers[200](result, done);
+      } else {
+        cb(new Error('some error'));
+      }
     });
     job.streamConsole('somejob', 0, done);
   },
   'streamConsole - should display console output multiple times when there is more text': function (done) {
-    var mockRequest = this.mock(request);
-    mockRequest.expects('get').once().callsArgWith(1, null, {
-      statusCode: 200,
-      body: 'Console output',
-      headers: { 'x-more-data': 'false', 'x-text-size': 20 }
-    });
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
       if (event === 'data') {
         assert.equals(value, 'Console output');
@@ -187,21 +183,25 @@ buster.testCase('api - job', {
       }
     });
     this.stub(req, 'request', function (method, url, opts, cb) {
-      var result = {
-        statusCode: 200,
-        body: 'Console output',
-        headers: { 'x-more-data': 'true', 'x-text-size': 20 }
-      };
+      var result = {};
+      if(opts.queryStrings.start === 0){
+        result = {
+          statusCode: 200,
+          body: 'Console output',
+          headers: { 'x-more-data': 'true', 'x-text-size': 20 }
+        };
+      } else {
+        result = {
+          statusCode: 200,
+          body: 'Console output',
+          headers: { 'x-more-data': 'false', 'x-text-size': 20 }
+        };
+      }
       opts.handlers[200](result, done);
     });
     job.streamConsole('somejob', 0, done);
   },
   'streamConsole - should display console output once when the second text is undefined': function (done) {
-    var mockRequest = this.mock(request);
-    mockRequest.expects('get').once().callsArgWith(1, null, {
-      statusCode: 200,
-      headers: { 'x-more-data': 'false', 'x-text-size': 20 }
-    });
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
       if (event === 'data') {
         assert.equals(value, 'Console output 1');
@@ -210,11 +210,19 @@ buster.testCase('api - job', {
       }
     });
     this.stub(req, 'request', function (method, url, opts, cb) {
-      var result = {
-        statusCode: 200,
-        body: 'Console output 1',
-        headers: { 'x-more-data': 'true', 'x-text-size': 20 }
-      };
+      var result = {};
+      if(opts.queryStrings.start === 0){
+        result = {
+          statusCode: 200,
+          headers: { 'x-more-data': 'true', 'x-text-size': 20 }
+        };
+      } else {
+        result = {
+          statusCode: 200,
+          body: 'Console output 1',
+          headers: { 'x-more-data': 'false', 'x-text-size': 20 }
+        };
+      }
       opts.handlers[200](result, done);
     });
     this.stub(req, 'proxy', function (url) {
