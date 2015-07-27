@@ -102,7 +102,7 @@ View queued jobs:
 View executors' status (running builds):
 
     nestor executor
-    
+
 Discover Jenkins instance running on a specified host:
 
     nestor discover <host>
@@ -113,7 +113,7 @@ View Jenkins version number:
 
 View builds feed of all jobs:
 
-    nestor feed 
+    nestor feed
 
 View builds feed of a job:
 
@@ -138,6 +138,7 @@ Check out [lib/jenkins](https://github.com/cliffano/nestor/blob/master/lib/jenki
 
 Configuration
 -------------
+### Jenkins URL
 
 Set Jenkins URL in JENKINS_URL environment variable (defaults to http://localhost:8080):
 
@@ -160,6 +161,42 @@ If you want authentication details to be prompted interactively:
 Jenkins URL can also be specified as an arg:
 
     nestor --url http://user:pass@host:port/path dashboard
+
+### SSL client certificate authentication
+
+Set JENKINS_CERT and JENKINS_KEY
+
+(*nix)
+
+    export JENKINS_CERT=certificate.pem
+    export JENKINS_KEY=key.pem
+
+(Windows)
+
+    set JENKINS_CERT=certificate.pem
+    set JENKINS_KEY=key.pem
+
+When you have both key and certificate in one file, currently you have to set both ENV variables to the same file
+
+(*nix)
+
+    export JENKINS_CERT=combined.pem
+    export JENKINS_KEY=combined.pem
+
+(Windows)
+
+    set JENKINS_CERT=combined.pem
+    set JENKINS_KEY=combined.pem
+
+It is possible to specify a custom CA. Just set the JENKINS_CA env variable
+
+(*nix)
+
+    export JENKINS_CA=custom.ca.pem
+
+(Windows)
+
+    set JENKINS_CA=custom.ca.pem
 
 Translation
 -----------
