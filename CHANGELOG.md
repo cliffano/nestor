@@ -1,5 +1,6 @@
 ### 0.3.3-pre
 * Add SSL certificate support [Benedikt Arnold](https://github.com/benediktarnold)
+* Handle job object without color property
 
 ### 0.3.2
 * Add build reports to readme

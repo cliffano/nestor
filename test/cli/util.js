@@ -27,6 +27,9 @@ buster.testCase('cli - util - colorByStatus', {
   'should show grey color when Jenkins color is a status': function () {
     assert.equals(util.colorByStatus('somestatus', 'somestatus'), 'grey');
   },
+  'should show grey color when Jenkins color is undefined': function () {
+    assert.equals(util.colorByStatus('somestatus', undefined), 'grey');
+  },
   'should show color based ons status when Jenkins color is not provided and status is known': function () {
     assert.equals(util.colorByStatus('failure'), 'red');
     assert.equals(util.colorByStatus('success'), 'green');
@@ -57,5 +60,8 @@ buster.testCase('cli - util - statusByColor', {
   },
   'should return value as-is when status is a real status value': function () {
     assert.equals(util.statusByColor('notbuilt'), 'notbuilt');
+  },
+  'should show the correct status for undefined job color': function () {
+    assert.equals(util.statusByColor(undefined), 'unknown');
   }
 });
