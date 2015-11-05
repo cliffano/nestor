@@ -1,4 +1,7 @@
-### 0.3.3-pre
+### 0.3.4-pre
+*
+
+### 0.3.3
 * Add SSL certificate support [Benedikt Arnold](https://github.com/benediktarnold)
 * Handle job object without color property
 
