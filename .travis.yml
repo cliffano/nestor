@@ -1,13 +1,21 @@
 sudo: false
 language: node_js
 node_js:
-  - "0.11"
   - "0.10"
+  - "0.11"
   - "0.12"
-  - iojs
+  - "4.0"
+  - "4.1"
+env:
+  - CXX=g++-4.8
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
 before_install:
-  - npm update -g npm
   - npm install -g bob coveralls --loglevel error
 script:
-  - bob build
+  - DEBUG=canihaz bob build
   - cat .bob/coverage/buster-istanbul/lcov.info | coveralls
