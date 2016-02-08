@@ -1,5 +1,6 @@
 var buster     = require('buster-node');
-var feedparser = require('feedparser');
+var feedRead   = require('feed-read');
+var proxyquire = require('proxyquire');
 var view       = require('../../lib/api/view');
 var referee    = require('referee');
 var req        = require('bagofrequest');
@@ -61,10 +62,12 @@ buster.testCase('api - view', {
     view.fetchConfig('someview', done);
   },
   'parseFeed - should parse feed from API endpoint': function (done) {
-    this.stub(feedparser, 'parseUrl', function (url, cb) {
+    var mockFeedRead = function (url, cb) {
       assert.equals(url, 'http://localhost:8080/view/someview/rssAll');
       cb();
-    });
+    };
+    var view = proxyquire('../../lib/api/view.js', { 'feed-read': mockFeedRead });
+    view.url  = 'http://localhost:8080';
     view.parseFeed('someview', done);
   }
 });

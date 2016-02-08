@@ -1,7 +1,8 @@
 var buster        = require('buster-node');
 var ConsoleStream = require('../../lib/api/consolestream');
-var feedparser    = require('feedparser');
+var feedRead      = require('feed-read');
 var job           = require('../../lib/api/job');
+var proxyquire    = require('proxyquire');
 var referee       = require('referee');
 var req           = require('bagofrequest');
 var request       = require('request');
@@ -10,7 +11,7 @@ var assert        = referee.assert;
 
 buster.testCase('api - job', {
   setUp: function () {
-    this.mockFeedparser = this.mock(feedparser);
+    this.mockFeedRead = this.mock(feedRead);
 
     job.url  = 'http://localhost:8080';
     job.opts = { handlers: {} };
@@ -273,10 +274,12 @@ buster.testCase('api - job', {
     job.fetchConfig('somejob', done);
   },
   'parseFeed - should parse feed from API endpoint': function (done) {
-    this.stub(feedparser, 'parseUrl', function (url, cb) {
+    var mockFeedRead = function (url, cb) {
       assert.equals(url, 'http://localhost:8080/job/somejob/rssAll');
       cb();
-    });
+    };
+    var job = proxyquire('../../lib/api/job.js', { 'feed-read': mockFeedRead });
+    job.url  = 'http://localhost:8080';
     job.parseFeed('somejob', done);
   }
 });

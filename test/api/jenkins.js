@@ -1,7 +1,8 @@
 var buster     = require('buster-node');
 var dgram      = require('dgram');
-var feedparser = require('feedparser');
+var feedRead   = require('feed-read');
 var jenkins    = require('../../lib/api/jenkins');
+var proxyquire = require('proxyquire');
 var referee    = require('referee');
 var req        = require('bagofrequest');
 var text       = require('bagoftext');
@@ -11,6 +12,8 @@ text.setLocale('en');
 
 buster.testCase('api - jenkins', {
   setUp: function () {
+    this.mockFeedRead = this.mock(feedRead);
+
     jenkins.url  = 'http://localhost:8080';
     jenkins.opts = { handlers: {} };
 
@@ -134,10 +137,11 @@ buster.testCase('api - jenkins', {
     jenkins.info(done);
   },
   'parseFeed - should parse feed from API endpoint': function (done) {
-    this.stub(feedparser, 'parseUrl', function (url, cb) {
+    var mockFeedRead = function (url, cb) {
       assert.equals(url, 'http://localhost:8080/rssAll');
       cb();
-    });
+    };
+    var job = proxyquire('../../lib/api/jenkins.js', { 'feed-read': mockFeedRead });
     jenkins.parseFeed(done);
   },
   'queue - should send request to API endpoint': function (done) {

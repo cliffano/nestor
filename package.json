@@ -39,7 +39,7 @@
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "cron": "^1.1.0",
-    "feedparser": "^0.15.3",
+    "feed-read": "^0.0.1",
     "lodash": "^4.2.1",
     "moment": "^2.11.2",
     "request": "^2.69.0",
