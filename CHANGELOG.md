@@ -1,5 +1,6 @@
-### 0.3.4-pre
+### 0.3.4
 * Replace feedparser with feed-read due to feedparser's API change post v0.15.x
+* Update doc with triggering parameterised build with console output
 
 ### 0.3.3
 * Add SSL certificate support [Benedikt Arnold](https://github.com/benediktarnold)
