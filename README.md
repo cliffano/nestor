@@ -39,6 +39,10 @@ Trigger a build, wait for 5 seconds, then display console output:
 
     nestor build --pending 5000 --console <job>
 
+Trigger a parameterised build followed by console output:
+
+    nestor build <job> ["param1=value1&param2=value2"] --console
+
 Display latest build console output:
 
     nestor console <job>

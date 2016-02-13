@@ -18,6 +18,7 @@
         "nestor build <job> <\"param1=value1&param2=value2\">",
         "nestor build --console <job>",
         "nestor build --pending <5000> --console <job>",
+        "nestor build <job> <\"param1=value1&param2=value2\"> --console",
         "JENKINS_URL=http://host:8080 nestor build --interactive <job>",
         "JENKINS_URL=http://host:8080 nestor build <job>",
         "nestor build --url <http://host:8080> <job>"
