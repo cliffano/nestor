@@ -81,7 +81,7 @@ buster.testCase('cli - job', {
     var mockMoment = function () {
       return {
         fromNow: function() {
-          return 'sometime ago'; 
+          return 'sometime ago';
         }
       };
     };
@@ -106,7 +106,7 @@ buster.testCase('cli - job', {
     var mockMoment = function () {
       return {
         fromNow: function() {
-          return 'sometime ago'; 
+          return 'sometime ago';
         }
       };
     };
@@ -156,11 +156,12 @@ buster.testCase('cli - job', {
     this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {
       assert.equals(name, 'somejob');
       assert.equals(params.param1, 'value1');
-      assert.equals(params.param2, 'value2');
+      assert.equals(params.param2, 'value2=2');
+      assert.equals(params.param3, 'value3');
       cb();
     });
 
-    job.build(this.mockArgsCb)('somejob', 'param1=value1&param2=value2', {});
+    job.build(this.mockArgsCb)('somejob', 'param1=value1&param2=value2=2&param3=value3', {});
   },
   'build - should pass to console call': function (done) {
     this.timeout = 5010;
