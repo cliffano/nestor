@@ -3,6 +3,7 @@
 * Update doc with triggering parameterised build with console output
 * Fix missing colours on dashboard output
 * Handle build param which includes '=' delimiter sign in the value
+* Set min node engine to >= 4.0.0
 
 ### 0.3.3
 * Add SSL certificate support [Benedikt Arnold](https://github.com/benediktarnold)
