@@ -1,3 +1,6 @@
+### 0.3.5
+*
+
 ### 0.3.4
 * Replace feedparser with feed-read due to feedparser's API change post v0.15.x
 * Update doc with triggering parameterised build with console output
