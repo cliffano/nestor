@@ -1,5 +1,5 @@
 ### 0.3.5
-*
+* Add NO_PROXY support via bagofrequest v0.1.4 for issue #36
 
 ### 0.3.4
 * Replace feedparser with feed-read due to feedparser's API change post v0.15.x

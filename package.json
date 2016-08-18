@@ -34,7 +34,7 @@
   "dependencies": {
     "async": "^2.0.1",
     "bagofcli": "^0.2.5",
-    "bagofrequest": "^0.1.3",
+    "bagofrequest": "^0.1.4",
     "bagoftext": "^0.1.2",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
