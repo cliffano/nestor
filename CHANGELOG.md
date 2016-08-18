@@ -1,3 +1,6 @@
+### 0.3.6
+*
+
 ### 0.3.5
 * Add NO_PROXY support via bagofrequest v0.1.4 for issue #36
 
