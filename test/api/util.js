@@ -10,6 +10,14 @@ buster.testCase('api - util', {
   setUp: function () {
     this.mock({});
   },
+  'passThroughResponse - should pass entire response': function (done) {
+    function cb(err, result) {
+      assert.isNull(err);
+      assert.equals(result, 'someresponse');
+      done();
+    }
+    util.passThroughResponse('someresponse', cb);
+  },
   'passThroughSuccess - should pass result body': function (done) {
     function cb(err, result) {
       assert.isNull(err);
