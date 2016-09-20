@@ -1,4 +1,5 @@
 var buster     = require('buster-node');
+var cli        = require('bagofcli');
 var fs         = require('fs');
 var Jenkins    = require('../../lib/jenkins');
 var job        = require('../../lib/cli/job');
@@ -150,7 +151,7 @@ buster.testCase('cli - job', {
     job.delete(this.mockArgsCb)('somejob', 'config.xml');
   },
   'build - should log job started success message': function () {
-    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'somejob');
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was triggered successfully', 'somejob');
     this.mockProcess.expects('exit').once().withExactArgs(0);
 
     this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {
@@ -164,14 +165,19 @@ buster.testCase('cli - job', {
     job.build(this.mockArgsCb)('somejob', 'param1=value1&param2=value2=2&param3=value3', {});
   },
   'build - should pass to console call': function (done) {
-    this.timeout = 5010;
-    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'somejob');
+    this.timeout = 3000;
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was triggered successfully', 'somejob');
 
     var self = this;
     this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {
       assert.equals(name, 'somejob');
       assert.equals(params, {});
-      cb();
+      cb(null, {headers: {location: 'somebuildurl'}});
+    });
+
+    this.stub(Jenkins.prototype, 'checkBuildStarted', function (buildUrl, cb) {
+      assert.equals(buildUrl, 'somebuildurl');
+      cb(true);
     });
 
     this.stub(Jenkins.prototype, 'streamJobConsole', function (name, interval, cb) {
@@ -188,8 +194,62 @@ buster.testCase('cli - job', {
 
     job.build(this.mockArgsCb)('somejob', { console: true });
   },
+  'build - should wait until build starts before passing to console call': function (done) {
+    this.timeout = 10000;
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was triggered successfully', 'somejob');
+    this.mockConsole.expects('log').twice().withExactArgs('Waiting for job to start...');
+
+    var self = this;
+    this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(params, {});
+      cb(null, {headers: {location: 'somebuildurl'}});
+    });
+
+    var countdown = 3;
+    this.stub(Jenkins.prototype, 'checkBuildStarted', function (buildUrl, cb) {
+      assert.equals(buildUrl, 'somebuildurl');
+      countdown--;
+      cb(countdown === 0);
+    });
+
+    this.stub(Jenkins.prototype, 'streamJobConsole', function (name, interval, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(interval, 0);
+      return {
+        pipe: function (stream, opts) {
+          assert.defined(stream);
+          assert.equals(opts.end, false);
+          done();
+        }
+      };
+    });
+
+    job.build(this.mockArgsCb)('somejob', { console: true });
+  },
+  'build - should give up after max retries and not stream old console': function (done) {
+    this.timeout = 10000;
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was triggered successfully', 'somejob');
+    this.mockConsole.expects('log').once().withExactArgs('Waiting for job to start...');
+    this.mockConsole.expects('log').once().withExactArgs('Build didn\'t start after %d seconds, it\'s still waiting in the queue', 2);
+
+    var self = this;
+    this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {
+      cb(null, {headers: {location: 'somebuildurl'}});
+    });
+
+    this.stub(Jenkins.prototype, 'checkBuildStarted', function (buildUrl, cb) {
+      cb(false);
+    });
+
+    this.stub(cli, 'exit', function (err, result) {
+      done();
+    });
+
+    job.build(this.mockArgsCb)('somejob', { console: true, poll: 1 });
+  },
   'build - should log job started success message with no args and no params': function () {
-    this.mockConsole.expects('log').once().withExactArgs('Job %s was started successfully', 'somejob');
+    this.mockConsole.expects('log').once().withExactArgs('Job %s was triggered successfully', 'somejob');
     this.mockProcess.expects('exit').once().withExactArgs(0);
 
     this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {

@@ -111,6 +111,32 @@ buster.testCase('api - job', {
     });
     job.build('somejob', { someparam1: 'somevalue1', someparam2: 'somevalue2' }, done);
   },
+  'checkStarted - returns true when build has an executable url': function (done) {
+    var expectStarted = function(ready) {
+      assert.equals(ready, true);
+      done();
+    };
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'https://localhost:8080/queue/item/15032/api/json');
+      assert.defined(opts.handlers[200]);
+      cb(null, {executable: {url: 'someurl'}});
+    });
+    job.checkStarted('https://localhost:8080/queue/item/15032/', expectStarted);
+  },
+  'checkStarted - returns false when build does not yet have an executable url': function (done) {
+    var expectNotStarted = function(ready) {
+      assert.equals(ready, false);
+      done();
+    };
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'https://localhost:8080/queue/item/15032/api/json');
+      assert.defined(opts.handlers[200]);
+      cb(null, {});
+    });
+    job.checkStarted('https://localhost:8080/queue/item/15032/', expectNotStarted);
+  },
   'streamConsole - should send request to API endpoint': function (done) {
     this.stub(req, 'request', function (method, url, opts, cb) {
       assert.equals(method, 'get');
