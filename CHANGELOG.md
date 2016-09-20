@@ -1,5 +1,5 @@
 ### 0.3.6
-*
+* Wait for build to start before streaming the console #38 [Joe Littlejohn](https://github.com/joelittlejohn)
 
 ### 0.3.5
 * Add NO_PROXY support via bagofrequest v0.1.4 for issue #36
