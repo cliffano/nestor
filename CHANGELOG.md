@@ -1,3 +1,6 @@
+### 0.3.7
+*
+
 ### 0.3.6
 * Wait for build to start before streaming the console #38 [Joe Littlejohn](https://github.com/joelittlejohn)
 
