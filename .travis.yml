@@ -1,8 +1,8 @@
 sudo: false
 language: node_js
 node_js:
-  - "4.4"
-  - "6.3"
+  - "4"
+  - "6"
 env:
   - CXX=g++-4.8
 addons:
@@ -15,4 +15,5 @@ before_install:
   - npm install -g bob coveralls --loglevel error
 script:
   - DEBUG=canihaz bob build
+after_success:
   - cat .bob/coverage/buster-istanbul/lcov.info | coveralls
