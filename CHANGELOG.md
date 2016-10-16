@@ -1,5 +1,5 @@
 ### 0.3.7
-*
+* Fix semver spec of node engine for compatibility with Yarn [Andreas Köhler](https://github.com/andi5)
 
 ### 0.3.6
 * Wait for build to start before streaming the console #38 [Joe Littlejohn](https://github.com/joelittlejohn)
