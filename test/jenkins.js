@@ -27,13 +27,13 @@ buster.testCase('jenkins - jenkins', {
   },
   'should handle authentication failure error': function (done) {
     this.jenkins.opts.handlers[401](null, function (err) {
-      assert.equals(err.message, 'Authentication failed - incorrect username and/or password in Jenkins URL');
+      assert.equals(err.message, 'Authentication failed - incorrect username and/or password');
       done();
     });
   },
   'should handle authentication required error': function (done) {
     this.jenkins.opts.handlers[403](null, function (err) {
-      assert.equals(err.message, 'Jenkins requires authentication - set username and password in Jenkins URL');
+      assert.equals(err.message, 'Jenkins requires authentication - please set username and password');
       done();
     });
   }
