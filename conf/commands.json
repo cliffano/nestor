@@ -1,7 +1,8 @@
 {
   "options": [
     { "arg": "--url <url>", "desc": "Jenkins URL" },
-    { "arg": "--interactive", "desc": "Interactive mode, username and password will be prompted" }
+    { "arg": "--interactive", "desc": "Interactive mode, username and password will be prompted" },
+    { "arg": "--csrf", "desc": "CSRF mode, Jenkins crumb header will be added to request" }
   ],
   "commands": {
     "build": {

@@ -84,6 +84,8 @@ buster.testCase('cli - exec', {
       JENKINS_URL: null
     });
     var args = {
+      parent: {
+      }
     };
     cli.__exec(args, function (jenkins) {
       assert.equals(jenkins.url, 'http://localhost:8080');

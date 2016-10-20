@@ -1,10 +1,7 @@
 ### 1.0.1
-*
+* Add CSRF mode for adding Jenkins crumb request header #40
 
 ### 1.0.0
-*
-
-### 0.3.7
 * Fix semver spec of node engine for compatibility with Yarn [Andreas Köhler](https://github.com/andi5)
 * Remove confusing reference to 'Jenkins URL' in authentication error message #41
 
