@@ -1,5 +1,5 @@
 ### 1.0.1
-* Add CSRF mode for adding Jenkins crumb request header #40
+* Add crumb request header because new Jenkins >= 2.x installation enables CSRF protection by default #40
 
 ### 1.0.0
 * Fix semver spec of node engine for compatibility with Yarn [Andreas Köhler](https://github.com/andi5)
@@ -99,7 +99,7 @@
 * Ninja command's job and schedule are now flags since they are optional
 
 ### 0.1.3
-* Fix build trigger error on Jenkins v1.5xx when job requires auth 
+* Fix build trigger error on Jenkins v1.5xx when job requires auth
 
 ### 0.1.2
 * Move proxy environment variable handling to bag.http.request and bag.http.proxy
