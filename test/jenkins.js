@@ -39,6 +39,37 @@ buster.testCase('jenkins - jenkins', {
   }
 });
 
+buster.testCase('jenkins - csrf', {
+  setUp: function () {
+    this.mock({});
+  },
+  'should add crumb header': function (done) {
+    var jenkins = new Jenkins('http://localhost:8080');
+    this.stub(Jenkins.prototype, 'crumb', function (cb) {
+      var result = {
+        '_class': 'hudson.security.csrf.DefaultCrumbIssuer',
+        crumb: '7b12516ae03ff48a099aa2f32906dafa',
+        crumbRequestField: 'Jenkins-Crumb'
+      };
+      cb(null, result);
+    });
+    jenkins.csrf(function (err, result) {
+      assert.equals(jenkins.opts.headers['Jenkins-Crumb'], '7b12516ae03ff48a099aa2f32906dafa');
+      done();
+    });
+  },
+  'should pass error to callback': function (done) {
+    var jenkins = new Jenkins('http://localhost:8080');
+    this.stub(Jenkins.prototype, 'crumb', function (cb) {
+      cb(new Error('some error'));
+    });
+    jenkins.csrf(function (err, result) {
+      assert.equals(err.message, 'some error');
+      done();
+    });
+  }
+});
+
 buster.testCase('jenkins - monitor', {
   setUp: function () {
     this.mock({});

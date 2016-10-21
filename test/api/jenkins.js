@@ -32,6 +32,15 @@ buster.testCase('api - jenkins', {
     });
     jenkins.computer(done);
   },
+  'crumb - should send request to API endpoint': function (done) {
+    this.stub(req, 'request', function (method, url, opts, cb) {
+      assert.equals(method, 'get');
+      assert.equals(url, 'http://localhost:8080/crumbIssuer/api/json');
+      assert.defined(opts.handlers[200]);
+      cb();
+    });
+    jenkins.crumb(done);
+  },
   'discover - should close socket and pass error to callback when socket emits error event': function (done) {
     var closeCallCount = 0,
       mockSocket = {
