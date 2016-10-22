@@ -1,3 +1,6 @@
+### 1.0.2
+*
+
 ### 1.0.1
 * Add crumb request header because new Jenkins >= 2.x installation enables CSRF protection by default #40
 
