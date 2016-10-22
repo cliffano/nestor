@@ -1,6 +1,7 @@
 var buster = require('buster-node'),
   cron = require('cron'),
   dgram = require('dgram'),
+  fs = require('fs'),
   Jenkins = require('../lib/jenkins'),
   referee = require('referee'),
   req = require('bagofrequest'),
@@ -15,8 +16,8 @@ text.setLocale('en');
 buster.testCase('jenkins - jenkins', {
   setUp: function () {
     this.stub(process, 'env', {});
+    this.mockFs  = this.mock(fs);
     this.jenkins = new Jenkins();
-    this.mock({});
   },
   'should use custom url when specified': function () {
     var jenkins = new Jenkins('http://jenkins-ci.org:8080');
@@ -36,6 +37,43 @@ buster.testCase('jenkins - jenkins', {
       assert.equals(err.message, 'Jenkins requires authentication - please set username and password');
       done();
     });
+  },
+  'should set cert': function (done) {
+    this.mockFs.expects('statSync').once().withExactArgs('certificate.pem').returns(true);
+    this.mockFs.expects('statSync').once().withExactArgs('custom.ca.pem').returns(true);
+    this.mockFs.expects('statSync').once().withExactArgs('key.pem').returns(true);
+    this.mockFs.expects('readFileSync').once().withExactArgs('certificate.pem').returns('somecert');
+    this.mockFs.expects('readFileSync').once().withExactArgs('custom.ca.pem').returns('someca');
+    this.mockFs.expects('readFileSync').once().withExactArgs('key.pem').returns('somekey');
+    this.stub(process, 'env', {
+      JENKINS_CERT: 'certificate.pem',
+      JENKINS_CA: 'custom.ca.pem',
+      JENKINS_KEY: 'key.pem:somepassphrase'
+    });
+    this.jenkins = new Jenkins();
+    assert.equals(this.jenkins.opts.agentOptions.passphrase, 'somepassphrase');
+    assert.equals(this.jenkins.opts.agentOptions.secureProtocol, 'TLSv1_method');
+    assert.equals(this.jenkins.opts.agentOptions.cert, 'somecert');
+    assert.equals(this.jenkins.opts.agentOptions.key, 'somekey');
+    assert.equals(this.jenkins.opts.agentOptions.ca, 'someca');
+    done();
+  },
+  'should not set agent options when cert files do not exist': function (done) {
+    this.mockFs.expects('statSync').once().withExactArgs('certificate.pem').returns(false);
+    this.mockFs.expects('statSync').once().withExactArgs('custom.ca.pem').returns(false);
+    this.mockFs.expects('statSync').once().withExactArgs('key.pem').returns(false);
+    this.stub(process, 'env', {
+      JENKINS_CERT: 'certificate.pem',
+      JENKINS_CA: 'custom.ca.pem',
+      JENKINS_KEY: 'key.pem:somepassphrase'
+    });
+    this.jenkins = new Jenkins();
+    assert.equals(this.jenkins.opts.agentOptions.passphrase, 'somepassphrase');
+    assert.equals(this.jenkins.opts.agentOptions.secureProtocol, 'TLSv1_method');
+    assert.equals(this.jenkins.opts.agentOptions.cert, undefined);
+    assert.equals(this.jenkins.opts.agentOptions.key, undefined);
+    assert.equals(this.jenkins.opts.agentOptions.ca, undefined);
+    done();
   }
 });
 
