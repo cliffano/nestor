@@ -1,3 +1,6 @@
+### 1.0.3
+*
+
 ### 1.0.2
 * Add optional build number argument to console command #44
 
