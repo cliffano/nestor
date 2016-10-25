@@ -14,6 +14,7 @@
   "Jenkins ver. %s": "Jenkins versi %s",
   "Jenkins ver. %s is running on %s": "Jenkins versi %s berjalan di %s",
   "Job %s does not exist": "Pekerjaan %s tidak ada",
+  "Job %s build %d does not exist": "Pekerjaan %s nomor %d tidak ada",
   "Job %s requires build parameters": "Pekerjaan %s memerlukan parameter bangun",
   "Job %s was stopped successfully": "Pekerjaan %s sudah dihentikan",
   "Job %s was started successfully": "Pekerjaan %s sudah dimulai",
