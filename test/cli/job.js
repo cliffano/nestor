@@ -180,8 +180,9 @@ buster.testCase('cli - job', {
       cb(true);
     });
 
-    this.stub(Jenkins.prototype, 'streamJobConsole', function (name, interval, cb) {
+    this.stub(Jenkins.prototype, 'streamJobConsole', function (name, buildNumber, interval, cb) {
       assert.equals(name, 'somejob');
+      assert.equals(buildNumber, null);
       assert.equals(interval, 0);
       return {
         pipe: function (stream, opts) {
@@ -213,8 +214,9 @@ buster.testCase('cli - job', {
       cb(countdown === 0);
     });
 
-    this.stub(Jenkins.prototype, 'streamJobConsole', function (name, interval, cb) {
+    this.stub(Jenkins.prototype, 'streamJobConsole', function (name, buildNumber, interval, cb) {
       assert.equals(name, 'somejob');
+      assert.equals(buildNumber, null);
       assert.equals(interval, 0);
       return {
         pipe: function (stream, opts) {
@@ -273,8 +275,9 @@ buster.testCase('cli - job', {
   'console - should pipe console output stream to stdout': function () {
     this.mockProcess.expects('exit').once().withExactArgs(0);
 
-    this.stub(Jenkins.prototype, 'streamJobConsole', function (name, interval, cb) {
+    this.stub(Jenkins.prototype, 'streamJobConsole', function (name, buildNumber, interval, cb) {
       assert.equals(name, 'somejob');
+      assert.equals(buildNumber, 123);
       return {
         pipe: function (stream, opts) {
           assert.defined(stream);
@@ -284,7 +287,24 @@ buster.testCase('cli - job', {
       };
     });
 
-    job.console(this.mockArgsCb)('somejob');
+    job.console(this.mockArgsCb)('somejob', 123, {});
+  },
+  'console - should pass null build number when none supplied': function () {
+    this.mockProcess.expects('exit').once().withExactArgs(0);
+
+    this.stub(Jenkins.prototype, 'streamJobConsole', function (name, buildNumber, interval, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(buildNumber, null);
+      return {
+        pipe: function (stream, opts) {
+          assert.defined(stream);
+          assert.equals(opts.end, false);
+          cb();
+        }
+      };
+    });
+
+    job.console(this.mockArgsCb)('somejob', {});
   },
   'enable - should log job enabled success message': function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was enabled successfully', 'somejob');

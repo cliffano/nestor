@@ -140,13 +140,13 @@ buster.testCase('api - job', {
   'streamConsole - should send request to API endpoint': function (done) {
     this.stub(req, 'request', function (method, url, opts, cb) {
       assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/somejob/lastBuild/logText/progressiveText');
+      assert.equals(url, 'http://localhost:8080/job/somejob/123/logText/progressiveText');
       assert.equals(opts.queryStrings.start, 0);
       assert.defined(opts.handlers[200]);
       assert.defined(opts.handlers[404]);
       cb();
     });
-    job.streamConsole('somejob', 88000, done);
+    job.streamConsole('somejob', 123, 88000, done);
   },
   'streamConsole - should display console output once when there is no more text': function (done) {
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
@@ -164,7 +164,7 @@ buster.testCase('api - job', {
       };
       opts.handlers[200](result, done);
     });
-    job.streamConsole('somejob', 0, done);
+    job.streamConsole('somejob', null, 0, done);
   },
   'streamConsole - should display no console output once when result does not have any body': function (done) {
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
@@ -177,7 +177,7 @@ buster.testCase('api - job', {
       };
       opts.handlers[200](result, done);
     });
-    job.streamConsole('somejob', 0, done);
+    job.streamConsole('somejob', null, 0, done);
   },
   'streamConsole - should display console output once when there is more text but an error occurs': function (done) {
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
@@ -199,7 +199,7 @@ buster.testCase('api - job', {
         cb(new Error('some error'));
       }
     });
-    job.streamConsole('somejob', 0, done);
+    job.streamConsole('somejob', null, 0, done);
   },
   'streamConsole - should display console output multiple times when there is more text': function (done) {
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
@@ -226,7 +226,7 @@ buster.testCase('api - job', {
       }
       opts.handlers[200](result, done);
     });
-    job.streamConsole('somejob', 0, done);
+    job.streamConsole('somejob', null, 0, done);
   },
   'streamConsole - should display console output once when the second text is undefined': function (done) {
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
@@ -255,7 +255,7 @@ buster.testCase('api - job', {
     this.stub(req, 'proxy', function (url) {
       return 'http://someproxy:8080';
     });
-    job.streamConsole('somejob', 0, done);
+    job.streamConsole('somejob', null, 0, done);
   },
   'enable - should send request to API endpoint': function (done) {
     this.stub(req, 'request', function (method, url, opts, cb) {

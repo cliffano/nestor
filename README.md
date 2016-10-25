@@ -46,6 +46,10 @@ Display latest build console output:
 
     nestor console <job>
 
+Display console output of a particular build number:
+
+    nestor console <job> [build_number]
+
 Stop currently running build:
 
     nestor stop <job>

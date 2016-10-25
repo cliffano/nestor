@@ -50,6 +50,14 @@ buster.testCase('api - util', {
     }
     util.jobNotFoundError('somejob')(null, cb);
   },
+  'jobBuildNotFoundError - should pass job build does not exist error message': function (done) {
+    function cb(err, result) {
+      assert.equals(err.message, 'Job somejob build 123 does not exist');
+      assert.equals(result, undefined);
+      done();
+    }
+    util.jobBuildNotFoundError('somejob', 123)(null, cb);
+  },
   'jobRequireParamsError - should pass job require params error message': function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'Job somejob requires build parameters');

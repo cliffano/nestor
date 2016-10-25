@@ -27,7 +27,12 @@
     "console": {
       "desc": "Display latest build console output",
       "args": [
-        { "name": "job", "rules": [ "required" ] }
+        { "name": "job", "rules": [ "required" ] },
+        { "name": "build", "optional": true }
+      ],
+      "examples": [
+        "nestor console <job>",
+        "nestor console <job> <build>"
       ]
     },
     "dashboard": {
