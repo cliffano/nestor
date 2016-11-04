@@ -214,6 +214,18 @@ To add a new language translation:
 2. Copy paste the content of the existing non-English locale file (anything other than en.json) and modify the translation values accordingly.
 3. Test by executing a command with LANG environment variable, e.g. `LANG=<code> nestor dashboard`
 
+Contribution
+------------
+
+When opening an issue to report a bug, please provide the following information:
+
+* node.js version: `node --version`
+* npm version: `npm --version`
+* Nestor version: `nestor --version`
+* Jenkins version: `nestor ver`
+
+Thanks in advance for reporting an issue, opening a feature request, or even better, a pull request!
+
 Colophon
 --------
 
