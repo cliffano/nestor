@@ -245,6 +245,10 @@ Articles:
 * [Monitor Jenkins From The Terminal](http://blog.cliffano.com/2013/09/13/monitor-jenkins-from-the-terminal/)
 * [Using Node.js To Discover Jenkins On The Network](http://blog.cliffano.com/2011/08/04/using-nodejs-to-discover-jenkins-on-the-network/)
 
+Videos:
+
+* [Evolution of nestor (Gource Vizualisation)](https://www.youtube.com/watch?v=omwXDBnjp5A) by Landon Wilkins
+
 Related Projects:
 
 * [nestor-buildlight](http://github.com/cliffano/nestor-buildlight) - CLI for Jenkins build light notifier
