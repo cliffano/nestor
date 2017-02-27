@@ -137,11 +137,20 @@ Programmatically:
       'http://user:pass@host:port/path'
     );
 
+    // trigger a standard build
+    nestor.buildJob('job', '', function (err, result) {
+    });
+
     // trigger a parameterised build
-    nestor.build('job', 'param1=value1&param2=value2', function (err, result) {
+    nestor.buildJob('job', 'param1=value1&param2=value2', function (err, result) {
     });
 
 Check out [lib/jenkins](https://github.com/cliffano/nestor/blob/master/lib/jenkins.js) for other available methods.
+
+Note: `<job>` in the examples is a part of your Jenkins job URL after the first `job/`.
+
+For example, if you use nested folders on Jenkins and your URL is `/job/myproject/job/releases/job/master`,
+then you should pass `myproject/job/releases/job/master` as `<job>`.
 
 Configuration
 -------------
