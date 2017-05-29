@@ -17,7 +17,7 @@ buster.testCase('api - jenkins', {
 
     jenkins.url  = 'http://localhost:8080';
     jenkins.opts = { handlers: {} };
-    jenkins.swaggy = new Swaggy.JenkinsApi();
+    jenkins.remoteAccessApi = new Swaggy.RemoteAccessApi();
 
     this.mockTimer = this.useFakeTimers();
     this.mock({});
@@ -26,13 +26,13 @@ buster.testCase('api - jenkins', {
     delete jenkins.opts;
   },
   'computer - should delegate to Swaggy getComputer': function (done) {
-    this.stub(jenkins.swaggy, 'getComputer', function (cb) {
+    this.stub(jenkins.remoteAccessApi, 'getComputer', function (cb) {
       cb();
     });
     jenkins.computer(done);
   },
   'crumb - should delegate to Swaggy getCrumb': function (done) {
-    this.stub(jenkins.swaggy, 'getCrumb', function (cb) {
+    this.stub(jenkins.remoteAccessApi, 'getCrumb', function (cb) {
       cb();
     });
     jenkins.crumb(done);
@@ -133,7 +133,7 @@ buster.testCase('api - jenkins', {
     this.mockTimer.tick(5000);
   },
   'info - should delegate to Swaggy getInfo': function (done) {
-    this.stub(jenkins.swaggy, 'getInfo', function (cb) {
+    this.stub(jenkins.remoteAccessApi, 'getInfo', function (cb) {
       cb();
     });
     jenkins.info(done);
@@ -147,13 +147,13 @@ buster.testCase('api - jenkins', {
     jenkins.parseFeed(done);
   },
   'queue - should delegate to Swaggy getQueue': function (done) {
-    this.stub(jenkins.swaggy, 'getQueue', function (cb) {
+    this.stub(jenkins.remoteAccessApi, 'getQueue', function (cb) {
       cb();
     });
     jenkins.queue(done);
   },
   'version - should pass version header value if exists': function (done) {
-    this.stub(jenkins.swaggy, 'headVersion', function (cb) {
+    this.stub(jenkins.remoteAccessApi, 'headVersion', function (cb) {
       var response = { headers: { 'x-jenkins': '1.2.3' }};
       cb(null, null, response);
     });
@@ -163,7 +163,7 @@ buster.testCase('api - jenkins', {
     });
   },
   'version - should pass error if version header value does not exist': function (done) {
-    this.stub(jenkins.swaggy, 'headVersion', function (cb) {
+    this.stub(jenkins.remoteAccessApi, 'headVersion', function (cb) {
       var response = { headers: {}};
       cb(null, null, response);
     });
@@ -173,7 +173,7 @@ buster.testCase('api - jenkins', {
     });
   },
   'version - should pass error if an error occurrs': function (done) {
-    this.stub(jenkins.swaggy, 'headVersion', function (cb) {
+    this.stub(jenkins.remoteAccessApi, 'headVersion', function (cb) {
       cb(new Error('some error'));
     });
     jenkins.version(function (err, result) {
