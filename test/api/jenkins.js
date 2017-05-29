@@ -5,6 +5,7 @@ var jenkins    = require('../../lib/api/jenkins');
 var proxyquire = require('proxyquire');
 var referee    = require('referee');
 var req        = require('bagofrequest');
+var Swaggy     = require('swaggy_jenkins');
 var text       = require('bagoftext');
 var assert     = referee.assert;
 
@@ -16,6 +17,7 @@ buster.testCase('api - jenkins', {
 
     jenkins.url  = 'http://localhost:8080';
     jenkins.opts = { handlers: {} };
+    jenkins.swaggy = new Swaggy.JenkinsApi();
 
     this.mockTimer = this.useFakeTimers();
     this.mock({});
@@ -23,20 +25,14 @@ buster.testCase('api - jenkins', {
   tearDown: function () {
     delete jenkins.opts;
   },
-  'computer - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/computer/api/json');
-      assert.defined(opts.handlers[200]);
+  'computer - should delegate to Swaggy getComputer': function (done) {
+    this.stub(jenkins.swaggy, 'getComputer', function (cb) {
       cb();
     });
     jenkins.computer(done);
   },
-  'crumb - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/crumbIssuer/api/json');
-      assert.defined(opts.handlers[200]);
+  'crumb - should delegate to Swaggy getCrumb': function (done) {
+    this.stub(jenkins.swaggy, 'getCrumb', function (cb) {
       cb();
     });
     jenkins.crumb(done);
@@ -136,11 +132,8 @@ buster.testCase('api - jenkins', {
     });
     this.mockTimer.tick(5000);
   },
-  'info - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/api/json');
-      assert.defined(opts.handlers[200]);
+  'info - should delegate to Swaggy getInfo': function (done) {
+    this.stub(jenkins.swaggy, 'getInfo', function (cb) {
       cb();
     });
     jenkins.info(done);
@@ -153,42 +146,39 @@ buster.testCase('api - jenkins', {
     var job = proxyquire('../../lib/api/jenkins.js', { 'feed-read': mockFeedRead });
     jenkins.parseFeed(done);
   },
-  'queue - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/queue/api/json');
-      assert.defined(opts.handlers[200]);
+  'queue - should delegate to Swaggy getQueue': function (done) {
+    this.stub(jenkins.swaggy, 'getQueue', function (cb) {
       cb();
     });
     jenkins.queue(done);
   },
   'version - should pass version header value if exists': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'head');
-      assert.equals(url, 'http://localhost:8080');
-      assert.defined(opts.handlers[200]);
-
-      var result = { headers: { 'x-jenkins': '1.2.3' }};
-      opts.handlers[200](result, function (err, result) {
-        assert.equals(err, null);
-        assert.equals(result, '1.2.3');
-        cb();
-      });
+    this.stub(jenkins.swaggy, 'headVersion', function (cb) {
+      var response = { headers: { 'x-jenkins': '1.2.3' }};
+      cb(null, null, response);
     });
-    jenkins.version(done);
+    jenkins.version(function (err, result) {
+      assert.equals(result, '1.2.3');
+      done();
+    });
   },
   'version - should pass error if version header value does not exist': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'head');
-      assert.equals(url, 'http://localhost:8080');
-      assert.defined(opts.handlers[200]);
-
-      var result = { headers: {}};
-      opts.handlers[200](result, function (err, result) {
-        assert.equals(err.message, 'Not a Jenkins server');
-        cb();
-      });
+    this.stub(jenkins.swaggy, 'headVersion', function (cb) {
+      var response = { headers: {}};
+      cb(null, null, response);
     });
-    jenkins.version(done);
+    jenkins.version(function (err, result) {
+      assert.equals(err.message, 'Not a Jenkins server');
+      done();
+    });
+  },
+  'version - should pass error if an error occurrs': function (done) {
+    this.stub(jenkins.swaggy, 'headVersion', function (cb) {
+      cb(new Error('some error'));
+    });
+    jenkins.version(function (err, result) {
+      assert.equals(err.message, 'some error');
+      done();
+    });
   }
 });
