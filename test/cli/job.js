@@ -172,7 +172,7 @@ buster.testCase('cli - job', {
     this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {
       assert.equals(name, 'somejob');
       assert.equals(params, {});
-      cb(null, {headers: {location: 'somebuildurl'}});
+      cb(null, null, { headers: { location: 'somebuildurl' }});
     });
 
     this.stub(Jenkins.prototype, 'checkBuildStarted', function (buildUrl, cb) {
@@ -204,7 +204,7 @@ buster.testCase('cli - job', {
     this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {
       assert.equals(name, 'somejob');
       assert.equals(params, {});
-      cb(null, {headers: {location: 'somebuildurl'}});
+      cb(null, null, { headers: { location: 'somebuildurl' }});
     });
 
     var countdown = 3;
@@ -237,7 +237,7 @@ buster.testCase('cli - job', {
 
     var self = this;
     this.stub(Jenkins.prototype, 'buildJob', function (name, params, cb) {
-      cb(null, {headers: {location: 'somebuildurl'}});
+      cb(null, null, { headers: { location: 'somebuildurl' }});
     });
 
     this.stub(Jenkins.prototype, 'checkBuildStarted', function (buildUrl, cb) {

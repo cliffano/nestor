@@ -6,6 +6,7 @@ var proxyquire    = require('proxyquire');
 var referee       = require('referee');
 var req           = require('bagofrequest');
 var request       = require('request');
+var Swaggy        = require('swaggy_jenkins');
 var text          = require('bagoftext');
 var assert        = referee.assert;
 
@@ -14,99 +15,77 @@ buster.testCase('api - job', {
     this.mockFeedRead = this.mock(feedRead);
 
     job.url  = 'http://localhost:8080';
-    job.opts = { handlers: {} };
+    job.opts = { handlers: {}, headers: { jenkinsCrumb: 'somecrumb' } };
+    job.remoteAccessApi = new Swaggy.RemoteAccessApi();
   },
   tearDown: function () {
     delete job.opts;
   },
   'create - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/createItem/api/json');
-      assert.equals(opts.queryStrings.name, 'somejob');
-      assert.equals(opts.headers['content-type'], 'application/xml');
+    this.stub(job.remoteAccessApi, 'postCreateItem', function (name, opts, cb) {
+      assert.equals(name, 'somejob');
       assert.equals(opts.body, '<xml>some config</xml>');
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[400]);
+      assert.equals(opts.contentType, 'application/xml');
+      assert.equals(opts.jenkinsCrumb, 'somecrumb');
       cb();
     });
     job.create('somejob', '<xml>some config</xml>', done);
   },
   'read - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/somejob/api/json');
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[404]);
+    this.stub(job.remoteAccessApi, 'getJob', function (name, cb) {
+      assert.equals(name, 'somejob');
       cb();
     });
     job.read('somejob', done);
   },
   'readLatest - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/somejob/lastBuild/api/json');
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[404]);
+    this.stub(job.remoteAccessApi, 'getJobLastBuild', function (name, cb) {
+      assert.equals(name, 'somejob');
       cb();
     });
     job.readLatest('somejob', done);
   },
   'update - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/somejob/config.xml');
-      assert.equals(opts.body, '<xml>some config</xml>');
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[404]);
+    this.stub(job.remoteAccessApi, 'postJobConfig', function (name, body, opts, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(body, '<xml>some config</xml>');
+      assert.equals(opts.jenkinsCrumb, 'somecrumb');
       cb();
     });
     job.update('somejob', '<xml>some config</xml>', done);
   },
   'delete - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/somejob/doDelete');
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[404]);
+    this.stub(job.remoteAccessApi, 'postJobDelete', function (name, opts, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(opts.jenkinsCrumb, 'somecrumb');
       cb();
     });
     job.delete('somejob', done);
   },
   'stop - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/somejob/lastBuild/stop');
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[404]);
+    this.stub(job.remoteAccessApi, 'postJobLastBuildStop', function (name, opts, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(opts.jenkinsCrumb, 'somecrumb');
       cb();
     });
     job.stop('somejob', done);
   },
   'build - should send request to API endpoint without parameters when not supplied': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/somejob/build');
-      assert.equals(opts.queryStrings.token, 'nestor');
-      assert.equals(opts.queryStrings.json, '{"parameter":[]}');
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[201]);
-      assert.defined(opts.handlers[404]);
-      assert.defined(opts.handlers[405]);
+    this.stub(job.remoteAccessApi, 'postJobBuild', function (name, body, opts, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(body, '{"parameter":[]}');
+      assert.equals(opts.token, 'nestor');
+      assert.equals(opts.jenkinsCrumb, 'somecrumb');
       cb();
     });
     job.build('somejob', {}, done);
   },
   'build - should send request to API endpoint with parameters when supplied': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/somejob/build');
-      assert.equals(opts.queryStrings.token, 'nestor');
-      assert.equals(opts.queryStrings.json, '{"parameter":[{"name":"someparam1","value":"somevalue1"},{"name":"someparam2","value":"somevalue2"}]}');
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[201]);
-      assert.defined(opts.handlers[404]);
-      assert.defined(opts.handlers[405]);
+    this.stub(job.remoteAccessApi, 'postJobBuild', function (name, body, opts, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(body, '{"parameter":[{"name":"someparam1","value":"somevalue1"},{"name":"someparam2","value":"somevalue2"}]}');
+      assert.equals(opts.token, 'nestor');
+      assert.equals(opts.jenkinsCrumb, 'somecrumb');
       cb();
     });
     job.build('somejob', { someparam1: 'somevalue1', someparam2: 'somevalue2' }, done);
@@ -116,11 +95,9 @@ buster.testCase('api - job', {
       assert.equals(ready, true);
       done();
     };
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'https://localhost:8080/queue/item/15032/api/json');
-      assert.defined(opts.handlers[200]);
-      cb(null, {executable: {url: 'someurl'}});
+    this.stub(job.remoteAccessApi, 'getQueueItem', function (number, cb) {
+      assert.equals(number, '15032');
+      cb(null, { _class: 'hudson.model.Queue$LeftItem' });
     });
     job.checkStarted('https://localhost:8080/queue/item/15032/', expectStarted);
   },
@@ -129,22 +106,18 @@ buster.testCase('api - job', {
       assert.equals(ready, false);
       done();
     };
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'https://localhost:8080/queue/item/15032/api/json');
-      assert.defined(opts.handlers[200]);
-      cb(null, {});
+    this.stub(job.remoteAccessApi, 'getQueueItem', function (number, cb) {
+      assert.equals(number, '15032');
+      cb(null, { _class: 'hudson.model.Queue$WaitingItem' });
     });
     job.checkStarted('https://localhost:8080/queue/item/15032/', expectNotStarted);
   },
   'streamConsole - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/somejob/123/logText/progressiveText');
-      assert.equals(opts.queryStrings.start, 0);
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[404]);
-      cb();
+    this.stub(job.remoteAccessApi, 'getJobProgressiveText', function (name, number, start, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(number, 123);
+      assert.equals(start, 0);
+      cb(null, null, { statusCode: 500 });
     });
     job.streamConsole('somejob', 123, 88000, done);
   },
@@ -156,28 +129,28 @@ buster.testCase('api - job', {
         assert.equals(value, undefined);
       }
     });
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      var result = {
-        statusCode: 200,
-        body: 'Console output 1',
-        headers: { 'x-more-data': 'false', 'x-text-size': 20 }
-      };
-      opts.handlers[200](result, done);
+    this.stub(job.remoteAccessApi, 'getJobProgressiveText', function (name, number, start, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(number, 123);
+      if (start === 0) {
+        cb(null, null, { statusCode: 200, text: 'Console output 1', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
+      } else {
+        assert.equals(start, 20);
+        cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 20 } });
+      }
     });
-    job.streamConsole('somejob', null, 0, done);
+    job.streamConsole('somejob', 123, 0, done);
   },
   'streamConsole - should display no console output once when result does not have any body': function (done) {
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
       assert.equals(value, undefined);
     });
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      var result = {
-        statusCode: 200,
-        headers: { 'x-more-data': 'false', 'x-text-size': 20 }
-      };
-      opts.handlers[200](result, done);
+    this.stub(job.remoteAccessApi, 'getJobProgressiveText', function (name, number, start, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(number, 123);
+      cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 20 } });
     });
-    job.streamConsole('somejob', null, 0, done);
+    job.streamConsole('somejob', 123, 0, done);
   },
   'streamConsole - should display console output once when there is more text but an error occurs': function (done) {
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
@@ -187,21 +160,19 @@ buster.testCase('api - job', {
         assert.equals(value, undefined);
       }
     });
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      if(opts.queryStrings.start === 0){
-        var result = {
-          statusCode: 200,
-          body: 'Console output 1',
-          headers: { 'x-more-data': 'true', 'x-text-size': 20 }
-        };
-        opts.handlers[200](result, done);
+    this.stub(job.remoteAccessApi, 'getJobProgressiveText', function (name, number, start, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(number, 123);
+      if (start === 0) {
+        cb(null, null, { statusCode: 200, text: 'Console output 1', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
       } else {
-        cb(new Error('some error'));
+        assert.equals(start, 20);
+        cb(new Error('some error'), null, { headers: {} });
       }
     });
-    job.streamConsole('somejob', null, 0, done);
+    job.streamConsole('somejob', 123, 0, done);
   },
-  'streamConsole - should display console output multiple times when there is more text': function (done) {
+  'streamConsole - should display console output multiple times when there are more texts': function (done) {
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
       if (event === 'data') {
         assert.equals(value, 'Console output');
@@ -209,24 +180,20 @@ buster.testCase('api - job', {
         assert.equals(value, undefined);
       }
     });
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      var result = {};
-      if(opts.queryStrings.start === 0){
-        result = {
-          statusCode: 200,
-          body: 'Console output',
-          headers: { 'x-more-data': 'true', 'x-text-size': 20 }
-        };
+    this.stub(job.remoteAccessApi, 'getJobProgressiveText', function (name, number, start, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(number, 123);
+      if (start === 0) {
+        cb(null, null, { statusCode: 200, text: 'Console output', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
+      } else if (start === 20) {
+        assert.equals(start, 20);
+        cb(null, null, { statusCode: 200, text: 'Console output', headers: { 'x-more-data': 'true', 'x-text-size': 40 } });
       } else {
-        result = {
-          statusCode: 200,
-          body: 'Console output',
-          headers: { 'x-more-data': 'false', 'x-text-size': 20 }
-        };
+        assert.equals(start, 40);
+        cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 40 } });
       }
-      opts.handlers[200](result, done);
     });
-    job.streamConsole('somejob', null, 0, done);
+    job.streamConsole('somejob', 123, 0, done);
   },
   'streamConsole - should display console output once when the second text is undefined': function (done) {
     this.stub(ConsoleStream.prototype, 'emit', function (event, value) {
@@ -236,55 +203,44 @@ buster.testCase('api - job', {
         assert.equals(value, undefined);
       }
     });
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      var result = {};
-      if(opts.queryStrings.start === 0){
-        result = {
-          statusCode: 200,
-          headers: { 'x-more-data': 'true', 'x-text-size': 20 }
-        };
+    this.stub(job.remoteAccessApi, 'getJobProgressiveText', function (name, number, start, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(number, 123);
+      if (start === 0) {
+        cb(null, null, { statusCode: 200, text: 'Console output 1', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
+      } else if (start === 20) {
+        assert.equals(start, 20);
+        cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'true', 'x-text-size': 40 } });
       } else {
-        result = {
-          statusCode: 200,
-          body: 'Console output 1',
-          headers: { 'x-more-data': 'false', 'x-text-size': 20 }
-        };
+        assert.equals(start, 40);
+        cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 40 } });
       }
-      opts.handlers[200](result, done);
     });
-    this.stub(req, 'proxy', function (url) {
-      return 'http://someproxy:8080';
-    });
-    job.streamConsole('somejob', null, 0, done);
+    job.streamConsole('somejob', 123, 0, done);
   },
   'enable - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/somejob/enable');
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[404]);
+    this.stub(job.remoteAccessApi, 'postJobEnable', function (name, opts, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(opts.jenkinsCrumb, 'somecrumb');
       cb();
     });
     job.enable('somejob', done);
   },
   'disable - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/job/somejob/disable');
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[404]);
+    this.stub(job.remoteAccessApi, 'postJobDisable', function (name, opts, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(opts.jenkinsCrumb, 'somecrumb');
       cb();
     });
     job.disable('somejob', done);
   },
   'copy - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'post');
-      assert.equals(url, 'http://localhost:8080/createItem');
-      assert.equals(opts.queryStrings, { name: 'newjob', mode: 'copy', from: 'existingjob' });
-      assert.equals(opts.headers, { 'content-type': 'text/plain' });
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[400]);
+    this.stub(job.remoteAccessApi, 'postJobDisable', function (name, opts, cb) {
+      assert.equals(name, 'newjob');
+      assert.equals(opts.from, 'existingjob');
+      assert.equals(opts.mode, 'copy');
+      assert.equals(opts.contentType, 'text/plain');
+      assert.equals(opts.jenkinsCrumb, 'somecrumb');
       cb();
     });
     job.copy('existingjob', 'newjob', done);
@@ -295,6 +251,10 @@ buster.testCase('api - job', {
       assert.equals(url, 'http://localhost:8080/job/somejob/config.xml');
       assert.defined(opts.handlers[200]);
       assert.defined(opts.handlers[404]);
+      cb();
+    });
+    this.stub(job.remoteAccessApi, 'getJobConfig', function (name, cb) {
+      assert.equals(name, 'somejob');
       cb();
     });
     job.fetchConfig('somejob', done);
