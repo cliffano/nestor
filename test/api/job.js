@@ -246,13 +246,6 @@ buster.testCase('api - job', {
     job.copy('existingjob', 'newjob', done);
   },
   'fetchConfig - should send request to API endpoint': function (done) {
-    this.stub(req, 'request', function (method, url, opts, cb) {
-      assert.equals(method, 'get');
-      assert.equals(url, 'http://localhost:8080/job/somejob/config.xml');
-      assert.defined(opts.handlers[200]);
-      assert.defined(opts.handlers[404]);
-      cb();
-    });
     this.stub(job.remoteAccessApi, 'getJobConfig', function (name, cb) {
       assert.equals(name, 'somejob');
       cb();

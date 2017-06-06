@@ -9,7 +9,7 @@
 - description: Command job should display error message when job does not exist
   command: 'JENKINS_URL=http://ci.jenkins.io {nestor} job someinexistingjob'
   exitcode: 1
-  output: 'Job someinexistingjob does not exist'
+  output: 'Not Found'
 
 - description: Command job should display usage info when there is no argument
   command: 'JENKINS_URL=http://ci.jenkins.io {nestor} job'
