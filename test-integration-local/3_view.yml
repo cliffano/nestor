@@ -1,0 +1,16 @@
+- params:
+    nestor: ../../../../bin/nestor
+
+- description: Create a new view
+  command: '{nestor} create-view someview ../../../../test-integration-local/fixtures/view_config.xml'
+  # exitcode: 0
+  # output: View someview was created successfully
+
+- description: Fetch new view config
+  command: '{nestor} fetch-view-config someview > /tmp/view_config.xml'
+  exitcode: 0
+
+- description: Update view config
+  command: '{nestor} update-view someview /tmp/view_config.xml'
+  exitcode: 0
+  output: View someview was updated successfully

@@ -1,0 +1,73 @@
+- params:
+    nestor: ../../../../bin/nestor
+
+- description: Ensure test job does not exist
+  command: '{nestor} delete-job somejob'
+
+- description: Create a new job
+  command: '{nestor} create-job somejob ../../../../test-integration-local/fixtures/job_config.xml'
+  exitcode: 0
+  output: Job somejob was created successfully
+
+- description: Fetch new job config
+  command: '{nestor} fetch-job-config somejob > /tmp/job_config.xml'
+  exitcode: 0
+
+- description: Update job config
+  command: '{nestor} update-job somejob /tmp/job_config.xml'
+  exitcode: 0
+  output: Job somejob was updated successfully
+
+- description: Read job info
+  command: '{nestor} read-job somejob'
+  exitcode: 0
+  output: somejob \| notbuilt
+
+- description: Build job
+  command: '{nestor} build somejob'
+  exitcode: 0
+  output: Job somejob was triggered successfully
+
+- description: Wait for the build to finish
+  command: sleep 10
+  exitcode: 0
+
+- description: Ensure job has console output
+  command: '{nestor} console somejob'
+  exitcode: 0
+  output: sleep 3
+
+- description: Ensure job is listed on dashboard
+  command: '{nestor} dashboard'
+  exitcode: 0
+  output: somejob
+
+- description: Read last build info of the job
+  command: '{nestor} last somejob'
+  exitcode: 0
+  output: somejob \| success
+
+- description: Build job
+  command: '{nestor} build somejob'
+  exitcode: 0
+  output: Job somejob was triggered successfully
+
+- description: Stop job
+  command: '{nestor} stop somejob'
+  exitcode: 0
+  output: Job somejob was stopped successfully
+
+- description: Disable job
+  command: '{nestor} disable somejob'
+  exitcode: 0
+  output: Job somejob was disabled successfully
+
+- description: Enable job
+  command: '{nestor} enable somejob'
+  exitcode: 0
+  output: Job somejob was enabled successfully
+
+- description: Delete job
+  command: '{nestor} delete somejob'
+  exitcode: 0
+  output: Job somejob was deleted successfully
