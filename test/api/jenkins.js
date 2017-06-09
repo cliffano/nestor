@@ -4,7 +4,6 @@ var feedRead   = require('feed-read');
 var jenkins    = require('../../lib/api/jenkins');
 var proxyquire = require('proxyquire');
 var referee    = require('referee');
-var req        = require('bagofrequest');
 var Swaggy     = require('swaggy_jenkins');
 var text       = require('bagoftext');
 var assert     = referee.assert;
@@ -132,8 +131,8 @@ buster.testCase('api - jenkins', {
     });
     this.mockTimer.tick(5000);
   },
-  'info - should delegate to Swaggy getInfo': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'getInfo', function (cb) {
+  'info - should delegate to Swaggy getJenkins': function (done) {
+    this.stub(jenkins.remoteAccessApi, 'getJenkins', function (cb) {
       cb();
     });
     jenkins.info(done);
@@ -153,7 +152,7 @@ buster.testCase('api - jenkins', {
     jenkins.queue(done);
   },
   'version - should pass version header value if exists': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'headVersion', function (cb) {
+    this.stub(jenkins.remoteAccessApi, 'headJenkins', function (cb) {
       var response = { headers: { 'x-jenkins': '1.2.3' }};
       cb(null, null, response);
     });
@@ -163,7 +162,7 @@ buster.testCase('api - jenkins', {
     });
   },
   'version - should pass error if version header value does not exist': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'headVersion', function (cb) {
+    this.stub(jenkins.remoteAccessApi, 'headJenkins', function (cb) {
       var response = { headers: {}};
       cb(null, null, response);
     });
@@ -173,7 +172,7 @@ buster.testCase('api - jenkins', {
     });
   },
   'version - should pass error if an error occurrs': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'headVersion', function (cb) {
+    this.stub(jenkins.remoteAccessApi, 'headJenkins', function (cb) {
       cb(new Error('some error'));
     });
     jenkins.version(function (err, result) {
