@@ -34,7 +34,6 @@
   "dependencies": {
     "async": "^2.1.1",
     "bagofcli": "^1.0.0",
-    "bagofrequest": "^1.0.0",
     "bagoftext": "^0.1.2",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
@@ -42,7 +41,7 @@
     "feed-read": "^0.0.1",
     "lodash": "^4.16.4",
     "moment": "^2.15.1",
-    "request": "^2.75.0",
+    "swaggy_jenkins": "^0.0.1",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {

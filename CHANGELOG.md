@@ -1,5 +1,5 @@
 ### 1.0.3
-*
+* Replace request and bagofrequest modules with swaggy-jenkins
 
 ### 1.0.2
 * Add optional build number argument to console command #44
