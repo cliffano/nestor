@@ -131,6 +131,11 @@ Monitor build status and notify Ninja Blocks RGB LED device:
     export NINJABLOCKS_TOKEN=<token_from_https://a.ninja.is/hacking>
     nestor ninja
 
+Note: `<job>` in the examples is a part of your Jenkins job URL after the first `job/`.
+
+For example, if you use nested folders on Jenkins and your URL is `/job/myproject/job/releases/job/master`,
+then you should pass `myproject/job/releases/job/master` as `<job>`.
+
 Programmatically:
 
     var nestor = new (require('nestor'))(
@@ -147,10 +152,7 @@ Programmatically:
 
 Check out [lib/jenkins](https://github.com/cliffano/nestor/blob/master/lib/jenkins.js) for other available methods.
 
-Note: `<job>` in the examples is a part of your Jenkins job URL after the first `job/`.
-
-For example, if you use nested folders on Jenkins and your URL is `/job/myproject/job/releases/job/master`,
-then you should pass `myproject/job/releases/job/master` as `<job>`.
+NOTE: Starting from version 2.0.0, Nestor started using [Swaggy Jenkins](https://github.com/cliffano/swaggy-jenkins) as an API client. You can still use Nestor programmatically, but it's much better and cleaner if you use Swaggy Jenkins instead.
 
 Configuration
 -------------
