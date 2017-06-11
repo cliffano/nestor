@@ -7,9 +7,9 @@
   output: 'Usage: nestor'
 
 - description: Command dashboard should display status of all jobs
-  command: 'JENKINS_URL=http://ci.jenkins.io {nestor} dashboard'
+  command: 'JENKINS_URL=https://builds.apache.org/ {nestor} dashboard'
   exitcode: 0
 
 - description: Command dashboard should display status of all jobs
-  command: '{nestor} dashboard --url http://ci.jenkins.io'
+  command: '{nestor} dashboard --url https://builds.apache.org/'
   exitcode: 0
