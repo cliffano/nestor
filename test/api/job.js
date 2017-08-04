@@ -4,7 +4,7 @@ var feedRead      = require('feed-read');
 var job           = require('../../lib/api/job');
 var proxyquire    = require('proxyquire');
 var referee       = require('referee');
-var Swaggy        = require('swaggy_jenkins');
+var Swaggy        = require('swaggy-jenkins');
 var text          = require('bagoftext');
 var assert        = referee.assert;
 

@@ -3,7 +3,7 @@ var feedRead   = require('feed-read');
 var proxyquire = require('proxyquire');
 var view       = require('../../lib/api/view');
 var referee    = require('referee');
-var Swaggy     = require('swaggy_jenkins');
+var Swaggy     = require('swaggy-jenkins');
 var text       = require('bagoftext');
 var assert     = referee.assert;
 

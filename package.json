@@ -41,7 +41,7 @@
     "feed-read": "^0.0.1",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
-    "swaggy_jenkins": "^0.1.0",
+    "swaggy-jenkins": "^0.0.2",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {
