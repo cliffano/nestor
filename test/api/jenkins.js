@@ -25,7 +25,8 @@ buster.testCase('api - jenkins', {
     delete jenkins.opts;
   },
   'computer - should delegate to Swaggy getComputer': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'getComputer', function (cb) {
+    this.stub(jenkins.remoteAccessApi, 'getComputer', function (depth, cb) {
+      assert.equals(depth, 1);
       cb();
     });
     jenkins.computer(done);
