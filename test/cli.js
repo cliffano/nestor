@@ -54,6 +54,15 @@ buster.testCase('cli - exec', {
 buster.testCase('cli - exec', {
   setUp: function () {
     this.mockCli = this.mock(_cli);
+
+    this.stub(Jenkins.prototype, 'crumb', function (cb) {
+      var result = {
+        '_class': 'hudson.security.csrf.DefaultCrumbIssuer',
+        crumb: '7b12516ae03ff48a099aa2f32906dafa',
+        crumbRequestField: 'Jenkins-Crumb'
+      };
+      cb(null, result);
+    });
   },
   'should pass URL as-is when there is no interactive arg specified': function (done) {
     var args = {
