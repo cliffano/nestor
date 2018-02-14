@@ -1,3 +1,6 @@
+### 2.0.1
+*
+
 ### 2.0.0
 * Replace request and bagofrequest modules with swaggy-jenkins
 * Fix job build not streaming console output when --console flag is used with build command #46
