@@ -260,7 +260,12 @@ Articles:
 
 Videos:
 
+* [Jenkins World 2017: Bringing Jenkins Remote Access API To The Masses](https://www.youtube.com/watch?v=D93t1jElt4Q)
 * [Evolution of nestor (Gource Vizualisation)](https://www.youtube.com/watch?v=omwXDBnjp5A) by Landon Wilkins
+
+Presentations:
+
+* [Bringing Jenkins Remote Access API To The Masses](https://www.slideshare.net/cliffano/bringing-jenkins-remote-access-api-to-the-masses)
 
 Related Projects:
 
