@@ -7,11 +7,11 @@
   output: 'getaddrinfo ENOTFOUND|ETIMEDOUT'
 
 - description: Command job should display error message when job does not exist
-  command: 'JENKINS_URL=https://builds.apache.org/ {nestor} job someinexistingjob'
+  command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} job someinexistingjob'
   exitcode: 1
   output: 'Not Found'
 
 - description: Command job should display usage info when there is no argument
-  command: 'JENKINS_URL=https://builds.apache.org/ {nestor} job'
+  command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} job'
   exitcode: 1
   output: 'Usage: nestor job <job>'
