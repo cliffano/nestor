@@ -1,5 +1,5 @@
-### 2.0.1
-*
+### 2.1.0
+* Upgrade swaggy-jenkins to 1.0.0
 
 ### 2.0.0
 * Replace request and bagofrequest modules with swaggy-jenkins
