@@ -17,6 +17,7 @@ buster.testCase('api - jenkins', {
     jenkins.url  = 'http://localhost:8080';
     jenkins.opts = { handlers: {} };
     jenkins.remoteAccessApi = new Swaggy.RemoteAccessApi();
+    jenkins.baseApi = new Swaggy.BaseApi();
 
     this.mockTimer = this.useFakeTimers();
     this.mock({});
@@ -32,7 +33,7 @@ buster.testCase('api - jenkins', {
     jenkins.computer(done);
   },
   'crumb - should delegate to Swaggy getCrumb': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'getCrumb', function (cb) {
+    this.stub(jenkins.baseApi, 'getCrumb', function (cb) {
       cb();
     });
     jenkins.crumb(done);
