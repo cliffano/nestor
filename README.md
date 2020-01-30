@@ -272,4 +272,4 @@ Related Projects:
 * [nestor-buildlight](http://github.com/cliffano/nestor-buildlight) - CLI for Jenkins build light notifier
 * [nestor-lifx](http://github.com/cliffano/nestor-lifx) - CLI for Jenkins LIFX notifier
 * [nestor-ninjablocks](http://github.com/cliffano/nestor-ninjablocks) - CLI for Jenkins Ninja Blocks notifier
-* [jcli](https://github.com/jenkins-zh/jenkins-cli) - CLI for Jenkins which writen by Golang
+* [jcli](https://github.com/jenkins-zh/jenkins-cli) - CLI for Jenkins written in Golang
