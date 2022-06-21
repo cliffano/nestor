@@ -1,3 +1,6 @@
+### 2.2.1
+* Upgrade swaggy-jenkins to 1.1.2
+
 ### 2.2.0
 * Fix Jenkins crumb retrieval when URL path is not on the root context
 
