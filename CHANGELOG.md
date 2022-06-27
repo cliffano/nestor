@@ -1,3 +1,6 @@
+### 2.2.2
+* Temporary fix to build trigger for jobs within folder #58
+
 ### 2.2.0
 * Fix Jenkins crumb retrieval when URL path is not on the root context
 

@@ -8,7 +8,7 @@
     "api",
     "client"
   ],
-  "version": "2.2.0",
+  "version": "2.2.2",
   "homepage": "http://github.com/cliffano/nestor",
   "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
   "contributors": [
@@ -41,7 +41,7 @@
     "feed-read": "^0.0.1",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
-    "swaggy-jenkins": "^1.1.1",
+    "swaggy-jenkins": "^2.0.1",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
