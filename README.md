@@ -242,15 +242,15 @@ Thanks in advance for reporting an issue, opening a feature request, or even bet
 Colophon
 --------
 
-[Developer's Guide](http://cliffano.github.io/developers_guide.html#nodejs)
+[Developer's Guide](https://cliffano.github.io/developers_guide.html#nodejs)
 
 Build reports:
 
-* [Code complexity report](http://cliffano.github.io/nestor/complexity/plato/index.html)
-* [Unit tests report](http://cliffano.github.io/nestor/test/buster.out)
-* [Test coverage report](http://cliffano.github.io/nestor/coverage/buster-istanbul/lcov-report/lib/index.html)
-* [Integration tests report](http://cliffano.github.io/nestor/test-integration/cmdt.out)
-* [API Documentation](http://cliffano.github.io/nestor/doc/dox-foundation/index.html)
+* [Code complexity report](https://cliffano.github.io/nestor/complexity/plato/index.html)
+* [Unit tests report](https://cliffano.github.io/nestor/test/buster.out)
+* [Test coverage report](https://cliffano.github.io/nestor/coverage/buster-istanbul/lcov-report/lib/index.html)
+* [Integration tests report](https://cliffano.github.io/nestor/test-integration/cmdt.out)
+* [API Documentation](https://cliffano.github.io/nestor/doc/dox-foundation/index.html)
 
 Articles:
 
