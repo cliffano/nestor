@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace lint type from jshint to eslint
 - Replace coverage from buster-istanbul to c8
 - Replace doc type from dox-foundation to jsdoc
+- Switch CHANGELOG to use keep-a-changelog
 
 ## 2.2.2 - 2022-06-27
 ### Changed
