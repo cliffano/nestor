@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Replace lint type from jshint to eslint
+- Replace coverage from buster-istanbul to c8
+- Replace doc type from dox-foundation to jsdoc
+
 ## 2.2.2 - 2022-06-27
 ### Changed
 - Upgrade dependencies
