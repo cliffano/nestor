@@ -1,5 +1,6 @@
 {
   "name": "nestor",
+  "type": "module",
   "description": "Jenkins CLI and node.js client",
   "keywords": [
     "jenkins",
@@ -14,9 +15,9 @@
   "contributors": [
     "All contributors (https://github.com/cliffano/nestor/graphs/contributors)"
   ],
-  "main": "./lib/jenkins",
+  "main": "./lib/nestor",
   "bin": {
-    "nestor": "./bin/nestor"
+    "rtk": "./bin/nestor.js"
   },
   "preferGlobal": true,
   "repository": {
@@ -45,13 +46,12 @@
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
-    "buster-node": "^0.7.1",
-    "proxyquire": "^2.1.0",
-    "referee": "^1.2.0"
+    "sinon": "^16.1.0",
+    "@sinonjs/referee": "^10.0.1"
   },
   "scripts": {},
   "engines": {
-    "node": ">= 4.0.0"
+    "node": ">= 20.0.0"
   },
   "license": "MIT"
 }
