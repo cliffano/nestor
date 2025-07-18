@@ -1,13 +1,13 @@
 .bob
 .bob.json
 .DS_Store
-.eslintrc.yml
 .git
 .github
 .gitignore
 .npmignore
 .rtk.json
 avatar.jpg
+eslint.config.js
 node_modules
 *.log
 screenshots
