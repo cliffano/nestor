@@ -21,6 +21,7 @@ describe('cli - job').value(function() {
 
     const jenkins = new Jenkins('http://localhost:8080');
     this.mockArgsCb = function (args, cb) {
+      // This jenkins constant is getting stubbed in the test functions
       cb(jenkins);
     };
     done();
@@ -63,7 +64,7 @@ describe('cli - job').value(function() {
       cb(null, result);
     });
 
-    job.read(this.mockArgsCb)('somejob');
+    job.read(this.mockArgsCb)(null, 'somejob');
   });
   it('read - should log status as-is in grey color when color is status value', function () {
     this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'notbuilt'.grey);
@@ -83,7 +84,7 @@ describe('cli - job').value(function() {
       cb(null, result);
     });
 
-    job.read(this.mockArgsCb)('somejob');
+    job.read(this.mockArgsCb)(null, 'somejob');
   });
   it('readLatest - should display yellow building status and start time description', function () {
     this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'building'.yellow);
