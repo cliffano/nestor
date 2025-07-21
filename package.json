@@ -33,8 +33,8 @@
     "test": "./test"
   },
   "dependencies": {
-    "async": "^2.6.2",
-    "bagofcli": "^1.1.0",
+    "async": "^3.2.6",
+    "bagofcli": "^2.4.1",
     "bagoftext": "^0.1.2",
     "colors": "^1.3.3",
     "commander": "^2.20.0",
@@ -42,12 +42,13 @@
     "feed-read": "^0.0.1",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
-    "swaggy-jenkins": "^1.1.1",
+    "proxyquire": "^2.1.3",
+    "swaggy-jenkins": "^3.1.0",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
-    "sinon": "^16.1.0",
-    "@sinonjs/referee": "^10.0.1"
+    "@sinonjs/referee": "^11.0.1",
+    "sinon": "^21.0.0"
   },
   "scripts": {},
   "engines": {

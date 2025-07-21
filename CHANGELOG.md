@@ -8,9 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Changed
+- Change module type to ESM
 - Replace lint type from jshint to eslint
 - Replace coverage from buster-istanbul to c8
 - Replace doc type from dox-foundation to jsdoc
+- Replace test type from buster to mocha
 - Switch CHANGELOG to use keep-a-changelog
 - Replace Travis CI with GH Actions
 

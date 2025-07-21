@@ -1,49 +1,57 @@
-var buster = require('buster-node'),
-  cron = require('cron'),
-  dgram = require('dgram'),
-  fs = require('fs'),
-  Jenkins = require('../lib/jenkins'),
-  referee = require('referee'),
-  text = require('bagoftext'),
-  assert = referee.assert,
-  refute = referee.refute;
+"use strict";
+/* eslint no-unused-vars: 0 */
+import cron from 'cron';
+import dgram from 'dgram';
+import fs from 'fs';
+import Jenkins from '../lib/jenkins.js';
+import referee from '@sinonjs/referee';
+import sinon from 'sinon';
+import text from 'bagoftext';
+const assert = referee.assert;
+const refute = referee.refute;
 
 
 text.setLocale('en');
 
-buster.testCase('jenkins - jenkins', {
-  setUp: function () {
-    this.stub(process, 'env', {});
-    this.mockFs  = this.mock(fs);
+describe('jenkins - jenkins', function() {
+  beforeEach(function (done) {
+    sinon.stub(process, 'env').value({});
+    this.mockFs  = sinon.mock(fs);
     this.jenkins = new Jenkins();
-  },
-  'should use custom url when specified': function () {
+    done();
+  });
+  afterEach(function (done) {
+    this.mockFs.verify();
+    sinon.restore();
+    done();
+  });
+  it('should use custom url when specified', function () {
     var jenkins = new Jenkins('http://jenkins-ci.org:8080');
     assert.equals(jenkins.url, 'http://jenkins-ci.org:8080');
-  },
-  'should use default url when url is not specified': function () {
+  });
+  it('should use default url when url is not specified', function () {
     assert.equals(this.jenkins.url, 'http://localhost:8080');
-  },
-  'should handle authentication failure error': function (done) {
+  });
+  it('should handle authentication failure error', function (done) {
     this.jenkins.opts.handlers[401](null, function (err) {
       assert.equals(err.message, 'Authentication failed - incorrect username and/or password');
       done();
     });
-  },
-  'should handle authentication required error': function (done) {
+  });
+  it('should handle authentication required error', function (done) {
     this.jenkins.opts.handlers[403](null, function (err) {
       assert.equals(err.message, 'Jenkins requires authentication - please set username and password');
       done();
     });
-  },
-  'should set cert': function (done) {
+  });
+  it('should set cert').value(function (done) {
     this.mockFs.expects('statSync').once().withExactArgs('certificate.pem').returns(true);
     this.mockFs.expects('statSync').once().withExactArgs('custom.ca.pem').returns(true);
     this.mockFs.expects('statSync').once().withExactArgs('key.pem').returns(true);
     this.mockFs.expects('readFileSync').once().withExactArgs('certificate.pem').returns('somecert');
     this.mockFs.expects('readFileSync').once().withExactArgs('custom.ca.pem').returns('someca');
     this.mockFs.expects('readFileSync').once().withExactArgs('key.pem').returns('somekey');
-    this.stub(process, 'env', {
+    sinon.stub(process, 'env').value({
       JENKINS_CERT: 'certificate.pem',
       JENKINS_CA: 'custom.ca.pem',
       JENKINS_KEY: 'key.pem:somepassphrase'
@@ -55,12 +63,12 @@ buster.testCase('jenkins - jenkins', {
     assert.equals(this.jenkins.opts.agentOptions.key, 'somekey');
     assert.equals(this.jenkins.opts.agentOptions.ca, 'someca');
     done();
-  },
-  'should not set agent options when cert files do not exist': function (done) {
+  });
+  it('should not set agent options when cert files do not exist').value(function (done) {
     this.mockFs.expects('statSync').once().withExactArgs('certificate.pem').returns(false);
     this.mockFs.expects('statSync').once().withExactArgs('custom.ca.pem').returns(false);
     this.mockFs.expects('statSync').once().withExactArgs('key.pem').returns(false);
-    this.stub(process, 'env', {
+    sinon.stub(process, 'env').value({
       JENKINS_CERT: 'certificate.pem',
       JENKINS_CA: 'custom.ca.pem',
       JENKINS_KEY: 'key.pem:somepassphrase'
@@ -72,16 +80,13 @@ buster.testCase('jenkins - jenkins', {
     assert.equals(this.jenkins.opts.agentOptions.key, undefined);
     assert.equals(this.jenkins.opts.agentOptions.ca, undefined);
     done();
-  }
+  });
 });
 
-buster.testCase('jenkins - csrf', {
-  setUp: function () {
-    this.mock({});
-  },
-  'should add crumb header': function (done) {
+describe('jenkins - csrf', function() {
+  it('should add crumb header', function (done) {
     var jenkins = new Jenkins('http://localhost:8080');
-    this.stub(Jenkins.prototype, 'crumb', function (cb) {
+    sinon.stub(Jenkins.prototype, 'crumb').value(function (cb) {
       var result = {
         '_class': 'hudson.security.csrf.DefaultCrumbIssuer',
         crumb: '7b12516ae03ff48a099aa2f32906dafa',
@@ -93,29 +98,26 @@ buster.testCase('jenkins - csrf', {
       assert.equals(jenkins.opts.headers['Jenkins-Crumb'], '7b12516ae03ff48a099aa2f32906dafa');
       done();
     });
-  },
-  'should pass error to callback': function (done) {
+  });
+  it('should pass error to callback', function (done) {
     var jenkins = new Jenkins('http://localhost:8080');
-    this.stub(Jenkins.prototype, 'crumb', function (cb) {
+    sinon.stub(Jenkins.prototype, 'crumb').value(function (cb) {
       cb(new Error('some error'));
     });
     jenkins.csrf(function (err, result) {
       assert.equals(err.message, 'some error');
       done();
     });
-  }
+  });
 });
 
-buster.testCase('jenkins - monitor', {
-  setUp: function () {
-    this.mock({});
-  },
-  'should monitor all jobs on Jenkins instance when no job or view opt specified': function (done) {
-    this.stub(cron.CronJob.prototype, 'start', function () {
+describe('jenkins - monitor', function() {
+  it('should monitor all jobs on Jenkins instance when no job or view opt specified', function (done) {
+    sinon.stub(cron.CronJob.prototype, 'start').value(function () {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    this.stub(Jenkins.prototype, 'info', function (cb) {
+    sinon.stub(Jenkins.prototype, 'info').value(function (cb) {
       var result = { jobs: [
         { color: 'blue' },
         { color: 'red' },
@@ -128,13 +130,13 @@ buster.testCase('jenkins - monitor', {
       assert.isNull(err);
       assert.equals(result, 'fail');
     });
-  },
-  'should result in status non-success when a job has non-success color but no red and yellow': function (done) {
-    this.stub(cron.CronJob.prototype, 'start', function () {
+  });
+  it('should result in status non-success when a job has non-success color but no red and yellow').value(function (done) {
+    sinon.stub(cron.CronJob.prototype, 'start').value(function () {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    this.stub(Jenkins.prototype, 'info', function (cb) {
+    sinon.stub(Jenkins.prototype, 'info').value(function (cb) {
       var result = { jobs: [
         { color: 'blue' },
         { color: 'notbuilt' },
@@ -146,13 +148,13 @@ buster.testCase('jenkins - monitor', {
       assert.isNull(err);
       assert.equals(result, 'notbuilt');
     });
-  },
-  'should result in status success when a job has all blue or green color': function (done) {
-    this.stub(cron.CronJob.prototype, 'start', function () {
+  });
+  it('should result in status success when a job has all blue or green color', function (done) {
+    sinon.stub(cron.CronJob.prototype, 'start').value(function () {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    this.stub(Jenkins.prototype, 'info', function (cb) {
+    sinon.stub(Jenkins.prototype, 'info').value(function (cb) {
       var result = { jobs: [
         { color: 'blue' },
         { color: 'green' },
@@ -164,13 +166,13 @@ buster.testCase('jenkins - monitor', {
       assert.isNull(err);
       assert.equals(result, 'ok');
     });
-  },
-  'should result in status warn when view opt is specified and a job has yellow color but no red': function (done) {
-    this.stub(cron.CronJob.prototype, 'start', function () {
+  });
+  it('should result in status warn when view opt is specified and a job has yellow color but no red', function (done) {
+    sinon.stub(cron.CronJob.prototype, 'start').value(function () {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    this.stub(Jenkins.prototype, 'readView', function (name, cb) {
+    sinon.stub(Jenkins.prototype, 'readView').value(function (name, cb) {
       assert.equals(name, 'someview');
       var result = { jobs: [
         { color: 'blue' },
@@ -182,12 +184,12 @@ buster.testCase('jenkins - monitor', {
       assert.isNull(err);
       assert.equals(result, 'warn');
     });
-  },
-  'should pass error when an error occurs while monitoring a view': function (done) {
-    this.stub(cron.CronJob.prototype, 'start', function () {
+  });
+  it('should pass error when an error occurs while monitoring a view').value(function (done) {
+    sinon.stub(cron.CronJob.prototype, 'start').value(function () {
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    this.stub(Jenkins.prototype, 'readView', function (name, cb) {
+    sinon.stub(Jenkins.prototype, 'readView').value(function (name, cb) {
       assert.equals(name, 'someview');
       cb(new Error('some error'));
     });
@@ -195,13 +197,13 @@ buster.testCase('jenkins - monitor', {
       assert.equals(err.message, 'some error');
       done();
     });
-  },
-  'should monitor the latest build of a job when job opt is specified': function (done) {
-    this.stub(cron.CronJob.prototype, 'start', function () {
+  });
+  it('should monitor the latest build of a job when job opt is specified', function (done) {
+    sinon.stub(cron.CronJob.prototype, 'start').value(function () {
       done();
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    this.stub(Jenkins.prototype, 'readJob', function (name, cb) {
+    sinon.stub(Jenkins.prototype, 'readJob').value(function (name, cb) {
       assert.equals(name, 'somejob');
       var result = { color: 'blue' };
       cb(null, result);
@@ -210,12 +212,12 @@ buster.testCase('jenkins - monitor', {
       assert.isNull(err);
       assert.equals(result, 'ok');
     });
-  },
-  'should pass error when an error occurs while monitoring a job': function (done) {
-    this.stub(cron.CronJob.prototype, 'start', function () {
+  });
+  it('should pass error when an error occurs while monitoring a job').value(function (done) {
+    sinon.stub(cron.CronJob.prototype, 'start').value(function () {
     });
     var jenkins = new Jenkins('http://localhost:8080');
-    this.stub(Jenkins.prototype, 'readJob', function (name, cb) {
+    sinon.stub(Jenkins.prototype, 'readJob').value(function (name, cb) {
       assert.equals(name, 'somejob');
       cb(new Error('some error'));
     });
@@ -223,5 +225,5 @@ buster.testCase('jenkins - monitor', {
       assert.equals(err.message, 'some error');
       done();
     });
-  }
+  });
 });

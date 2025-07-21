@@ -1,77 +1,75 @@
-var buster  = require('buster-node');
-var util    = require('../../lib/api/util');
-var referee = require('referee');
-var text    = require('bagoftext');
-var assert  = referee.assert;
+"use strict";
+/* eslint no-unused-vars: 0 */
+import util from '../../lib/api/util.js';
+import referee from '@sinonjs/referee';
+import text from 'bagoftext';
+const assert = referee.assert;
 
 text.setLocale('en');
 
-buster.testCase('api - util', {
-  setUp: function () {
-    this.mock({});
-  },
-  'passThroughResponse - should pass entire response': function (done) {
+describe('api - util', function() {
+  it('passThroughResponse - should pass entire response', function (done) {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result, 'someresponse');
       done();
     }
     util.passThroughResponse('someresponse', cb);
-  },
-  'passThroughSuccess - should pass result body': function (done) {
+  });
+  it('passThroughSuccess - should pass result body', function (done) {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result, 'somebody');
       done();
     }
     util.passThroughSuccess({ body: 'somebody' }, cb);
-  },
-  'passThroughSuccessJson - should pass result JSON body as an object': function (done) {
+  });
+  it('passThroughSuccessJson - should pass result JSON body as an object', function (done) {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.foo, 'bar');
       done();
     }
     util.passThroughSuccessJson({ body: '{ "foo": "bar" }' }, cb);
-  },
-  'htmlError - should pass error with message parsed from Jenkins HTML error page': function (done) {
+  });
+  it('htmlError - should pass error with message parsed from Jenkins HTML error page', function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'Some Error');
       assert.equals(result, undefined);
       done();
     }
     util.htmlError({ body: '<h1>Error</h1><p>Some Error</p>' }, cb);
-  },
-  'jobNotFoundError - should pass job does not exist error message': function (done) {
+  });
+  it('jobNotFoundError - should pass job does not exist error message', function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'Job somejob does not exist');
       assert.equals(result, undefined);
       done();
     }
     util.jobNotFoundError('somejob')(null, cb);
-  },
-  'jobBuildNotFoundError - should pass job build does not exist error message': function (done) {
+  });
+  it('jobBuildNotFoundError - should pass job build does not exist error message', function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'Job somejob build 123 does not exist');
       assert.equals(result, undefined);
       done();
     }
     util.jobBuildNotFoundError('somejob', 123)(null, cb);
-  },
-  'jobRequireParamsError - should pass job require params error message': function (done) {
+  });
+  it('jobRequireParamsError - should pass job require params error message', function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'Job somejob requires build parameters');
       assert.equals(result, undefined);
       done();
     }
     util.jobRequireParamsError('somejob')(null, cb);
-  },
-  'viewNotFoundError - should pass view does not exist error message': function (done) {
+  });
+  it('viewNotFoundError - should pass view does not exist error message', function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'View someview does not exist');
       assert.equals(result, undefined);
       done();
     }
     util.viewNotFoundError('someview')(null, cb);
-  }
+  });
 });

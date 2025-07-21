@@ -1,5 +1,5 @@
 - params:
-    nestor: ../../../../bin/nestor
+    nestor: ../../../../bin/nestor.js
 
 - description: Ensure test job does not exist
   command: '{nestor} delete-job somejob'

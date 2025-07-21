@@ -1,5 +1,5 @@
 - params:
-    nestor: ../../../../../bin/nestor
+    nestor: ../../../../../bin/nestor.js
 
 - description: Command help should display help information
   command: '{nestor} --help'

@@ -1,5 +1,5 @@
 - params:
-    nestor: ../../../../../bin/nestor
+    nestor: ../../../../../bin/nestor.js
 
 - description: Command dashboard should display error when URL does not exist
   command: 'JENKINS_URL=http://someinexistinghost {nestor} dashboard'

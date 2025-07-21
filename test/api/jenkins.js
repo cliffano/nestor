@@ -1,47 +1,54 @@
-var buster     = require('buster-node');
-var dgram      = require('dgram');
-var feedRead   = require('feed-read');
-var jenkins    = require('../../lib/api/jenkins');
-var proxyquire = require('proxyquire');
-var referee    = require('referee');
-var Swaggy     = require('swaggy-jenkins');
-var text       = require('bagoftext');
-var assert     = referee.assert;
+"use strict";
+/* eslint no-unused-vars: 0 */
+import dgram from 'dgram';
+import feedRead from 'feed-read';
+import jenkins from '../../lib/api/jenkins.js';
+import proxyquire from 'proxyquire';
+import referee from '@sinonjs/referee';
+import sinon from 'sinon';
+import Swaggy from 'swaggy-jenkins';
+import text from 'bagoftext';
+const assert = referee.assert;
 
 text.setLocale('en');
 
-buster.testCase('api - jenkins', {
-  setUp: function () {
-    this.mockFeedRead = this.mock(feedRead);
+describe('api - jenkins', function() {
+  beforeEach(function (done) {
+    this.mockFeedRead = sinon.mock(feedRead);
 
     jenkins.url  = 'http://localhost:8080';
     jenkins.opts = { handlers: {} };
     jenkins.remoteAccessApi = new Swaggy.RemoteAccessApi();
     jenkins.baseApi = new Swaggy.BaseApi();
 
-    this.mockTimer = this.useFakeTimers();
+    this.mockTimer = sinon.useFakeTimers();
     this.mock({});
-  },
-  tearDown: function () {
+    done();
+  });
+  afterEach(function (done) {
+    this.mockFeedRead.verify();
+    this.mockTimer.verify();
+    sinon.restore();
     delete jenkins.opts;
-  },
-  'computer - should delegate to Swaggy getComputer': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'getComputer', function (depth, cb) {
+    done();
+  });
+  it('computer - should delegate to Swaggy getComputer',function (done) {
+    sinon.stub(jenkins.remoteAccessApi, 'getComputer').value(function (depth, cb) {
       assert.equals(depth, 1);
       cb();
     });
     jenkins.computer(done);
-  },
-  'crumb - should delegate to Swaggy getCrumb': function (done) {
-    this.stub(jenkins.baseApi, 'getCrumb', function (cb) {
+  });
+  it('crumb - should delegate to Swaggy getCrumb', function (done) {
+    sinon.stub(jenkins.baseApi, 'getCrumb').value(function (cb) {
       cb();
     });
     jenkins.crumb(done);
-  },
-  'discover - should close socket and pass error to callback when socket emits error event': function (done) {
+  });
+  it('discover - should close socket and pass error to callback when socket emits error event', function (done) {
     var closeCallCount = 0,
       mockSocket = {
-        close: function () {
+        close, function () {
           closeCallCount++;
         },
         on: function (event, cb) {
@@ -51,7 +58,7 @@ buster.testCase('api - jenkins', {
         },
         send:  function (buf, offset, length, port, address, cb) {}
       };
-    this.stub(dgram, 'createSocket', function (type) {
+    sinon.stub(dgram, 'createSocket').value(function (type) {
       assert.equals(type, 'udp4');
       return mockSocket;
     });
@@ -61,11 +68,11 @@ buster.testCase('api - jenkins', {
       done();
     });
     assert.equals(closeCallCount, 1);
-  },
-  'discover - should close socket and pass error to callback when an error occurs while sending a message': function (done) {
+  });
+  it('discover - should close socket and pass error to callback when an error occurs while sending a message', function (done) {
     var closeCallCount = 0,
       mockSocket = {
-        close: function () {
+        close, function () {
           closeCallCount++;
         },
         on: function (event, cb) {},
@@ -78,7 +85,7 @@ buster.testCase('api - jenkins', {
           cb(new Error('someerror'));
         }
       };
-    this.stub(dgram, 'createSocket', function (type) {
+    sinon.stub(dgram, 'createSocket').value(function (type) {
       assert.equals(type, 'udp4');
       return mockSocket;
     });
@@ -88,11 +95,11 @@ buster.testCase('api - jenkins', {
       done();
     });
     assert.equals(closeCallCount, 1);
-  },
-  'discover - should close socket and pass result to callback when socket emits message event': function (done) {
-    var closeCallCount = 0,
-      mockSocket = {
-        close: function () {
+  });
+  it('discover - should close socket and pass result to callback when socket emits message event', function (done) {
+    let closeCallCount = 0;
+    const mockSocket = {
+        close, function () {
           closeCallCount++;
         },
         on: function (event, cb) {
@@ -102,7 +109,7 @@ buster.testCase('api - jenkins', {
         },
         send:  function (buf, offset, length, port, address, cb) { cb(); }
       };
-    this.stub(dgram, 'createSocket', function (type) {
+    sinon.stub(dgram, 'createSocket').value(function (type) {
       assert.equals(type, 'udp4');
       return mockSocket;
     });
@@ -115,14 +122,14 @@ buster.testCase('api - jenkins', {
       done();
     });
     assert.equals(closeCallCount, 1);
-  },
-  'discover - should timeout and pass error when no instance is discovered': function (done) {
-    var mockSocket = {
-        close: function () {},
+  });
+  it('discover - should timeout and pass error when no instance is discovered', function (done) {
+    const mockSocket = {
+        close, function () {},
         on: function (event, cb) {},
         send:  function (buf, offset, length, port, address, cb) {}
       };
-    this.stub(dgram, 'createSocket', function (type) {
+    sinon.stub(dgram, 'createSocket').value(function (type) {
       assert.equals(type, 'udp4');
       return mockSocket;
     });
@@ -132,54 +139,54 @@ buster.testCase('api - jenkins', {
       done();
     });
     this.mockTimer.tick(5000);
-  },
-  'info - should delegate to Swaggy getJenkins': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'getJenkins', function (cb) {
+  });
+  it('info - should delegate to Swaggy getJenkins', function (done) {
+    sinon.stub(jenkins.remoteAccessApi, 'getJenkins').value(function (cb) {
       cb();
     });
     jenkins.info(done);
-  },
-  'parseFeed - should parse feed from API endpoint': function (done) {
-    var mockFeedRead = function (url, cb) {
+  });
+  it('parseFeed - should parse feed from API endpoint', function (done) {
+    const mockFeedRead = function (url, cb) {
       assert.equals(url, 'http://localhost:8080/rssAll');
       cb();
     };
-    var job = proxyquire('../../lib/api/jenkins.js', { 'feed-read': mockFeedRead });
+    const job = proxyquire('../../lib/api/jenkins.js', { 'feed-read': mockFeedRead });
     jenkins.parseFeed(done);
-  },
-  'queue - should delegate to Swaggy getQueue': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'getQueue', function (cb) {
+  });
+  it('queue - should delegate to Swaggy getQueue', function (done) {
+    sinon.stub(jenkins.remoteAccessApi, 'getQueue').value(function (cb) {
       cb();
     });
     jenkins.queue(done);
-  },
-  'version - should pass version header value if exists': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'headJenkins', function (cb) {
-      var response = { headers: { 'x-jenkins': '1.2.3' }};
+  });
+  it('version - should pass version header value if exists', function (done) {
+    sinon.stub(jenkins.remoteAccessApi, 'headJenkins').value(function (cb) {
+      const response = { headers: { 'x-jenkins': '1.2.3' }};
       cb(null, null, response);
     });
     jenkins.version(function (err, result) {
       assert.equals(result, '1.2.3');
       done();
     });
-  },
-  'version - should pass error if version header value does not exist': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'headJenkins', function (cb) {
-      var response = { headers: {}};
+  });
+  it('version - should pass error if version header value does not exist', function (done) {
+    sinon.stub(jenkins.remoteAccessApi, 'headJenkins').value(function (cb) {
+      const response = { headers: {}};
       cb(null, null, response);
     });
     jenkins.version(function (err, result) {
       assert.equals(err.message, 'Not a Jenkins server');
       done();
     });
-  },
-  'version - should pass error if an error occurrs': function (done) {
-    this.stub(jenkins.remoteAccessApi, 'headJenkins', function (cb) {
+  });
+  it('version - should pass error if an error occurrs', function (done) {
+    sinon.stub(jenkins.remoteAccessApi, 'headJenkins').value(function (cb) {
       cb(new Error('some error'));
     });
     jenkins.version(function (err, result) {
       assert.equals(err.message, 'some error');
       done();
     });
-  }
+  });
 });

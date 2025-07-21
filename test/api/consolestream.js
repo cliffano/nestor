@@ -1,15 +1,13 @@
-var buster = require('buster-node');
-var ConsoleStream = require('../../lib/api/consolestream');
-var referee = require('referee');
-var assert = referee.assert;
+"use strict";
+/* eslint no-unused-vars: 0 */
+import ConsoleStream from '../../lib/api/consolestream.js';
+import referee from '@sinonjs/referee';
+const assert = referee.assert;
 
-buster.testCase('consolestream - consolestream', {
-  setUp: function () {
-    this.mock({});
-  },
-  'should be readable but not writable': function () {
-    var consoleStream = new ConsoleStream();
+describe('consolestream - consolestream', function() {
+  it('should be readable but not writable', function () {
+    const consoleStream = new ConsoleStream();
     assert.isTrue(consoleStream.readable);
     assert.isFalse(consoleStream.writable);
-  }
+  });
 });
