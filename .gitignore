@@ -1,5 +1,6 @@
 # Start of Studio gitignore
 .bob
+core
 # End of Studio gitignore
 
 # Created by https://www.toptal.com/developers/gitignore/api/node,vscode,macos
