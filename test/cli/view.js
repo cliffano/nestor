@@ -40,7 +40,7 @@ describe('cli - view', function() {
       cb();
     });
 
-    view.create(this.mockArgsCb)('someview', 'config.xml');
+    view.create(this.mockArgsCb)(null, 'someview', 'config.xml');
   });
   it('update - should log view updated success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('View %s was updated successfully', 'someview');
@@ -53,7 +53,7 @@ describe('cli - view', function() {
       cb();
     });
 
-    view.update(this.mockArgsCb)('someview', 'config.xml');
+    view.update(this.mockArgsCb)(null, 'someview', 'config.xml');
   });
   it('fetchConfig - should log configuration', function () {
     this.mockConsole.expects('log').once().withExactArgs('<xml>some config</xml>');
@@ -64,6 +64,6 @@ describe('cli - view', function() {
       cb(null, '<xml>some config</xml>');
     });
 
-    view.fetchConfig(this.mockArgsCb)('someview');
+    view.fetchConfig(this.mockArgsCb)(null, 'someview');
   });
 });
