@@ -39,7 +39,10 @@
       "desc": "View status of all jobs"
     },
     "discover": {
-      "desc": "Discover Jenkins instance running on a specified host"
+      "desc": "Discover Jenkins instance running on a specified host",
+      "examples": [
+        "nestor discover [host]"
+      ]
     },
     "executor": {
       "desc": "View executors' status (running builds)"
