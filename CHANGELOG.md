@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switch CHANGELOG to use keep-a-changelog
 - Replace Travis CI with GH Actions
 
+### Fixed
+- Fix discovery host arg handling
+
 ## 2.2.2 - 2022-06-27
 ### Changed
 - Upgrade dependencies
