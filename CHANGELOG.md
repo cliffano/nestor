@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace test type from buster to mocha
 - Switch CHANGELOG to use keep-a-changelog
 - Replace Travis CI with GH Actions
+- Failure test scenario now includes EAI_AGAIN for DNS lookup error
 
 ### Fixed
 - Fix discovery host arg handling

@@ -4,7 +4,7 @@
 - description: Command dashboard should display error when URL does not exist
   command: 'JENKINS_URL=http://someinexistinghost {nestor} dashboard'
   exitcode: 1
-  output: 'getaddrinfo ENOTFOUND|ETIMEDOUT'
+  output: 'getaddrinfo ENOTFOUND|ETIMEDOUT|EAI_AGAIN'
 
 - description: Command job should display error message when job does not exist
   command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} job someinexistingjob'
