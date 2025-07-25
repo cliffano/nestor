@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">75.64</p>
+      <p class="stat">83.85</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">86</p>
+      <p class="stat">73</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">14.49</p>
+      <p class="stat">15.80</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.53</p>
+      <p class="stat">0.23</p>
     </div>
   </div>
 </div>
@@ -89,9 +89,9 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">var feedparser = require(&#039;feedparser&#039;);
-var req        = require(&#039;bagofrequest&#039;);
-var util       = require(&#039;./util&#039;);
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import _ from &#039;lodash&#039;;
+import feedRead from &#039;feed-read&#039;;
 
 /**
  * Create a view with specified configuration.
@@ -101,15 +101,11 @@ var util       = require(&#039;./util&#039;);
  * @param {Function} cb: standard cb(err, result) callback
  */
 function create(name, config, cb) {
-
-  this.opts.queryStrings = { name: name };
-  this.opts.headers      = { &#039;content-type&#039;: &#039;application/xml&#039; };
-  this.opts.body         = config;
-
-  this.opts.handlers[200] = util.passThroughSuccess;
-  this.opts.handlers[400] = util.htmlError; 
-
-  req.request(&#039;post&#039;, this.url + &#039;/createView&#039;, this.opts, cb);  
+  const opts = {
+    body: config,
+    contentType: &#039;application/xml&#039;,
+  };
+  this.remoteAccessApi.postCreateView(name, _.merge(opts, this.opts.headers), cb);
 }
 
 /**
@@ -119,10 +115,7 @@ function create(name, config, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function read(name, cb) {
-
-  this.opts.handlers[200] = util.passThroughSuccessJson;
-
-  req.request(&#039;get&#039;, this.url + &#039;/view/&#039; + name + &#039;/api/json&#039;, this.opts, cb);
+  this.remoteAccessApi.getView(name, cb);
 }
 
 /**
@@ -133,13 +126,7 @@ function read(name, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function update(name, config, cb) {
-
-  this.opts.body = config;
-
-  this.opts.handlers[200] = util.passThroughSuccess;
-  this.opts.handlers[404] = util.viewNotFoundError(name);
-
-  req.request(&#039;post&#039;, this.url + &#039;/view/&#039; + name + &#039;/config.xml&#039;, this.opts, cb);
+  this.remoteAccessApi.postViewConfig(name, config, this.opts.headers, cb);
 }
 
 /**
@@ -149,11 +136,7 @@ function update(name, config, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function fetchConfig(name, cb) {
-
-  this.opts.handlers[200] = util.passThroughSuccess;
-  this.opts.handlers[404] = util.viewNotFoundError(name);
-
-  req.request(&#039;get&#039;, this.url + &#039;/view/&#039; + name + &#039;/config.xml&#039;, this.opts, cb);
+  this.remoteAccessApi.getViewConfig(name, cb);
 }
 
 /**
@@ -164,17 +147,21 @@ function fetchConfig(name, cb) {
  */
 function parseFeed(name, cb) {
 
-  var url = this.url + &#039;/view/&#039; + name + &#039;/rssAll&#039;;
-  feedparser.parseUrl(url, function (err, meta, articles) {
-    cb(err, articles);
-  });
+  const url = this.url + &#039;/view/&#039; + name + &#039;/rssAll&#039;;
+  feedRead(url, cb);
 }
 
-exports.create      = create;
-exports.read        = read;
-exports.update      = update;
-exports.fetchConfig = fetchConfig;
-exports.parseFeed   = parseFeed;</textarea>
+const exports = {
+  create: create,
+  read: read,
+  update: update,
+  fetchConfig: fetchConfig,
+  parseFeed: parseFeed
+};
+
+export {
+  exports as default
+};</textarea>
   </div>
 </div>
 
@@ -186,10 +173,10 @@ exports.parseFeed   = parseFeed;</textarea>
 
 <script type="text/html" id="complexity-popover-template">
   <div class="complexity-notice">
-    Complexity : {{ complexity.cyclomatic }} <br>
-    Length : {{ complexity.halstead.length }} <br>
-    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
-    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
   </div>
 </script>
 

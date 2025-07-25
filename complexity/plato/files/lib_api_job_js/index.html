@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">72.53</p>
+      <p class="stat">79.67</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">282</p>
+      <p class="stat">255</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">34.51</p>
+      <p class="stat">32.81</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">2.26</p>
+      <p class="stat">1.32</p>
     </div>
   </div>
 </div>
@@ -89,13 +89,12 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">var _             = require(&#039;lodash&#039;);
-var async         = require(&#039;async&#039;);
-var ConsoleStream = require(&#039;./consolestream&#039;);
-var feedparser    = require(&#039;feedparser&#039;);
-var req           = require(&#039;bagofrequest&#039;);
-var request       = require(&#039;request&#039;);
-var util          = require(&#039;./util&#039;);
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import _ from &#039;lodash&#039;;
+import async from &#039;async&#039;;
+import ConsoleStream from &#039;./consolestream.js&#039;;
+import feedRead from &#039;feed-read&#039;;
+import util from &#039;./util.js&#039;;
 
 /**
  * Create a job with specified configuration.
@@ -105,15 +104,11 @@ var util          = require(&#039;./util&#039;);
  * @param {Function} cb: standard cb(err, result) callback
  */
 function create(name, config, cb) {
-
-  this.opts.queryStrings = { name: name };
-  this.opts.headers      = { &#039;content-type&#039;: &#039;application/xml&#039; };
-  this.opts.body         = config;
-
-  this.opts.handlers[200] = util.passThroughSuccess;
-  this.opts.handlers[400] = util.htmlError; 
-
-  req.request(&#039;post&#039;, this.url + &#039;/createItem/api/json&#039;, this.opts, cb);
+  const opts = {
+    body: config,
+    contentType: &#039;application/xml&#039;,
+  };
+  this.remoteAccessApi.postCreateItem(name, _.merge(opts, this.opts.headers), cb);
 }
 
 /**
@@ -124,11 +119,7 @@ function create(name, config, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function read(name, cb) {
-
-  this.opts.handlers[200] = util.passThroughSuccessJson;
-  this.opts.handlers[404] = util.jobNotFoundError(name);
-
-  req.request(&#039;get&#039;, this.url + &#039;/job/&#039; + name + &#039;/api/json&#039;, this.opts, cb);
+  this.remoteAccessApi.getJob(name, cb);
 }
 
 /**
@@ -138,11 +129,7 @@ function read(name, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function readLatest(name, cb) {
-
-  this.opts.handlers[200] = util.passThroughSuccessJson;
-  this.opts.handlers[404] = util.jobNotFoundError(name);
-
-  req.request(&#039;get&#039;, this.url + &#039;/job/&#039; + name + &#039;/lastBuild/api/json&#039;, this.opts, cb);
+  this.remoteAccessApi.getJobLastBuild(name, cb);
 }
 
 /**
@@ -153,13 +140,7 @@ function readLatest(name, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function update(name, config, cb) {
-
-  this.opts.body = config;
-
-  this.opts.handlers[200] = util.passThroughSuccess;
-  this.opts.handlers[404] = util.jobNotFoundError(name);
-
-  req.request(&#039;post&#039;, this.url + &#039;/job/&#039; + name + &#039;/config.xml&#039;, this.opts, cb);
+  this.remoteAccessApi.postJobConfig(name, config, this.opts.headers, cb);
 }
 
 /**
@@ -169,35 +150,44 @@ function update(name, config, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function _delete(name, cb) {
-
-  this.opts.handlers[200] = util.passThroughSuccess;
-  this.opts.handlers[404] = util.jobNotFoundError(name);
-
-  req.request(&#039;post&#039;, this.url + &#039;/job/&#039; + name + &#039;/doDelete&#039;, this.opts, cb);
+  this.remoteAccessApi.postJobDelete(name, this.opts.headers, cb);
 }
 
 /**
  * Build a job.
  *
  * @param {String} name: Jenkins job name
- * @param {Object} params: build parameters key-value pairs
+ * @param {Object|String} params: build parameters key-value pairs, passed as object or &#039;a=b&amp;c=d&#039; string
  * @param {Function} cb: standard cb(err, result) callback
  */
 function build(name, params, cb) {
-
-  var body = { parameter: [] } ;
+  const body = { parameter: [] } ;
   _.keys(params).forEach(function (key) {
     body.parameter.push({ name: key, value: params[key] });
   });
+  const opts = {
+    token: &#039;nestor&#039;
+  };
+  this.remoteAccessApi.postJobBuild(name, JSON.stringify(body), _.merge(opts, this.opts.headers), cb);
+}
 
-  this.opts.queryStrings = { token: &#039;nestor&#039;, json: JSON.stringify(body) };
-
-  this.opts.handlers[200] = util.passThroughSuccess; // backward compatibility for old Jenkins versions
-  this.opts.handlers[201] = util.passThroughSuccess;
-  this.opts.handlers[404] = util.jobNotFoundError(name);
-  this.opts.handlers[405] = util.jobRequireParamsError(name); // backward compatibility for old Jenkins versions
-
-  req.request(&#039;post&#039;, this.url + &#039;/job/&#039; + name + &#039;/build&#039;, this.opts, cb);
+function checkStarted(buildUrl, cb) {
+  // hudson.model.Queue$WaitingItem indicates that the item is still waiting in the queue
+  // hudson.model.Queue$LeftItem indicates that the item left the queue and the build has started
+  function _cb(err, result) {
+    if (result &amp;&amp; result._class === &#039;hudson.model.Queue$LeftItem&#039;) {
+      cb(true);
+    } else {
+      cb(false);
+    }
+  }
+  // extracts queue item number from the URL
+  // e.g. http://localhost:8080/queue/item/12/ , the queue item number is 12
+  function parseQueueItemNumber(buildUrl) {
+    const elems = buildUrl.split(&#039;/&#039;);
+    return elems[elems.length - 2];
+  }
+  this.remoteAccessApi.getQueueItem(parseQueueItemNumber(buildUrl), _cb);
 }
 
 /**
@@ -207,11 +197,7 @@ function build(name, params, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function stop(name, cb) {
-
-  this.opts.handlers[200] = util.passThroughSuccess;
-  this.opts.handlers[404] = util.jobNotFoundError(name);
-
-  req.request(&#039;post&#039;, this.url + &#039;/job/&#039; + name + &#039;/lastBuild/stop&#039;, this.opts, cb);
+  this.remoteAccessApi.postJobLastBuildStop(name, this.opts.headers, cb);
 }
 
 /**
@@ -221,45 +207,37 @@ function stop(name, cb) {
  * - x-text-size to determine the starting point of progressive text output (this was obviously badly named, but stayed there for backward compatibility reason)
  *
  * @param {String} name: Jenkins job name
+ * @param {Number} buildNumber: Jenkins job&#039;s build number
  * @param {Number} interval: interval between console requests in milliseconds
  * @param {Function} cb: standard cb(err, result) callback
  * @return {ConsoleStream} readable console output stream
  */
-function streamConsole(name, interval, cb) {
+function streamConsole(name, buildNumber, interval, cb) {
 
-  var stream = new ConsoleStream();
-  var url    = this.url + &#039;/job/&#039; + name + &#039;/lastBuild/logText/progressiveText&#039;;
-  var self   = this;
+  buildNumber = buildNumber || &#039;lastBuild&#039;;
 
-  function _success(result, cb) {
-    if (result.body) {
-      stream.emit(&#039;data&#039;, result.body);
+  const stream = new ConsoleStream();
+  const self   = this;
+
+  function _processMoreChunks(result, response, cb) {
+    if (response.text) {
+      stream.emit(&#039;data&#039;, response.text);
     }
     // stream while there are more data
     async.whilst(
       function () {
-        return result.headers[&#039;x-more-data&#039;] === &#039;true&#039;;
+        return response.headers[&#039;x-more-data&#039;] === &#039;true&#039;;
       },
       function (cb) {
-        var params = {
-          url: url,
-          qs: { start: parseInt(result.headers[&#039;x-text-size&#039;], 10) }
-        };
-        var envProxy = req.proxy(url);
-        if (envProxy) {
-          params.proxy = envProxy;
-        }
-        request.get(params, function (err, _result) {
-          if (err) {
-            cb(err);
-          } else {
-            result = _result;
-            if (_result.body) {
-              stream.emit(&#039;data&#039;, _result.body);
-            }
-            setTimeout(cb, interval);
+        function _moreChunkCb(err, _result, _response) {
+          response = _response;
+          if (_response.text) {
+            stream.emit(&#039;data&#039;, _response.text);
           }
-        });
+          setTimeout(cb, interval);
+        }
+        const start = parseInt(response.headers[&#039;x-text-size&#039;], 10);
+        self.remoteAccessApi.getJobProgressiveText(name, buildNumber, start, _moreChunkCb);
       },
       function (err) {
         stream.emit(&#039;end&#039;);
@@ -268,13 +246,17 @@ function streamConsole(name, interval, cb) {
     );
   }
 
-  this.opts.queryStrings = { start: 0 }; // the first chunk
-
-  this.opts.handlers[200] = _success;
-  this.opts.handlers[404] = util.jobNotFoundError(name);
-
   process.nextTick(function () {
-    req.request(&#039;get&#039;, url, self.opts, cb);
+    // start with value 0 indicates the first chunk of the console output
+    const start = 0;
+    function _firstChunkCb(err, result, response) {
+      if (!err &amp;&amp; response.statusCode === 200) {
+        _processMoreChunks(result, response, cb);
+      } else {
+        cb(err, result);
+      }
+    }
+    self.remoteAccessApi.getJobProgressiveText(name, buildNumber, start, _firstChunkCb);
   });
 
   return stream;
@@ -289,11 +271,7 @@ function streamConsole(name, interval, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function enable(name, cb) {
-
-  this.opts.handlers[200] = util.passThroughSuccess;
-  this.opts.handlers[404] = util.jobNotFoundError(name);
-
-  req.request(&#039;post&#039;, this.url + &#039;/job/&#039; + name + &#039;/enable&#039;, this.opts, cb);
+  this.remoteAccessApi.postJobEnable(name, this.opts.headers, cb);
 }
 
 /**
@@ -305,11 +283,7 @@ function enable(name, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function disable(name, cb) {
-
-  this.opts.handlers[200] = util.passThroughSuccess;
-  this.opts.handlers[404] = util.jobNotFoundError(name);
-
-  req.request(&#039;post&#039;, this.url + &#039;/job/&#039; + name + &#039;/disable&#039;, this.opts, cb);
+  this.remoteAccessApi.postJobDisable(name, this.opts.headers, cb);
 }
 
 /**
@@ -320,14 +294,12 @@ function disable(name, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function copy(existingName, newName, cb) {
-
-  this.opts.queryStrings = { name: newName, mode: &#039;copy&#039;, from: existingName };
-  this.opts.headers      = { &#039;content-type&#039;: &#039;text/plain&#039; };
-
-  this.opts.handlers[200] = util.passThroughSuccess;
-  this.opts.handlers[400] = util.htmlError; 
-
-  req.request(&#039;post&#039;, this.url + &#039;/createItem&#039;, this.opts, cb);
+  const opts = {
+    mode: &#039;copy&#039;,
+    from: existingName,
+    contentType: &#039;text/plain&#039;,
+  };
+  this.remoteAccessApi.postCreateItem(newName, _.merge(opts, this.opts.headers), cb);
 }
 
 /**
@@ -337,11 +309,7 @@ function copy(existingName, newName, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function fetchConfig(name, cb) {
-
-  this.opts.handlers[200] = util.passThroughSuccess;
-  this.opts.handlers[404] = util.jobNotFoundError(name);
-
-  req.request(&#039;get&#039;, this.url + &#039;/job/&#039; + name + &#039;/config.xml&#039;, this.opts, cb);
+  this.remoteAccessApi.getJobConfig(name, cb);
 }
 
 /**
@@ -352,25 +320,30 @@ function fetchConfig(name, cb) {
  */
 function parseFeed(name, cb) {
 
-  var url = this.url + &#039;/job/&#039; + name + &#039;/rssAll&#039;;
-  feedparser.parseUrl(url, function (err, meta, articles) {
-    cb(err, articles);
-  });
+  const url = this.url + &#039;/job/&#039; + name + &#039;/rssAll&#039;;
+  feedRead(url, cb);
 }
 
-exports.create        = create;
-exports.read          = read;
-exports.readLatest    = readLatest;
-exports.update        = update;
-exports.delete        = _delete;
-exports.build         = build;
-exports.stop          = stop;
-exports.streamConsole = streamConsole;
-exports.enable        = enable;
-exports.disable       = disable;
-exports.copy          = copy;
-exports.fetchConfig   = fetchConfig;
-exports.parseFeed     = parseFeed;</textarea>
+const exports = {
+  create: create,
+  read: read,
+  readLatest: readLatest,
+  update: update,
+  delete: _delete,
+  build: build,
+  checkStarted: checkStarted,
+  stop: stop,
+  streamConsole: streamConsole,
+  enable: enable,
+  disable: disable,
+  copy: copy,
+  fetchConfig: fetchConfig,
+  parseFeed: parseFeed
+};
+
+export {
+  exports as default
+};</textarea>
   </div>
 </div>
 
@@ -382,10 +355,10 @@ exports.parseFeed     = parseFeed;</textarea>
 
 <script type="text/html" id="complexity-popover-template">
   <div class="complexity-notice">
-    Complexity : {{ complexity.cyclomatic }} <br>
-    Length : {{ complexity.halstead.length }} <br>
-    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
-    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
   </div>
 </script>
 

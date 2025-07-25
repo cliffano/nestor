@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">82.78</p>
+      <p class="stat">81.43</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">305</p>
+      <p class="stat">348</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">29.46</p>
+      <p class="stat">46.32</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">1.84</p>
+      <p class="stat">2.14</p>
     </div>
   </div>
 </div>
@@ -89,12 +89,13 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">var cli    = require(&#039;bagofcli&#039;);
-var fs     = require(&#039;fs&#039;);
-var moment = require(&#039;moment&#039;);
-var text   = require(&#039;bagoftext&#039;);
-var util   = require(&#039;./util&#039;);
-var _util  = require(&#039;util&#039;);
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import cli from &#039;bagofcli&#039;;
+import fs from &#039;fs&#039;;
+import moment from &#039;moment&#039;;
+import text from &#039;bagoftext&#039;;
+import util from &#039;./util.js&#039;;
+import _util from &#039;util&#039;;
 
 /**
  * Get a handler that calls Jenkins API to create a job with specific configuration.
@@ -104,12 +105,12 @@ var _util  = require(&#039;util&#039;);
  * @return Jenkins API handler function
  */
 function create(cb) {
-  return function (name, configFile, args) {
+  return function (args, name, configFile) {
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was created successfully&#039;), name);
     }
     function jenkinsCb(jenkins) {
-      var config = fs.readFileSync(configFile).toString();
+      const config = fs.readFileSync(configFile).toString();
       jenkins.createJob(name, config, cli.exitCb(null, resultCb));
     }
     cb(args, jenkinsCb);
@@ -124,10 +125,10 @@ function create(cb) {
  * @return Jenkins API handler function
  */
 function read(cb) {
-  return function (name, args) {
+  return function (args, name) {
     function resultCb(result) {
-      var status = util.statusByColor(result.color);
-      var color  = util.colorByStatus(status, result.color);
+      const status = util.statusByColor(result.color);
+      const color  = util.colorByStatus(status, result.color);
       console.log(&#039;%s | %s&#039;, name, text.__(status)[color]);
       result.healthReport.forEach(function (report) {
         console.log(&#039; - %s&#039;, report.description);
@@ -147,18 +148,18 @@ function read(cb) {
  * @return Jenkins API handler function
  */
 function readLatest(cb) {
-  return function (name, args) {
+  return function (args, name) {
 
     function resultCb(result) {
 
-      var status;
-      var color;
-      var description;
+      let status;
+      let color;
+      let description;
 
       if (result.building) {
         status      = &#039;building&#039;;
         color       = util.colorByStatus(status);
-        description = _util.format(&#039;Started %s&#039;, moment(result.timestamp).fromNow());        
+        description = _util.format(&#039;Started %s&#039;, moment(result.timestamp).fromNow());
       } else {
         status      = result.result.toLowerCase();
         color       = util.colorByStatus(status);
@@ -184,12 +185,12 @@ function readLatest(cb) {
  * @return Jenkins API handler function
  */
 function update(cb) {
-  return function (name, configFile, args) {
+  return function (args, name, configFile) {
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was updated successfully&#039;), name);
     }
     function jenkinsCb(jenkins) {
-      var config = fs.readFileSync(configFile).toString();
+      const config = fs.readFileSync(configFile).toString();
       jenkins.updateJob(name, config, cli.exitCb(null, resultCb));
     }
     cb(args, jenkinsCb);
@@ -204,7 +205,7 @@ function update(cb) {
  * @return Jenkins API handler function
  */
 function _delete(cb) {
-  return function (name, args) {
+  return function (args, name) {
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was deleted successfully&#039;), name);
     }
@@ -224,10 +225,17 @@ function _delete(cb) {
  */
 function build(cb) {
   // params arg is a query string like param1=value1&amp;param2=value2
-  return function (name, paramsString, args) {
-    function resultCb(result) {
-      console.log(text.__(&#039;Job %s was started successfully&#039;), name);
+  return function (args, name, paramsString) {
+
+    if (!args) {
+      args = paramsString;
+      paramsString = null;
     }
+
+    function resultCb(result) {
+      console.log(text.__(&#039;Job %s was triggered successfully&#039;), name);
+    }
+
     function jenkinsCb(jenkins) {
 
       // simply pass jenkins instance to the next callback
@@ -235,28 +243,51 @@ function build(cb) {
         jenkinsCb(jenkins);
       }
 
-      if (!args) {
-        args = paramsString;
-        paramsString = null;
-      }
-
-      var params = {};
+      const params = {};
       if (paramsString) {
         paramsString.split(&#039;&amp;&#039;).forEach(function (paramString) {
-          var keyVal = paramString.split(&#039;=&#039;);
-          params[keyVal[0]] = keyVal[1];
+          const delim = paramString.indexOf(&#039;=&#039;);
+          const key = paramString.substring(0, delim);
+          const value = paramString.substring(delim + 1, paramString.length);
+          params[key] = value;
         });
       }
 
-      var cb;
-      // with console enabled, display result and sleep for 5 seconds then stream console output
+      const jenkinsPollIntervalMillis = 2000;
+      const jenkinsPollRetries = args.poll || 15;
+
+      function streamIfReady(buildUrl, ready, retries) {
+        if (ready) {
+          _console(passThroughCb)(name, null, args);
+        } else {
+          if (retries &gt; 0) {
+            console.log(&#039;Waiting for job to start...&#039;);
+            setTimeout(function () {
+              jenkins.checkBuildStarted(buildUrl, function (ready) {
+                streamIfReady(buildUrl, ready, retries - 1);
+              });
+            }, jenkinsPollIntervalMillis);
+          } else {
+            console.log(text.__(&#039;Build didn\&#039;t start after %d seconds, it\&#039;s still waiting in the queue&#039;),
+                        (jenkinsPollIntervalMillis * jenkinsPollRetries) / 1000);
+            cli.exit({}, null);
+          }
+        }
+      }
+
+      let cb;
+      // with console enabled, display result and poll until the job starts, then stream console output
       if (args.console) {
-        cb = function (err, result) {
-          resultCb(result);
+        cb = function (err, result, response) {
+          resultCb(response);
+          const buildUrl = response.headers.location;
           setTimeout(function () {
-            _console(passThroughCb)(name, args);
-          }, args.pending || 5000);
+            jenkins.checkBuildStarted(buildUrl, function (ready) {
+              streamIfReady(buildUrl, ready, jenkinsPollRetries);
+            });
+          }, jenkinsPollIntervalMillis);
         };
+
       // with console disabled, display result
       } else {
         cb = cli.exitCb(null, resultCb);
@@ -276,7 +307,7 @@ function build(cb) {
  * @return Jenkins API handler function
  */
 function stop(cb) {
-  return function (name, args) {
+  return function (args, name) {
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was stopped successfully&#039;), name);
     }
@@ -294,12 +325,18 @@ function stop(cb) {
  * @return Jenkins API handler function
  */
 function _console(cb) {
-  return function (name, args) {
+  return function (args, name, buildNumber) {
+
+    if (!args) {
+      args = buildNumber;
+      buildNumber = null;
+    }
+
     function jenkinsCb(jenkins) {
       // console does not trigger any build, interval is set to 0 (no-pending delay time)
-      var interval = 0;
+      const interval = 0;
 
-      var stream = jenkins.streamJobConsole(name, interval, cli.exit);
+      const stream = jenkins.streamJobConsole(name, buildNumber, interval, cli.exit);
       stream.pipe(process.stdout, { end: false });
     }
     cb(args, jenkinsCb);
@@ -314,7 +351,7 @@ function _console(cb) {
  * @return Jenkins API handler function
  */
 function enable(cb) {
-  return function (name, args) {
+  return function (args, name) {
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was enabled successfully&#039;), name);
     }
@@ -333,7 +370,7 @@ function enable(cb) {
  * @return Jenkins API handler function
  */
 function disable(cb) {
-  return function (name, args) {
+  return function (args, name) {
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was disabled successfully&#039;), name);
     }
@@ -341,7 +378,7 @@ function disable(cb) {
       jenkins.disableJob(name, cli.exitCb(null, resultCb));
     }
     cb(args, jenkinsCb);
-  }; 
+  };
 }
 
 /**
@@ -352,7 +389,7 @@ function disable(cb) {
  * @return Jenkins API handler function
  */
 function copy(cb) {
-  return function (existingName, newName, args) {
+  return function (args, existingName, newName) {
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was copied to job %s&#039;), existingName, newName);
     }
@@ -360,7 +397,7 @@ function copy(cb) {
       jenkins.copyJob(existingName, newName, cli.exitCb(null, resultCb));
     }
     cb(args, jenkinsCb);
-  };  
+  };
 }
 
 /**
@@ -371,7 +408,7 @@ function copy(cb) {
  * @return Jenkins API handler function
  */
 function fetchConfig(cb) {
-  return function (name, args) {
+  return function (args, name) {
     function resultCb(result) {
       console.log(result);
     }
@@ -382,18 +419,24 @@ function fetchConfig(cb) {
   };
 }
 
-exports.create      = create;
-exports.read        = read;
-exports.readLatest  = readLatest;
-exports.update      = update;
-exports.delete      = _delete;
-exports.build       = build;
-exports.stop        = stop;
-exports.console     = _console;
-exports.enable      = enable;
-exports.disable     = disable;
-exports.copy        = copy;
-exports.fetchConfig = fetchConfig;</textarea>
+const exports = {
+  create: create,
+  read: read,
+  readLatest: readLatest,
+  update: update,
+  delete: _delete,
+  build: build,
+  stop: stop,
+  console: _console,
+  enable: enable,
+  disable: disable,
+  copy: copy,
+  fetchConfig: fetchConfig
+};
+
+export {
+  exports as default
+};</textarea>
   </div>
 </div>
 
@@ -405,10 +448,10 @@ exports.fetchConfig = fetchConfig;</textarea>
 
 <script type="text/html" id="complexity-popover-template">
   <div class="complexity-notice">
-    Complexity : {{ complexity.cyclomatic }} <br>
-    Length : {{ complexity.halstead.length }} <br>
-    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
-    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
   </div>
 </script>
 

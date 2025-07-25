@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">90.18</p>
+      <p class="stat">90.83</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">79</p>
+      <p class="stat">111</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">9.94</p>
+      <p class="stat">20.68</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.26</p>
+      <p class="stat">0.32</p>
     </div>
   </div>
 </div>
@@ -89,7 +89,18 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">var text = require(&#039;bagoftext&#039;);
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import text from &#039;bagoftext&#039;;
+
+/**
+ * Handle success simply by passing the entire response through to callback
+ *
+ * @param {Object} result: result of the sent request as a string
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function passThroughResponse(result, cb) {
+  cb(null, result);
+}
 
 /**
  * Handle success simply by passing result&#039;s (response) body through to callback.
@@ -119,7 +130,7 @@ function passThroughSuccessJson(result, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function htmlError(result, cb) {
-  var message = result.body
+  const message = result.body
     .match(/&lt;h1&gt;Error&lt;\/h1&gt;.+&lt;\/p&gt;/).toString()
     .replace(/&lt;h1&gt;Error&lt;\/h1&gt;/, &#039;&#039;)
     .replace(/&lt;\/?p&gt;/g, &#039;&#039;);
@@ -130,7 +141,7 @@ function htmlError(result, cb) {
  * Create a &#039;job not found&#039; error handler function.
  *
  * @param {String} name: the job name
- * @return a handler function 
+ * @return a handler function
  */
 function jobNotFoundError(name) {
   return function (result, cb) {
@@ -139,10 +150,23 @@ function jobNotFoundError(name) {
 }
 
 /**
+ * Create a &#039;job or build not found&#039; error handler function.
+ *
+ * @param {String} name: the job name
+ * @param {Number} buildNumber: the job&#039;s build number
+ * @return a handler function
+ */
+function jobBuildNotFoundError(name, buildNumber) {
+  return function (result, cb) {
+    cb(new Error(text.__(&#039;Job %s build %d does not exist&#039;, name, buildNumber)));
+  };
+}
+
+/**
  * Create a &#039;job require params&#039; error handler function.
  *
  * @param {String} name: the job name
- * @return a handler function 
+ * @return a handler function
  */
 function jobRequireParamsError(name) {
   return function (result, cb) {
@@ -154,7 +178,7 @@ function jobRequireParamsError(name) {
  * Create a &#039;view not found&#039; error handler function.
  *
  * @param {String} name: the view name
- * @return a handler function 
+ * @return a handler function
  */
 function viewNotFoundError(name) {
   return function (result, cb) {
@@ -162,12 +186,20 @@ function viewNotFoundError(name) {
   };
 }
 
-exports.passThroughSuccess     = passThroughSuccess;
-exports.passThroughSuccessJson = passThroughSuccessJson;
-exports.htmlError              = htmlError;
-exports.jobNotFoundError       = jobNotFoundError;
-exports.jobRequireParamsError  = jobRequireParamsError;
-exports.viewNotFoundError      = viewNotFoundError;</textarea>
+const exports = {
+  passThroughResponse: passThroughResponse,
+  passThroughSuccess: passThroughSuccess,
+  passThroughSuccessJson: passThroughSuccessJson,
+  htmlError: htmlError,
+  jobNotFoundError: jobNotFoundError,
+  jobBuildNotFoundError: jobBuildNotFoundError,
+  jobRequireParamsError: jobRequireParamsError,
+  viewNotFoundError: viewNotFoundError
+};
+
+export {
+  exports as default
+};</textarea>
   </div>
 </div>
 
@@ -179,10 +211,10 @@ exports.viewNotFoundError      = viewNotFoundError;</textarea>
 
 <script type="text/html" id="complexity-popover-template">
   <div class="complexity-notice">
-    Complexity : {{ complexity.cyclomatic }} <br>
-    Length : {{ complexity.halstead.length }} <br>
-    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
-    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
   </div>
 </script>
 

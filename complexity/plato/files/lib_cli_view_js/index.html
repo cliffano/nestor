@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">66</p>
+      <p class="stat">73</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">9.45</p>
+      <p class="stat">18.00</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.30</p>
+      <p class="stat">0.31</p>
     </div>
   </div>
 </div>
@@ -89,9 +89,10 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">var cli  = require(&#039;bagofcli&#039;);
-var fs   = require(&#039;fs&#039;);
-var text = require(&#039;bagoftext&#039;);
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import cli from &#039;bagofcli&#039;;
+import fs from &#039;fs&#039;;
+import text from &#039;bagoftext&#039;;
 
 /**
  * Get a handler that calls Jenkins API to create a view with specific configuration.
@@ -101,12 +102,12 @@ var text = require(&#039;bagoftext&#039;);
  * @return Jenkins API handler function
  */
 function create(cb) {
-  return function (name, configFile, args) {
+  return function (args, name, configFile) {
     function resultCb(result) {
       console.log(text.__(&#039;View %s was created successfully&#039;), name);
     }
     function jenkinsCb(jenkins) {
-      var config = fs.readFileSync(configFile).toString();
+      const config = fs.readFileSync(configFile).toString();
       jenkins.createView(name, config, cli.exitCb(null, resultCb));
     }
     cb(args, jenkinsCb);
@@ -121,12 +122,12 @@ function create(cb) {
  * @return Jenkins API handler function
  */
 function update(cb) {
-  return function (name, configFile, args) {
+  return function (args, name, configFile) {
     function resultCb(result) {
       console.log(text.__(&#039;View %s was updated successfully&#039;), name);
     }
     function jenkinsCb(jenkins) {
-      var config = fs.readFileSync(configFile).toString();
+      const config = fs.readFileSync(configFile).toString();
       jenkins.updateView(name, config, cli.exitCb(null, resultCb));
     }
     cb(args, jenkinsCb);
@@ -141,7 +142,7 @@ function update(cb) {
  * @return Jenkins API handler function
  */
 function fetchConfig(cb) {
-  return function (name, args) {
+  return function (args, name) {
     function resultCb(result) {
       console.log(result);
     }
@@ -152,9 +153,15 @@ function fetchConfig(cb) {
   };
 }
 
-exports.create      = create;
-exports.update      = update;
-exports.fetchConfig = fetchConfig;</textarea>
+const exports = {
+  create: create,
+  update: update,
+  fetchConfig: fetchConfig
+};
+
+export {
+  exports as default
+};</textarea>
   </div>
 </div>
 
@@ -166,10 +173,10 @@ exports.fetchConfig = fetchConfig;</textarea>
 
 <script type="text/html" id="complexity-popover-template">
   <div class="complexity-notice">
-    Complexity : {{ complexity.cyclomatic }} <br>
-    Length : {{ complexity.halstead.length }} <br>
-    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
-    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
   </div>
 </script>
 

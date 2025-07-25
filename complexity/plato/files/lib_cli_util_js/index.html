@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">75.13</p>
+      <p class="stat">72.29</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">70</p>
+      <p class="stat">84</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">18.18</p>
+      <p class="stat">22.45</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.26</p>
+      <p class="stat">0.27</p>
     </div>
   </div>
 </div>
@@ -89,12 +89,13 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">var _ = require(&#039;lodash&#039;);
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import _ from &#039;lodash&#039;;
 
-const COLOR_STATUS = {  
+const COLOR_STATUS = {
   blue  : [ &#039;ok&#039; ],
   green : [ &#039;ok&#039;, &#039;success&#039; ],
-  grey  : [ &#039;aborted&#039; ],
+  grey  : [ &#039;aborted&#039;, &#039;unknown&#039; ],
   red   : [ &#039;fail&#039;, &#039;failure&#039; ],
   yellow: [ &#039;warn&#039;, &#039;building&#039; ]
 };
@@ -114,7 +115,7 @@ const COLOR_STATUS = {
  */
 function colorByStatus(status, jenkinsColor) {
 
-  var color;
+  let color;
 
   if (jenkinsColor) {
     // Jenkins color value can contain either a color, color_anime, or status in job.color field,
@@ -148,17 +149,30 @@ function colorByStatus(status, jenkinsColor) {
  */
 function statusByColor(jenkinsColor) {
 
-  // Jenkins color value can contain either a color, color_anime, or status in job.color field,
-  // hence to get color/status value out of the mix we need to remove the postfix _anime,
-  // _anime postfix only exists on a job currently being built
-  jenkinsColor = jenkinsColor.replace(/_anime$/, &#039;&#039;);
+  let status;
+  if (jenkinsColor) {
 
-  var status = (COLOR_STATUS[jenkinsColor]) ? COLOR_STATUS[jenkinsColor][0] : jenkinsColor;
+    // Jenkins color value can contain either a color, color_anime, or status in job.color field,
+    // hence to get color/status value out of the mix we need to remove the postfix _anime,
+    // _anime postfix only exists on a job currently being built
+    jenkinsColor = jenkinsColor.replace(/_anime$/, &#039;&#039;);
+
+    status = (COLOR_STATUS[jenkinsColor]) ? COLOR_STATUS[jenkinsColor][0] : jenkinsColor;
+  } else {
+    status = &#039;unknown&#039;;
+  }
+
   return status;
 }
 
-exports.colorByStatus = colorByStatus;
-exports.statusByColor = statusByColor;</textarea>
+const exports = {
+  colorByStatus: colorByStatus,
+  statusByColor: statusByColor
+};
+
+export {
+  exports as default
+};</textarea>
   </div>
 </div>
 
@@ -170,10 +184,10 @@ exports.statusByColor = statusByColor;</textarea>
 
 <script type="text/html" id="complexity-popover-template">
   <div class="complexity-notice">
-    Complexity : {{ complexity.cyclomatic }} <br>
-    Length : {{ complexity.halstead.length }} <br>
-    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
-    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
   </div>
 </script>
 
