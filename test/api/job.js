@@ -1,9 +1,9 @@
 "use strict";
 /* eslint no-unused-vars: 0 */
 import ConsoleStream from '../../lib/api/consolestream.js';
-import feedRead from 'feed-read';
 import job from '../../lib/api/job.js';
 import referee from '@sinonjs/referee';
+import RssParser from 'rss-parser';
 import sinon from 'sinon';
 import Swaggy from 'swaggy-jenkins';
 
@@ -11,15 +11,12 @@ const assert = referee.assert;
 
 describe('api - job', function() {
   beforeEach(function (done) {
-    this.mockFeedRead = sinon.mock(feedRead);
-
     job.url  = 'http://localhost:8080';
     job.opts = { handlers: {}, headers: { jenkinsCrumb: 'somecrumb' } };
     job.remoteAccessApi = new Swaggy.RemoteAccessApi();
     done();
   });
   afterEach(function (done) {
-    this.mockFeedRead.verify();
     sinon.restore();
     delete job.opts;
     done();
@@ -255,13 +252,11 @@ describe('api - job', function() {
     });
     job.fetchConfig('somejob', done);
   });
-  // it('parseFeed - should parse feed from API endpoint', function (done) {
-  //   const mockFeedRead = function (url, cb) {
-  //     assert.equals(url, 'http://localhost:8080/job/somejob/rssAll');
-  //     cb();
-  //   };
-  //   const job = proxyquire('../../lib/api/job.js', { 'feed-read': mockFeedRead });
-  //   job.url  = 'http://localhost:8080';
-  //   job.parseFeed('somejob', done);
-  // });
+  it('parseFeed - should parse feed from API endpoint', function (done) {
+    sinon.stub(RssParser.prototype, 'parseURL').value(function (url, cb) {
+      assert.equals(url, 'http://localhost:8080/job/somejob/rssAll');
+      cb();
+    });
+    job.parseFeed('somejob', done);
+  });
 });

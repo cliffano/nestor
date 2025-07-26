@@ -1,13 +1,12 @@
 "use strict";
 /* eslint no-unused-vars: 0 */
-import proxyquire from 'proxyquire';
 import view from '../../lib/api/view.js';
 import referee from '@sinonjs/referee';
+import RssParser from 'rss-parser';
 import Swaggy from 'swaggy-jenkins';
-import text from 'bagoftext';
-const assert = referee.assert;
+import sinon from 'sinon';
 
-text.setLocale('en');
+const assert = referee.assert;
 
 describe('api - view', function() {
   beforeEach(function (done) {
@@ -54,12 +53,10 @@ describe('api - view', function() {
     view.fetchConfig('someview', done);
   });
   it('parseFeed - should parse feed from API endpoint', function (done) {
-    const mockFeedRead = function (url, cb) {
+    sinon.stub(RssParser.prototype, 'parseURL').value(function (url, cb) {
       assert.equals(url, 'http://localhost:8080/view/someview/rssAll');
       cb();
-    };
-    const view = proxyquire('../../lib/api/view.js', { 'feed-read': mockFeedRead });
-    view.url  = 'http://localhost:8080';
+    });
     view.parseFeed('someview', done);
   });
 });

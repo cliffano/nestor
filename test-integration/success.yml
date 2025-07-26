@@ -10,6 +10,18 @@
   command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} dashboard'
   exitcode: 0
 
-- description: Command dashboard should display status of all jobs
+- description: Command dashboard with URL arg should display status of all jobs
   command: '{nestor} dashboard --url https://ci.eclipse.org/ecf/'
+  exitcode: 0
+
+- description: Command feed should display the RSS feed of all jobs
+  command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} feed'
+  exitcode: 0
+
+- description: Command feed with job arg should display the RSS feed of the specified job
+  command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} feed --job ecf-bndtools-grpc'
+  exitcode: 0
+
+- description: Command feed with view arg should display the RSS feed of the jobs within the specified view
+  command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} feed --view GitHub'
   exitcode: 0

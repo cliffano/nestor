@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switch CHANGELOG to use keep-a-changelog
 - Replace Travis CI with GH Actions
 - Failure test scenario now includes EAI_AGAIN for DNS lookup error
+- Replace feed-read with rss-parser for feed handling
 
 ### Fixed
 - Fix discovery host arg handling

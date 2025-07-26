@@ -192,10 +192,10 @@ describe('cli - jenkins', function() {
 
     sinon.stub(Jenkins.prototype, 'parseJobFeed').value(function (name, cb) {
       assert.equals(name, 'somejob');
-      const result = [
+      const result = { items: [
         { title: 'Some title 1' },
         { title: 'Some title 2' }
-      ];
+      ]};
       cb(null, result);
     });
 
@@ -208,10 +208,10 @@ describe('cli - jenkins', function() {
 
     sinon.stub(Jenkins.prototype, 'parseViewFeed').value(function (name, cb) {
       assert.equals(name, 'someview');
-      const result = [
+      const result = { items: [
         { title: 'Some title 1' },
         { title: 'Some title 2' }
-      ];
+      ]};
       cb(null, result);
     });
 
@@ -223,10 +223,10 @@ describe('cli - jenkins', function() {
     this.mockProcess.expects('exit').once().withExactArgs(0);
 
     sinon.stub(Jenkins.prototype, 'parseFeed').value(function (cb) {
-      const result = [
+      const result = { items: [
         { title: 'Some title 1' },
         { title: 'Some title 2' }
-      ];
+      ]};
       cb(null, result);
     });
 

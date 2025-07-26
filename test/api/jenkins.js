@@ -1,10 +1,10 @@
 "use strict";
 /* eslint no-unused-vars: 0 */
 import dgram from 'dgram';
-import feedRead from 'feed-read';
 import jenkins from '../../lib/api/jenkins.js';
 import proxyquire from 'proxyquire';
 import referee from '@sinonjs/referee';
+import RssParser from 'rss-parser';
 import sinon from 'sinon';
 import Swaggy from 'swaggy-jenkins';
 import text from 'bagoftext';
@@ -14,8 +14,6 @@ text.setLocale('en');
 
 describe('api - jenkins', function() {
   beforeEach(function (done) {
-    this.mockFeedRead = sinon.mock(feedRead);
-
     jenkins.url  = 'http://localhost:8080';
     jenkins.opts = { handlers: {} };
     jenkins.remoteAccessApi = new Swaggy.RemoteAccessApi();
@@ -26,7 +24,6 @@ describe('api - jenkins', function() {
     done();
   });
   afterEach(function (done) {
-    this.mockFeedRead.verify();
     this.mockTimer.verify();
     sinon.restore();
     delete jenkins.opts;
@@ -147,11 +144,10 @@ describe('api - jenkins', function() {
     jenkins.info(done);
   });
   it('parseFeed - should parse feed from API endpoint', function (done) {
-    const mockFeedRead = function (url, cb) {
+    sinon.stub(RssParser.prototype, 'parseURL').value(function (url, cb) {
       assert.equals(url, 'http://localhost:8080/rssAll');
       cb();
-    };
-    const job = proxyquire('../../lib/api/jenkins.js', { 'feed-read': mockFeedRead });
+    });
     jenkins.parseFeed(done);
   });
   it('queue - should delegate to Swaggy getQueue', function (done) {
