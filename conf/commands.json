@@ -245,10 +245,16 @@
       ]
     },
     "queue": {
-      "desc": "View queued jobs"
+      "desc": "View queued jobs",
+      "examples": [
+        "nestor queue"
+      ]
     },
     "ver": {
-      "desc": "View Jenkins version number"
+      "desc": "View Jenkins version number",
+      "examples": [
+        "nestor ver"
+      ]
     },
     "feed": {
       "desc": "Retrieve Jenkins feed",
