@@ -3,7 +3,6 @@
 import ConsoleStream from '../../lib/api/consolestream.js';
 import feedRead from 'feed-read';
 import job from '../../lib/api/job.js';
-// import proxyquire from 'proxyquire';
 import referee from '@sinonjs/referee';
 import sinon from 'sinon';
 import Swaggy from 'swaggy-jenkins';

@@ -2,7 +2,6 @@
 /* eslint no-unused-vars: 0 */
 import _cli from 'bagofcli';
 import cli from '../lib/cli.js';
-import commander from 'commander';
 import Jenkins from '../lib/jenkins.js';
 import referee from '@sinonjs/referee';
 import sinon from 'sinon';

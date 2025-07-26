@@ -1,15 +1,12 @@
 "use strict";
 /* eslint no-unused-vars: 0 */
 import cron from 'cron';
-import dgram from 'dgram';
 import fs from 'fs';
 import Jenkins from '../lib/jenkins.js';
 import referee from '@sinonjs/referee';
 import sinon from 'sinon';
 import text from 'bagoftext';
 const assert = referee.assert;
-const refute = referee.refute;
-
 
 text.setLocale('en');
 

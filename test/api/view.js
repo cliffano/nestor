@@ -1,6 +1,5 @@
 "use strict";
 /* eslint no-unused-vars: 0 */
-import feedRead from 'feed-read';
 import proxyquire from 'proxyquire';
 import view from '../../lib/api/view.js';
 import referee from '@sinonjs/referee';

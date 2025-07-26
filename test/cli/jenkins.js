@@ -1,6 +1,5 @@
 "use strict";
 /* eslint no-unused-vars: 0 */
-import fs from 'fs';
 import Jenkins from '../../lib/jenkins.js';
 import jenkins from '../../lib/cli/jenkins.js';
 import referee from '@sinonjs/referee';
