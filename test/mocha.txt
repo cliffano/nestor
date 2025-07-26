@@ -82,6 +82,6 @@
     [36m  - should set cert[0m
 
 
-[92m [0m[32m 64 passing[0m[90m (81ms)[0m
+[92m [0m[32m 64 passing[0m[90m (70ms)[0m
 [36m [0m[36m 1 pending[0m
 
