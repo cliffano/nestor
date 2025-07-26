@@ -1,11 +1,11 @@
 <img align="right" src="https://raw.github.com/cliffano/nestor/master/avatar.jpg" alt="Avatar"/>
 
-[![Build Status](https://img.shields.io/travis/cliffano/nestor.svg)](http://travis-ci.org/cliffano/nestor)
-[![Dependencies Status](https://img.shields.io/david/cliffano/nestor.svg)](http://david-dm.org/cliffano/nestor)
+[![Build Status](https://github.com/cliffano/nestor/workflows/CI/badge.svg)](https://github.com/cliffano/nestor/actions?query=workflow%3ACI)
+[![Security Status](https://snyk.io/test/github/cliffano/nestor/badge.svg)](https://snyk.io/test/github/cliffano/nestor)
+[![Dependencies Status](https://img.shields.io/librariesio/release/npm/nestor)](https://libraries.io/npm/nestor)
 [![Coverage Status](https://img.shields.io/coveralls/cliffano/nestor.svg)](https://coveralls.io/r/cliffano/nestor?branch=master)
 [![Published Version](https://img.shields.io/npm/v/nestor.svg)](http://www.npmjs.com/package/nestor)
 <br/>
-[![npm Badge](https://nodei.co/npm/nestor.png)](http://npmjs.org/package/nestor)
 
 Nestor
 ------
