@@ -1,5 +1,11 @@
+---
+# The following commands will fail when run against a credential-protected Jenkins:
+# create, create-job, delete, delete-job, build, build-job, update, update-job, stop, stop-job, enable, enable-job,
+# disable, disable-job, copy, copy-job, fetch-job-config, create-view, update-view, fetch-view-config,
+
 - params:
     nestor: ../../../../../bin/nestor.js
+    jenkins_url: https://ci.eclipse.org/ecf/
 
 - description: Command dashboard should display error when URL does not exist
   command: 'JENKINS_URL=http://someinexistinghost {nestor} dashboard'
@@ -7,11 +13,17 @@
   output: 'getaddrinfo ENOTFOUND|ETIMEDOUT|EAI_AGAIN'
 
 - description: Command job should display error message when job does not exist
-  command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} job someinexistingjob'
+  command: 'JENKINS_URL={jenkins_url} {nestor} job someinexistingjob'
   exitcode: 1
   output: 'Not Found'
 
 - description: Command job should display usage info when there is no argument
-  command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} job'
+  command: 'JENKINS_URL={jenkins_url} {nestor} job'
   exitcode: 1
   output: 'Usage: nestor job <job>'
+
+- description: Command view should display usage info when there is no argument
+  command: 'JENKINS_URL={jenkins_url} {nestor} create-view someview someconfig.xml'
+  exitcode: 1
+  output: 'Forbidden'
+
