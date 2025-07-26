@@ -121,103 +121,103 @@ describe('api - job', function() {
     });
     job.streamConsole('somejob', 123, 88000, done);
   });
-  // it('streamConsole - should display console output once when there is no more text', function (done) {
-  //   sinon.stub(ConsoleStream.prototype, 'emit').value(function (event, value) {
-  //     if (event === 'data') {
-  //       assert.equals(value, 'Console output 1');
-  //     } else if (event === 'end') {
-  //       assert.equals(value, undefined);
-  //     }
-  //   });
-  //   sinon.stub(job.remoteAccessApi, 'getJobProgressiveText').value(function (name, number, start, cb) {
-  //     assert.equals(name, 'somejob');
-  //     assert.equals(number, 123);
-  //     if (start === 0) {
-  //       cb(null, null, { statusCode: 200, text: 'Console output 1', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
-  //     } else {
-  //       assert.equals(start, 20);
-  //       cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 20 } });
-  //     }
-  //   });
-  //   job.streamConsole('somejob', 123, 0, done);
-  // });
-  // it('streamConsole - should display no console output once when result does not have any body', function (done) {
-  //   sinon.stub(ConsoleStream.prototype, 'emit').value(function (event, value) {
-  //     assert.equals(value, undefined);
-  //   });
-  //   sinon.stub(job.remoteAccessApi, 'getJobProgressiveText').value(function (name, number, start, cb) {
-  //     assert.equals(name, 'somejob');
-  //     assert.equals(number, 123);
-  //     cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 20 } });
-  //   });
-  //   job.streamConsole('somejob', 123, 0, done);
-  // });
-  // it('streamConsole - should display console output once when there is more text but an error occurs', function (done) {
-  //   sinon.stub(ConsoleStream.prototype, 'emit').value(function (event, value) {
-  //     if (event === 'data') {
-  //       assert.equals(value, 'Console output 1');
-  //     } else if (event === 'end') {
-  //       assert.equals(value, undefined);
-  //     }
-  //   });
-  //   sinon.stub(job.remoteAccessApi, 'getJobProgressiveText').value(function (name, number, start, cb) {
-  //     assert.equals(name, 'somejob');
-  //     assert.equals(number, 123);
-  //     if (start === 0) {
-  //       cb(null, null, { statusCode: 200, text: 'Console output 1', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
-  //     } else {
-  //       assert.equals(start, 20);
-  //       cb(new Error('some error'), null, { headers: {} });
-  //     }
-  //   });
-  //   job.streamConsole('somejob', 123, 0, done);
-  // });
-  // it('streamConsole - should display console output multiple times when there are more texts', function (done) {
-  //   sinon.stub(ConsoleStream.prototype, 'emit').value(function (event, value) {
-  //     if (event === 'data') {
-  //       assert.equals(value, 'Console output');
-  //     } else if (event === 'end') {
-  //       assert.equals(value, undefined);
-  //     }
-  //   });
-  //   sinon.stub(job.remoteAccessApi, 'getJobProgressiveText').value(function (name, number, start, cb) {
-  //     assert.equals(name, 'somejob');
-  //     assert.equals(number, 123);
-  //     if (start === 0) {
-  //       cb(null, null, { statusCode: 200, text: 'Console output', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
-  //     } else if (start === 20) {
-  //       assert.equals(start, 20);
-  //       cb(null, null, { statusCode: 200, text: 'Console output', headers: { 'x-more-data': 'true', 'x-text-size': 40 } });
-  //     } else {
-  //       assert.equals(start, 40);
-  //       cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 40 } });
-  //     }
-  //   });
-  //   job.streamConsole('somejob', 123, 0, done);
-  // });
-  // it('streamConsole - should display console output once when the second text is undefined', function (done) {
-  //   sinon.stub(ConsoleStream.prototype, 'emit').value(function (event, value) {
-  //     if (event === 'data') {
-  //       assert.equals(value, 'Console output 1');
-  //     } else if (event === 'end') {
-  //       assert.equals(value, undefined);
-  //     }
-  //   });
-  //   sinon.stub(job.remoteAccessApi, 'getJobProgressiveText').value(function (name, number, start, cb) {
-  //     assert.equals(name, 'somejob');
-  //     assert.equals(number, 123);
-  //     if (start === 0) {
-  //       cb(null, null, { statusCode: 200, text: 'Console output 1', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
-  //     } else if (start === 20) {
-  //       assert.equals(start, 20);
-  //       cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'true', 'x-text-size': 40 } });
-  //     } else {
-  //       assert.equals(start, 40);
-  //       cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 40 } });
-  //     }
-  //   });
-  //   job.streamConsole('somejob', 123, 0, done);
-  // });
+  it('streamConsole - should display console output once when there is no more text', function (done) {
+    sinon.stub(ConsoleStream.prototype, 'emit').value(function (event, value) {
+      if (event === 'data') {
+        assert.equals(value, 'Console output 1');
+      } else if (event === 'end') {
+        assert.isUndefined(value);
+      }
+    });
+    sinon.stub(job.remoteAccessApi, 'getJobProgressiveText').value(function (name, number, start, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(number, 123);
+      if (start === 0) {
+        cb(null, null, { statusCode: 200, text: 'Console output 1', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
+      } else {
+        assert.equals(start, 20);
+        cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 20 } });
+      }
+    });
+    job.streamConsole('somejob', 123, 0, done);
+  });
+  it('streamConsole - should display no console output once when result does not have any body', function (done) {
+    sinon.stub(ConsoleStream.prototype, 'emit').value(function (event, value) {
+      assert.isUndefined(value);
+    });
+    sinon.stub(job.remoteAccessApi, 'getJobProgressiveText').value(function (name, number, start, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(number, 123);
+      cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 20 } });
+    });
+    job.streamConsole('somejob', 123, 0, done);
+  });
+  it('streamConsole - should display console output once when there is more text but an error occurs', function (done) {
+    sinon.stub(ConsoleStream.prototype, 'emit').value(function (event, value) {
+      if (event === 'data') {
+        assert.equals(value, 'Console output 1');
+      } else if (event === 'end') {
+        assert.isUndefined(value);
+      }
+    });
+    sinon.stub(job.remoteAccessApi, 'getJobProgressiveText').value(function (name, number, start, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(number, 123);
+      if (start === 0) {
+        cb(null, null, { statusCode: 200, text: 'Console output 1', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
+      } else {
+        assert.equals(start, 20);
+        cb(new Error('some error'), null, { headers: {} });
+      }
+    });
+    job.streamConsole('somejob', 123, 0, done);
+  });
+  it('streamConsole - should display console output multiple times when there are more texts', function (done) {
+    sinon.stub(ConsoleStream.prototype, 'emit').value(function (event, value) {
+      if (event === 'data') {
+        assert.equals(value, 'Console output');
+      } else if (event === 'end') {
+        assert.isUndefined(value);
+      }
+    });
+    sinon.stub(job.remoteAccessApi, 'getJobProgressiveText').value(function (name, number, start, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(number, 123);
+      if (start === 0) {
+        cb(null, null, { statusCode: 200, text: 'Console output', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
+      } else if (start === 20) {
+        assert.equals(start, 20);
+        cb(null, null, { statusCode: 200, text: 'Console output', headers: { 'x-more-data': 'true', 'x-text-size': 40 } });
+      } else {
+        assert.equals(start, 40);
+        cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 40 } });
+      }
+    });
+    job.streamConsole('somejob', 123, 0, done);
+  });
+  it('streamConsole - should display console output once when the second text is undefined', function (done) {
+    sinon.stub(ConsoleStream.prototype, 'emit').value(function (event, value) {
+      if (event === 'data') {
+        assert.equals(value, 'Console output 1');
+      } else if (event === 'end') {
+        assert.isUndefined(value);
+      }
+    });
+    sinon.stub(job.remoteAccessApi, 'getJobProgressiveText').value(function (name, number, start, cb) {
+      assert.equals(name, 'somejob');
+      assert.equals(number, 123);
+      if (start === 0) {
+        cb(null, null, { statusCode: 200, text: 'Console output 1', headers: { 'x-more-data': 'true', 'x-text-size': 20 } });
+      } else if (start === 20) {
+        assert.equals(start, 20);
+        cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'true', 'x-text-size': 40 } });
+      } else {
+        assert.equals(start, 40);
+        cb(null, null, { statusCode: 200, headers: { 'x-more-data': 'false', 'x-text-size': 40 } });
+      }
+    });
+    job.streamConsole('somejob', 123, 0, done);
+  });
   it('enable - should send request to API endpoint', function (done) {
     sinon.stub(job.remoteAccessApi, 'postJobEnable').value(function (name, opts, cb) {
       assert.equals(name, 'somejob');

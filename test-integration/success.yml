@@ -25,3 +25,11 @@
 - description: Command feed with view arg should display the RSS feed of the jobs within the specified view
   command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} feed --view GitHub'
   exitcode: 0
+
+- description: Command job should display job details
+  command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} job ecf-bndtools-grpc'
+  exitcode: 0
+
+- description: Command console should display job latest build console output
+  command: 'JENKINS_URL=https://ci.eclipse.org/ecf/ {nestor} console ecf-bndtools-grpc'
+  exitcode: 0

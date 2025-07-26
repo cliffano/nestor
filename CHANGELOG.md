@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix discovery host arg handling
+- Fix console streaming check callback call
 
 ## 2.2.2 - 2022-06-27
 ### Changed
