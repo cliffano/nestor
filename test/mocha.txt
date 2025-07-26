@@ -15,10 +15,23 @@
   [32m  [32m✔[39m[0m[90m checkStarted - returns true when build has an executable url[0m
   [32m  [32m✔[39m[0m[90m checkStarted - returns false when build does not yet have an executable url[0m
   [32m  [32m✔[39m[0m[90m streamConsole - should send request to API endpoint[0m
+  [32m  [32m✔[39m[0m[90m streamConsole - should display console output once when there is no more text[0m
+  [32m  [32m✔[39m[0m[90m streamConsole - should display no console output once when result does not have any body[0m
+  [32m  [32m✔[39m[0m[90m streamConsole - should display console output once when there is more text but an error occurs[0m
+  [32m  [32m✔[39m[0m[90m streamConsole - should display console output multiple times when there are more texts[0m
+  [32m  [32m✔[39m[0m[90m streamConsole - should display console output once when the second text is undefined[0m
   [32m  [32m✔[39m[0m[90m enable - should send request to API endpoint[0m
   [32m  [32m✔[39m[0m[90m disable - should send request to API endpoint[0m
   [32m  [32m✔[39m[0m[90m copy - should send request to API endpoint[0m
   [32m  [32m✔[39m[0m[90m fetchConfig - should send request to API endpoint[0m
+  [32m  [32m✔[39m[0m[90m parseFeed - should parse feed from API endpoint[0m
+
+[0m  api - view[0m
+  [32m  [32m✔[39m[0m[90m create -should send request to API endpoint[0m
+  [32m  [32m✔[39m[0m[90m read - should send request to API endpoint[0m
+  [32m  [32m✔[39m[0m[90m update - should send request to API endpoint[0m
+  [32m  [32m✔[39m[0m[90m fetchConfig - should send request to API endpoint[0m
+  [32m  [32m✔[39m[0m[90m parseFeed - should parse feed from API endpoint[0m
 
 [0m  cli - jenkins[0m
   [32m  [32m✔[39m[0m[90m dashboard - should log Jobless Jenkins when exec dashboard is called and there is no job[0m
@@ -69,6 +82,6 @@
     [36m  - should set cert[0m
 
 
-[92m [0m[32m 53 passing[0m[90m (58ms)[0m
+[92m [0m[32m 64 passing[0m[90m (74ms)[0m
 [36m [0m[36m 1 pending[0m
 

@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">79.67</p>
+      <p class="stat">79.63</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">254</p>
+      <p class="stat">253</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">33.20</p>
+      <p class="stat">33.00</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">1.31</p>
+      <p class="stat">1.33</p>
     </div>
   </div>
 </div>
@@ -93,7 +93,7 @@
 import _ from &#039;lodash&#039;;
 import async from &#039;async&#039;;
 import ConsoleStream from &#039;./consolestream.js&#039;;
-import feedRead from &#039;feed-read&#039;;
+import RssParser from &#039;rss-parser&#039;;
 
 /**
  * Create a job with specified configuration.
@@ -224,8 +224,8 @@ function streamConsole(name, buildNumber, interval, cb) {
     }
     // stream while there are more data
     async.whilst(
-      function () {
-        return response.headers[&#039;x-more-data&#039;] === &#039;true&#039;;
+      function (cb) {
+        cb(null, response.headers[&#039;x-more-data&#039;] === &#039;true&#039;);
       },
       function (cb) {
         function _moreChunkCb(err, _result, _response) {
@@ -318,9 +318,8 @@ function fetchConfig(name, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function parseFeed(name, cb) {
-
   const url = this.url + &#039;/job/&#039; + name + &#039;/rssAll&#039;;
-  feedRead(url, cb);
+  new RssParser().parseURL(url, cb);
 }
 
 const exports = {
