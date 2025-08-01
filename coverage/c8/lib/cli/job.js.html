@@ -775,7 +775,7 @@ import _util from 'util';
  * @return Jenkins API handler function
  */
 function create(cb) {
-  return function (args, name, configFile) {
+  return function (command, name, configFile) {
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was created successfully'), name);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
@@ -783,7 +783,7 @@ function create(cb) {
 <span class="cstat-no" title="statement not covered" >      const config = fs.readFileSync(configFile).toString();</span>
 <span class="cstat-no" title="statement not covered" >      jenkins.createJob(name, config, cli.exitCb(null, resultCb));</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -795,7 +795,7 @@ function create(cb) {
  * @return Jenkins API handler function
  */
 function read(cb) {
-  return function (args, name) {
+  return function (command, name) {
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      const status = util.statusByColor(result.color);</span>
 <span class="cstat-no" title="statement not covered" >      const color  = util.colorByStatus(status, result.color);</span>
@@ -807,7 +807,7 @@ function read(cb) {
 <span class="cstat-no" title="statement not covered" >    function jenkinsCb(jenkins) {</span>
 <span class="cstat-no" title="statement not covered" >      jenkins.readJob(name, cli.exitCb(null, resultCb));</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -818,7 +818,7 @@ function read(cb) {
  * @return Jenkins API handler function
  */
 function readLatest(cb) {
-  return function (args, name) {
+  return function (command, name) {
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -843,7 +843,7 @@ function readLatest(cb) {
 <span class="cstat-no" title="statement not covered" >    function jenkinsCb(jenkins) {</span>
 <span class="cstat-no" title="statement not covered" >      jenkins.readLatestJob(name, cli.exitCb(null, resultCb));</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -855,7 +855,7 @@ function readLatest(cb) {
  * @return Jenkins API handler function
  */
 function update(cb) {
-  return function (args, name, configFile) {
+  return function (command, name, configFile) {
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was updated successfully'), name);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
@@ -863,7 +863,7 @@ function update(cb) {
 <span class="cstat-no" title="statement not covered" >      const config = fs.readFileSync(configFile).toString();</span>
 <span class="cstat-no" title="statement not covered" >      jenkins.updateJob(name, config, cli.exitCb(null, resultCb));</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -875,14 +875,14 @@ function update(cb) {
  * @return Jenkins API handler function
  */
 function _delete(cb) {
-  return function (args, name) {
+  return function (command, name) {
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was deleted successfully'), name);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >    function jenkinsCb(jenkins) {</span>
 <span class="cstat-no" title="statement not covered" >      jenkins.deleteJob(name, cli.exitCb(null, resultCb));</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -895,10 +895,10 @@ function _delete(cb) {
  */
 function build(cb) {
   // params arg is a query string like param1=value1&amp;param2=value2
-  return function (args, name, paramsString) {
+  return function (command, name, paramsString) {
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    if (!args) {</span>
-<span class="cstat-no" title="statement not covered" >      args = paramsString;</span>
+<span class="cstat-no" title="statement not covered" >    if (!command) {</span>
+<span class="cstat-no" title="statement not covered" >      command = paramsString;</span>
 <span class="cstat-no" title="statement not covered" >      paramsString = null;</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -909,7 +909,7 @@ function build(cb) {
 <span class="cstat-no" title="statement not covered" >    function jenkinsCb(jenkins) {</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      // simply pass jenkins instance to the next callback</span>
-<span class="cstat-no" title="statement not covered" >      function passThroughCb(args, jenkinsCb) {</span>
+<span class="cstat-no" title="statement not covered" >      function passThroughCb(command, jenkinsCb) {</span>
 <span class="cstat-no" title="statement not covered" >        jenkinsCb(jenkins);</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -924,11 +924,11 @@ function build(cb) {
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      const jenkinsPollIntervalMillis = 2000;</span>
-<span class="cstat-no" title="statement not covered" >      const jenkinsPollRetries = args.poll || 15;</span>
+<span class="cstat-no" title="statement not covered" >      const jenkinsPollRetries = command.poll || 15;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      function streamIfReady(buildUrl, ready, retries) {</span>
 <span class="cstat-no" title="statement not covered" >        if (ready) {</span>
-<span class="cstat-no" title="statement not covered" >          _console(passThroughCb)(name, null, args);</span>
+<span class="cstat-no" title="statement not covered" >          _console(passThroughCb)(name, null, command);</span>
 <span class="cstat-no" title="statement not covered" >        } else {</span>
 <span class="cstat-no" title="statement not covered" >          if (retries &gt; 0) {</span>
 <span class="cstat-no" title="statement not covered" >            console.log('Waiting for job to start...');</span>
@@ -947,7 +947,7 @@ function build(cb) {
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      let cb;</span>
 <span class="cstat-no" title="statement not covered" >      // with console enabled, display result and poll until the job starts, then stream console output</span>
-<span class="cstat-no" title="statement not covered" >      if (args.console) {</span>
+<span class="cstat-no" title="statement not covered" >      if (command.console) {</span>
 <span class="cstat-no" title="statement not covered" >        cb = function (err, result, response) {</span>
 <span class="cstat-no" title="statement not covered" >          resultCb(response);</span>
 <span class="cstat-no" title="statement not covered" >          const buildUrl = response.headers.location;</span>
@@ -965,7 +965,7 @@ function build(cb) {
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      jenkins.buildJob(name, params, cb);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -977,14 +977,14 @@ function build(cb) {
  * @return Jenkins API handler function
  */
 function stop(cb) {
-  return function (args, name) {
+  return function (command, name) {
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was stopped successfully'), name);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >    function jenkinsCb(jenkins) {</span>
 <span class="cstat-no" title="statement not covered" >      jenkins.stopJob(name, cli.exitCb(null, resultCb));</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -995,10 +995,10 @@ function stop(cb) {
  * @return Jenkins API handler function
  */
 function _console(cb) {
-  return function (args, name, buildNumber) {
+  return function (command, name, buildNumber) {
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    if (!args) {</span>
-<span class="cstat-no" title="statement not covered" >      args = buildNumber;</span>
+<span class="cstat-no" title="statement not covered" >    if (!command) {</span>
+<span class="cstat-no" title="statement not covered" >      command = buildNumber;</span>
 <span class="cstat-no" title="statement not covered" >      buildNumber = null;</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -1009,7 +1009,7 @@ function _console(cb) {
 <span class="cstat-no" title="statement not covered" >      const stream = jenkins.streamJobConsole(name, buildNumber, interval, cli.exit);</span>
 <span class="cstat-no" title="statement not covered" >      stream.pipe(process.stdout, { end: false });</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -1021,14 +1021,14 @@ function _console(cb) {
  * @return Jenkins API handler function
  */
 function enable(cb) {
-  return function (args, name) {
+  return function (command, name) {
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was enabled successfully'), name);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >    function jenkinsCb(jenkins) {</span>
 <span class="cstat-no" title="statement not covered" >      jenkins.enableJob(name, cli.exitCb(null, resultCb));</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -1040,14 +1040,14 @@ function enable(cb) {
  * @return Jenkins API handler function
  */
 function disable(cb) {
-  return function (args, name) {
+  return function (command, name) {
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was disabled successfully'), name);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >    function jenkinsCb(jenkins) {</span>
 <span class="cstat-no" title="statement not covered" >      jenkins.disableJob(name, cli.exitCb(null, resultCb));</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -1059,14 +1059,14 @@ function disable(cb) {
  * @return Jenkins API handler function
  */
 function copy(cb) {
-  return function (args, existingName, newName) {
+  return function (command, existingName, newName) {
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was copied to job %s'), existingName, newName);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >    function jenkinsCb(jenkins) {</span>
 <span class="cstat-no" title="statement not covered" >      jenkins.copyJob(existingName, newName, cli.exitCb(null, resultCb));</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -1078,14 +1078,14 @@ function copy(cb) {
  * @return Jenkins API handler function
  */
 function fetchConfig(cb) {
-  return function (args, name) {
+  return function (command, name) {
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(result);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >    function jenkinsCb(jenkins) {</span>
 <span class="cstat-no" title="statement not covered" >      jenkins.fetchJobConfig(name, cli.exitCb(null, resultCb));</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    cb(args, jenkinsCb);</span>
+<span class="cstat-no" title="statement not covered" >    cb(command, jenkinsCb);</span>
   };
 }
 &nbsp;
@@ -1114,7 +1114,7 @@ export {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-26T08:09:03.716Z
+                at 2025-08-01T14:16:20.947Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

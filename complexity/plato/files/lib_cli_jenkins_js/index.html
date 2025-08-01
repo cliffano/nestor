@@ -103,7 +103,7 @@ import util from &#039;./util.js&#039;;
  * @return Jenkins API handler function
  */
 function dashboard(cb) {
-  return function (args) {
+  return function (command) {
     function resultCb(result) {
       const jobs = result.jobs;
       if (_.isEmpty(jobs)) {
@@ -119,7 +119,7 @@ function dashboard(cb) {
     function jenkinsCb(jenkins) {
       jenkins.info(cli.exitCb(null, resultCb));
     }
-    cb(args, jenkinsCb);
+    cb(command, jenkinsCb);
   };
 }
 
@@ -130,7 +130,7 @@ function dashboard(cb) {
  * @return Jenkins API handler function
  */
 function discover(cb) {
-  return function (args, host) {
+  return function (command, host) {
     if (!host) {
       host = &#039;localhost&#039;;
     } else if (Array.isArray(host)) {
@@ -144,7 +144,7 @@ function discover(cb) {
     function jenkinsCb(jenkins) {
       jenkins.discover(host, cli.exitCb(null, resultCb));
     }
-    cb(args, jenkinsCb);
+    cb(command, jenkinsCb);
   };
 }
 
@@ -155,7 +155,7 @@ function discover(cb) {
  * @return Jenkins API handler function
  */
 function executor(cb) {
-  return function (args) {
+  return function (command) {
     function resultCb(result) {
 
       const computers = result.computer;
@@ -180,7 +180,7 @@ function executor(cb) {
     function jenkinsCb(jenkins) {
       jenkins.computer(cli.exitCb(null, resultCb));
     }
-    cb(args, jenkinsCb);
+    cb(command, jenkinsCb);
   };
 }
 
@@ -192,22 +192,22 @@ function executor(cb) {
  * @return Jenkins API handler function
  */
 function feed(cb) {
-  return function (args) {
+  return function (command) {
     function resultCb(result) {
       result.items.forEach(function (article) {
         console.log(article.title);
       });
     }
     function jenkinsCb(jenkins) {
-      if (args.job) {
-        jenkins.parseJobFeed(args.job, cli.exitCb(null, resultCb));
-      } else if (args.view) {
-        jenkins.parseViewFeed(args.view, cli.exitCb(null, resultCb));
+      if (command.job) {
+        jenkins.parseJobFeed(command.job, cli.exitCb(null, resultCb));
+      } else if (command.view) {
+        jenkins.parseViewFeed(command.view, cli.exitCb(null, resultCb));
       } else {
         jenkins.parseFeed(cli.exitCb(null, resultCb));
       }
     }
-    cb(args, jenkinsCb);
+    cb(command, jenkinsCb);
   };
 }
 
@@ -219,7 +219,7 @@ function feed(cb) {
  * @return Jenkins API handler function
  */
 function queue(cb) {
-  return function (args) {
+  return function (command) {
     function resultCb(result) {
       const items = result.items;
       if (_.isEmpty(items)) {
@@ -233,7 +233,7 @@ function queue(cb) {
     function jenkinsCb(jenkins) {
       jenkins.queue(cli.exitCb(null, resultCb));
     }
-    cb(args, jenkinsCb);
+    cb(command, jenkinsCb);
   };
 }
 
@@ -244,14 +244,14 @@ function queue(cb) {
  * @return Jenkins API handler function
  */
 function version(cb) {
-  return function (args) {
+  return function (command) {
     function resultCb(result) {
       console.log(text.__(&#039;Jenkins ver. %s&#039;, result));
     }
     function jenkinsCb(jenkins) {
       jenkins.version(cli.exitCb(null, resultCb));
     }
-    cb(args, jenkinsCb);
+    cb(command, jenkinsCb);
   };
 }
 

@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">86.94</p>
+      <p class="stat">85.43</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">73</p>
+      <p class="stat">76</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">18.00</p>
+      <p class="stat">17.35</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.31</p>
+      <p class="stat">0.34</p>
     </div>
   </div>
 </div>
@@ -102,7 +102,10 @@ import text from &#039;bagoftext&#039;;
  * @return Jenkins API handler function
  */
 function create(cb) {
-  return function (args, name, configFile) {
+  return function (command, args) {
+    const name = args[0];
+    const configFile = args[1];
+
     function resultCb(result) {
       console.log(text.__(&#039;View %s was created successfully&#039;), name);
     }
@@ -110,7 +113,7 @@ function create(cb) {
       const config = fs.readFileSync(configFile).toString();
       jenkins.createView(name, config, cli.exitCb(null, resultCb));
     }
-    cb(args, jenkinsCb);
+    cb(command, jenkinsCb);
   };
 }
 
@@ -122,7 +125,7 @@ function create(cb) {
  * @return Jenkins API handler function
  */
 function update(cb) {
-  return function (args, name, configFile) {
+  return function (command, name, configFile) {
     function resultCb(result) {
       console.log(text.__(&#039;View %s was updated successfully&#039;), name);
     }
@@ -130,7 +133,7 @@ function update(cb) {
       const config = fs.readFileSync(configFile).toString();
       jenkins.updateView(name, config, cli.exitCb(null, resultCb));
     }
-    cb(args, jenkinsCb);
+    cb(command, jenkinsCb);
   };
 }
 
@@ -142,14 +145,14 @@ function update(cb) {
  * @return Jenkins API handler function
  */
 function fetchConfig(cb) {
-  return function (args, name) {
+  return function (command, name) {
     function resultCb(result) {
       console.log(result);
     }
     function jenkinsCb(jenkins) {
       jenkins.fetchViewConfig(name, cli.exitCb(null, resultCb));
     }
-    cb(args, jenkinsCb);
+    cb(command, jenkinsCb);
   };
 }
 
