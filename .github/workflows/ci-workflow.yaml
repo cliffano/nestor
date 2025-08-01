@@ -17,7 +17,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm install -g bob@4
       - run: bob build
-      - uses: coverallsapp/github-action@v2
+      - uses: coverallsapp/github-action@v2.3.6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: .bob/coverage/c8/lcov.info
