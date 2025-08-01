@@ -23,7 +23,7 @@
   output: 'Usage: nestor job <job>'
 
 - description: Command view should display usage info when there is no argument
-  command: 'JENKINS_URL={jenkins_url} {nestor} create-view someview someconfig.xml'
+  command: 'JENKINS_URL={jenkins_url} {nestor} create-view someview ../examples/config_view.xml'
   exitcode: 1
   output: 'Forbidden'
 
