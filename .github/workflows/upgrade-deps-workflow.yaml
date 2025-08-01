@@ -13,7 +13,7 @@ jobs:
           node-version: '22'
       - run: git config --global user.email "blah+pakkun@cliffano.com"
       - run: git config --global user.name "pakkunbot"
-      - run: npm install -g bob
+      - run: npm install -g bob@4
       - run: bob updep build
       - run: git commit -am "Upgrade dependencies to latest"
       - uses: ad-m/github-push-action@v0.8.0

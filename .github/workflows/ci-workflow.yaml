@@ -7,7 +7,8 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        node: [ '20', '22' ]
+        # Available node versions: https://raw.githubusercontent.com/actions/node-versions/main/versions-manifest.json
+        node: [ '20', '22', '24' ]
     name: node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v4
