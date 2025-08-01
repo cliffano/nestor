@@ -40,7 +40,7 @@ describe('cli - view', function() {
       cb();
     });
 
-    view.create(this.mockCb)(null, 'someview', 'config.xml');
+    view.create(this.mockCb)(null, ['someview', 'config.xml']);
   });
   it('update - should log view updated success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('View %s was updated successfully', 'someview');
