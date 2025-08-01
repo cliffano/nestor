@@ -10,9 +10,7 @@
 Nestor
 ------
 
-Nestor is a [Jenkins](http://jenkins-ci.org) CLI and node.js client.
-
-This is handy for Jenkins users who prefer to touch type on the command line over GUI and mouse clicks on the browser. It also serves as an alternative to Jenkins Java CLI where Nestor has shorter commands and executes faster.
+Nestor is a node.js [Jenkins](http://jenkins-ci.org) API and CLI.
 
 ![console command screenshot](https://raw.github.com/cliffano/nestor/master/screenshots/console.png)
 
@@ -154,7 +152,7 @@ Programmatically:
 
 Check out [lib/jenkins](https://github.com/cliffano/nestor/blob/master/lib/jenkins.js) for other available methods.
 
-NOTE: Starting from version 2.0.0, Nestor started using [Swaggy Jenkins](https://github.com/cliffano/swaggy-jenkins) as an API client. You can still use Nestor programmatically, but it's much better and cleaner if you use Swaggy Jenkins instead.
+NOTE: Starting from version 2.0.0, Nestor started using [Swaggy Jenkins](https://github.com/cliffano/swaggy-jenkins) as an API client.
 
 Configuration
 -------------
