@@ -17,7 +17,7 @@ describe('cli - view', function() {
     this.mockProcess = sinon.mock(process);
 
     var jenkins = new Jenkins('http://localhost:8080');
-    this.mockArgsCb = function (args, cb) {
+    this.mockCb = function (command, cb) {
       cb(jenkins);
     };
     done();
@@ -40,7 +40,7 @@ describe('cli - view', function() {
       cb();
     });
 
-    view.create(this.mockArgsCb)(null, 'someview', 'config.xml');
+    view.create(this.mockCb)(null, 'someview', 'config.xml');
   });
   it('update - should log view updated success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('View %s was updated successfully', 'someview');
@@ -53,7 +53,7 @@ describe('cli - view', function() {
       cb();
     });
 
-    view.update(this.mockArgsCb)(null, 'someview', 'config.xml');
+    view.update(this.mockCb)(null, 'someview', 'config.xml');
   });
   it('fetchConfig - should log configuration', function () {
     this.mockConsole.expects('log').once().withExactArgs('<xml>some config</xml>');
@@ -64,6 +64,6 @@ describe('cli - view', function() {
       cb(null, '<xml>some config</xml>');
     });
 
-    view.fetchConfig(this.mockArgsCb)(null, 'someview');
+    view.fetchConfig(this.mockCb)(null, 'someview');
   });
 });

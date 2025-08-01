@@ -15,7 +15,7 @@ describe('cli - jenkins', function() {
     this.mockProcess = sinon.mock(process);
 
     const jenkins = new Jenkins('http://localhost:8080');
-    this.mockArgsCb = function (args, cb) {
+    this.mockCb = function (command, cb) {
       cb(jenkins);
     };
     done();
@@ -35,7 +35,7 @@ describe('cli - jenkins', function() {
       cb(null, result);
     });
 
-    jenkins.dashboard(this.mockArgsCb)();
+    jenkins.dashboard(this.mockCb)();
   });
   it('dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs', function () {
     this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'ok'.blue, 'job1');
@@ -56,7 +56,7 @@ describe('cli - jenkins', function() {
       cb(null, result);
     });
 
-    jenkins.dashboard(this.mockArgsCb)();
+    jenkins.dashboard(this.mockCb)();
   });
   it('dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs with animated value', function () {
     this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'aborted'.grey, 'job1');
@@ -71,7 +71,7 @@ describe('cli - jenkins', function() {
       cb(null, result);
     });
 
-    jenkins.dashboard(this.mockArgsCb)();
+    jenkins.dashboard(this.mockCb)();
   });
   it('dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs with unknown color value', function () {
     this.mockConsole.expects('log').once().withExactArgs('%s - %s', 'someunknownstatus'.grey, 'job1');
@@ -84,7 +84,7 @@ describe('cli - jenkins', function() {
       cb(null, result);
     });
 
-    jenkins.dashboard(this.mockArgsCb)();
+    jenkins.dashboard(this.mockCb)();
   });
   it('discover - should log version and url when exec discover is called and there is a running Jenkins instance', function () {
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'http://localhost:8080/');
@@ -102,7 +102,7 @@ describe('cli - jenkins', function() {
       });
     });
 
-    jenkins.discover(this.mockArgsCb)();
+    jenkins.discover(this.mockCb)();
   });
   it('discover - should log version and url when exec discover is called with specified host', function () {
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'http://localhost:8080/');
@@ -120,7 +120,7 @@ describe('cli - jenkins', function() {
       });
     });
 
-    jenkins.discover(this.mockArgsCb)({}, 'somehost');
+    jenkins.discover(this.mockCb)({}, 'somehost');
   });
   it('discover - should log host instead of url when exec discover result does not include any url', function () {
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'localhost');
@@ -137,7 +137,7 @@ describe('cli - jenkins', function() {
       });
     });
 
-    jenkins.discover(this.mockArgsCb)();
+    jenkins.discover(this.mockCb)();
   });
   it('executor -should log no executor found when exec executor is called and there is no executor', function () {
     this.mockConsole.expects('log').once().withExactArgs('No executor found');
@@ -148,7 +148,7 @@ describe('cli - jenkins', function() {
       cb(null, result);
     });
 
-    jenkins.executor(this.mockArgsCb)();
+    jenkins.executor(this.mockCb)();
   });
   it('executor -should pass correct idle, stuck, and progress status', function () {
     this.mockConsole.expects('log').once().withExactArgs('+ %s | %s', 'master', '1 active, 1 idle');
@@ -183,7 +183,7 @@ describe('cli - jenkins', function() {
       cb(null, result);
     });
 
-    jenkins.executor(this.mockArgsCb)();
+    jenkins.executor(this.mockCb)();
   });
   it('feed -should parse job feed when job arg is provided', function () {
     this.mockConsole.expects('log').once().withExactArgs('Some title 1');
@@ -199,7 +199,7 @@ describe('cli - jenkins', function() {
       cb(null, result);
     });
 
-    jenkins.feed(this.mockArgsCb)({ job: 'somejob' });
+    jenkins.feed(this.mockCb)({ job: 'somejob' });
   });
   it('feed -should parse view feed when view arg is provided', function () {
     this.mockConsole.expects('log').once().withExactArgs('Some title 1');
@@ -215,7 +215,7 @@ describe('cli - jenkins', function() {
       cb(null, result);
     });
 
-    jenkins.feed(this.mockArgsCb)({ view: 'someview' });
+    jenkins.feed(this.mockCb)({ view: 'someview' });
   });
   it('feed -should parse Jenkins feed when neither job or view arg is provided', function () {
     this.mockConsole.expects('log').once().withExactArgs('Some title 1');
@@ -230,7 +230,7 @@ describe('cli - jenkins', function() {
       cb(null, result);
     });
 
-    jenkins.feed(this.mockArgsCb)({});
+    jenkins.feed(this.mockCb)({});
   });
   it('queue -should log queue empty message when there is no item', function () {
     this.mockConsole.expects('log').once().withExactArgs('Queue is empty');
@@ -241,7 +241,7 @@ describe('cli - jenkins', function() {
       cb(null, JSON.stringify(result));
     });
 
-    jenkins.queue(this.mockArgsCb)();
+    jenkins.queue(this.mockCb)();
   });
   it('queue -should log job names when result contains items', function () {
     this.mockConsole.expects('log').once().withExactArgs('- %s', 'job1');
@@ -256,7 +256,7 @@ describe('cli - jenkins', function() {
       cb(null, result);
     });
 
-    jenkins.queue(this.mockArgsCb)();
+    jenkins.queue(this.mockCb)();
   });
   it('version - should log version when exec ver is called and version exists', function () {
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. 1.2.3');
@@ -266,6 +266,6 @@ describe('cli - jenkins', function() {
       cb(null, '1.2.3');
     });
 
-    jenkins.version(this.mockArgsCb)();
+    jenkins.version(this.mockCb)();
   });
 });

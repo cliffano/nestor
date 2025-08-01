@@ -20,7 +20,7 @@ describe('cli - job').value(function() {
     this.mockProcess = sinon.mock(process);
 
     const jenkins = new Jenkins('http://localhost:8080');
-    this.mockArgsCb = function (args, cb) {
+    this.mockCb = function (command, cb) {
       // This jenkins constant is getting stubbed in the test functions
       cb(jenkins);
     };
@@ -44,7 +44,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.create(this.mockArgsCb)(null, 'somejob', 'config.xml');
+    job.create(this.mockCb)(null, 'somejob', 'config.xml');
   });
   it('read - should log job status with correct color and health reports', function () {
     this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'ok'.blue);
@@ -64,7 +64,7 @@ describe('cli - job').value(function() {
       cb(null, result);
     });
 
-    job.read(this.mockArgsCb)(null, 'somejob');
+    job.read(this.mockCb)(null, 'somejob');
   });
   it('read - should log status as-is in grey color when color is status value', function () {
     this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'notbuilt'.grey);
@@ -84,7 +84,7 @@ describe('cli - job').value(function() {
       cb(null, result);
     });
 
-    job.read(this.mockArgsCb)(null, 'somejob');
+    job.read(this.mockCb)(null, 'somejob');
   });
   it('readLatest - should display yellow building status and start time description', function () {
     this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'building'.yellow);
@@ -109,7 +109,7 @@ describe('cli - job').value(function() {
       cb(null, result);
     });
 
-    job.readLatest(this.mockArgsCb)(null, 'somejob');
+    job.readLatest(this.mockCb)(null, 'somejob');
   });
   it('readLatest - should display completed status and finish time description', function () {
     this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'success'.green);
@@ -136,7 +136,7 @@ describe('cli - job').value(function() {
       cb(null, result);
     });
 
-    job.readLatest(this.mockArgsCb)(null, 'somejob');
+    job.readLatest(this.mockCb)(null, 'somejob');
   });
   it('update - should log job updated success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was updated successfully', 'somejob');
@@ -149,7 +149,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.update(this.mockArgsCb)(null, 'somejob', 'config.xml');
+    job.update(this.mockCb)(null, 'somejob', 'config.xml');
   });
   it('delete - should log job deleted success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was deleted successfully', 'somejob');
@@ -160,7 +160,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.delete(this.mockArgsCb)(null, 'somejob');
+    job.delete(this.mockCb)(null, 'somejob');
   });
   it('build - should log job started success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was triggered successfully', 'somejob');
@@ -174,7 +174,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.build(this.mockArgsCb)(null, 'somejob', 'param1=value1&param2=value2=2&param3=value3');
+    job.build(this.mockCb)(null, 'somejob', 'param1=value1&param2=value2=2&param3=value3');
   });
   it('build - should pass to console call', function (done) {
     this.timeout = 3000;
@@ -205,7 +205,7 @@ describe('cli - job').value(function() {
       };
     });
 
-    job.build(this.mockArgsCb)({ console: true }, 'somejob');
+    job.build(this.mockCb)({ console: true }, 'somejob');
   });
   it('build - should wait until build starts before passing to console call', function (done) {
     this.timeout = 10000;
@@ -239,7 +239,7 @@ describe('cli - job').value(function() {
       };
     });
 
-    job.build(this.mockArgsCb)({ console: true }, 'somejob');
+    job.build(this.mockCb)({ console: true }, 'somejob');
   });
   it('build - should give up after max retries and not stream old console', function (done) {
     this.timeout = 10000;
@@ -260,9 +260,9 @@ describe('cli - job').value(function() {
       done();
     });
 
-    job.build(this.mockArgsCb)({ console: true, poll: 1 }, 'somejob');
+    job.build(this.mockCb)({ console: true, poll: 1 }, 'somejob');
   });
-  it('build - should log job started success message with no args and no params', function () {
+  it('build - should log job started success message with no command and no params', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was triggered successfully', 'somejob');
     this.mockProcess.expects('exit').once().withExactArgs(0);
 
@@ -271,7 +271,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.build(this.mockArgsCb)({}, 'somejob');
+    job.build(this.mockCb)({}, 'somejob');
   });
   it('stop - should log job stopped success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was stopped successfully', 'somejob');
@@ -282,7 +282,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.stop(this.mockArgsCb)(null, 'somejob');
+    job.stop(this.mockCb)(null, 'somejob');
   });
   it('console - should pipe console output stream to stdout', function () {
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -299,7 +299,7 @@ describe('cli - job').value(function() {
       };
     });
 
-    job.console(this.mockArgsCb)({}, 'somejob', 123);
+    job.console(this.mockCb)({}, 'somejob', 123);
   });
   it('console - should pass null build number when none supplied', function () {
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -316,7 +316,7 @@ describe('cli - job').value(function() {
       };
     });
 
-    job.console(this.mockArgsCb)({}, 'somejob');
+    job.console(this.mockCb)({}, 'somejob');
   });
   it('enable - should log job enabled success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was enabled successfully', 'somejob');
@@ -327,7 +327,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.enable(this.mockArgsCb)(null, 'somejob');
+    job.enable(this.mockCb)(null, 'somejob');
   });
   it('disable - should log job disabled success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was disabled successfully', 'somejob');
@@ -338,7 +338,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.disable(this.mockArgsCb)(null, 'somejob');
+    job.disable(this.mockCb)(null, 'somejob');
   });
   it('copy - should log job copy success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was copied to job %s', 'existingjob', 'newjob');
@@ -350,7 +350,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.copy(this.mockArgsCb)(null, 'existingjob', 'newjob');
+    job.copy(this.mockCb)(null, 'existingjob', 'newjob');
   });
   it('fetchConfig - should log configuration', function () {
     this.mockConsole.expects('log').once().withExactArgs('<xml>some config</xml>');
@@ -361,6 +361,6 @@ describe('cli - job').value(function() {
       cb(null, '<xml>some config</xml>');
     });
 
-    job.fetchConfig(this.mockArgsCb)(null, 'somejob');
+    job.fetchConfig(this.mockCb)(null, 'somejob');
   });
 });
