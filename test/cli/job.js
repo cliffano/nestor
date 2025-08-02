@@ -44,7 +44,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.create(this.mockCb)(null, 'somejob', 'config.xml');
+    job.create(this.mockCb)(null, ['somejob', 'config.xml']);
   });
   it('read - should log job status with correct color and health reports', function () {
     this.mockConsole.expects('log').once().withExactArgs('%s | %s', 'somejob', 'ok'.blue);

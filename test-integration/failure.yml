@@ -22,7 +22,12 @@
   exitcode: 1
   output: 'Usage: nestor job <job>'
 
-- description: Command view should display usage info when there is no argument
+- description: Command view should display forbidden error message when trying to create a view without authorization
+  command: 'JENKINS_URL={jenkins_url} {nestor} create-job somejob ../../../../../examples/config_job.xml'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command view should display forbidden error message when trying to create a view without authorization
   command: 'JENKINS_URL={jenkins_url} {nestor} create-view someview ../../../../../examples/config_view.xml'
   exitcode: 1
   output: 'Forbidden'
