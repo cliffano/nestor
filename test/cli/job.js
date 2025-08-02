@@ -149,7 +149,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.update(this.mockCb)(null, 'somejob', 'config.xml');
+    job.update(this.mockCb)(null, ['somejob', 'config.xml']);
   });
   it('delete - should log job deleted success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was deleted successfully', 'somejob');
@@ -160,7 +160,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.delete(this.mockCb)(null, 'somejob');
+    job.delete(this.mockCb)(null, ['somejob']);
   });
   it('build - should log job started success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was triggered successfully', 'somejob');
@@ -174,7 +174,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.build(this.mockCb)(null, 'somejob', 'param1=value1&param2=value2=2&param3=value3');
+    job.build(this.mockCb)(null, ['somejob', 'param1=value1&param2=value2=2&param3=value3']);
   });
   it('build - should pass to console call', function (done) {
     this.timeout = 3000;
@@ -205,7 +205,7 @@ describe('cli - job').value(function() {
       };
     });
 
-    job.build(this.mockCb)({ console: true }, 'somejob');
+    job.build(this.mockCb)({ console: true }, ['somejob']);
   });
   it('build - should wait until build starts before passing to console call', function (done) {
     this.timeout = 10000;
@@ -239,7 +239,7 @@ describe('cli - job').value(function() {
       };
     });
 
-    job.build(this.mockCb)({ console: true }, 'somejob');
+    job.build(this.mockCb)({ console: true }, ['somejob']);
   });
   it('build - should give up after max retries and not stream old console', function (done) {
     this.timeout = 10000;
@@ -260,7 +260,7 @@ describe('cli - job').value(function() {
       done();
     });
 
-    job.build(this.mockCb)({ console: true, poll: 1 }, 'somejob');
+    job.build(this.mockCb)({ console: true, poll: 1 }, ['somejob']);
   });
   it('build - should log job started success message with no command and no params', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was triggered successfully', 'somejob');
@@ -271,7 +271,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.build(this.mockCb)({}, 'somejob');
+    job.build(this.mockCb)({}, ['somejob']);
   });
   it('stop - should log job stopped success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was stopped successfully', 'somejob');
@@ -282,7 +282,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.stop(this.mockCb)(null, 'somejob');
+    job.stop(this.mockCb)(null, ['somejob']);
   });
   it('console - should pipe console output stream to stdout', function () {
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -327,7 +327,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.enable(this.mockCb)(null, 'somejob');
+    job.enable(this.mockCb)(null, ['somejob']);
   });
   it('disable - should log job disabled success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was disabled successfully', 'somejob');
@@ -338,7 +338,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.disable(this.mockCb)(null, 'somejob');
+    job.disable(this.mockCb)(null, ['somejob']);
   });
   it('copy - should log job copy success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was copied to job %s', 'existingjob', 'newjob');
@@ -346,7 +346,7 @@ describe('cli - job').value(function() {
 
     sinon.stub(Jenkins.prototype, 'copyJob').value(function (existingName, newName, cb) {
       assert.equals(existingName, 'existingjob');
-      assert.equals(newName, 'newjob');
+      assert.equals(newName, ['newjob']);
       cb();
     });
 
@@ -361,6 +361,6 @@ describe('cli - job').value(function() {
       cb(null, '<xml>some config</xml>');
     });
 
-    job.fetchConfig(this.mockCb)(null, 'somejob');
+    job.fetchConfig(this.mockCb)(null, ['somejob']);
   });
 });
