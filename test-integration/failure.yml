@@ -17,10 +17,10 @@
   exitcode: 1
   output: 'Not Found'
 
-# - description: Command job should display usage info when there is no argument
-#   command: 'JENKINS_URL={jenkins_url} {nestor} job'
-#   exitcode: 1
-#   output: 'Usage: nestor job <job>'
+- description: Command job should display usage info when there is no argument
+  command: 'JENKINS_URL={jenkins_url} {nestor} job'
+  exitcode: 1
+  output: 'Usage: nestor job <job>'
 
 - description: Command create should display forbidden error message when trying to create a job without authorization
   command: 'JENKINS_URL={jenkins_url} {nestor} create somejob ../../../../../examples/config_job.xml'
