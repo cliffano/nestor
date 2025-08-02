@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45.55% </span>
+                <span class="strong">45.69% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>169/371</span>
+                <span class='fraction'>170/372</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45.55% </span>
+                <span class="strong">45.69% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>169/371</span>
+                <span class='fraction'>170/372</span>
             </div>
         
             
@@ -434,7 +434,9 @@
 <a name='L369'></a><a href='#L369'>369</a>
 <a name='L370'></a><a href='#L370'>370</a>
 <a name='L371'></a><a href='#L371'>371</a>
-<a name='L372'></a><a href='#L372'>372</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L372'></a><a href='#L372'>372</a>
+<a name='L373'></a><a href='#L373'>373</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -806,6 +808,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+import _ from 'lodash';
 import cli from 'bagofcli';
 import fs from 'fs';
 import moment from 'moment';
@@ -822,8 +825,8 @@ import _util from 'util';
  */
 function create(cb) {
   return function (command, args) {
-<span class="cstat-no" title="statement not covered" >    const name = args[0];</span>
-<span class="cstat-no" title="statement not covered" >    const configFile = args[1];</span>
+<span class="cstat-no" title="statement not covered" >    const name = _.get(args, '[0]');</span>
+<span class="cstat-no" title="statement not covered" >    const configFile = _.get(args, '[1]');</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was created successfully'), name);</span>
@@ -845,7 +848,7 @@ function create(cb) {
  */
 function read(cb) {
   return function (command, args) {
-<span class="cstat-no" title="statement not covered" >    const name = args[0];</span>
+<span class="cstat-no" title="statement not covered" >    const name = _.get(args, '[0]');</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      const status = util.statusByColor(result.color);</span>
@@ -870,7 +873,7 @@ function read(cb) {
  */
 function readLatest(cb) {
   return function (command, args) {
-<span class="cstat-no" title="statement not covered" >    const name = args[0];</span>
+<span class="cstat-no" title="statement not covered" >    const name = _.get(args, '[0]');</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -908,8 +911,8 @@ function readLatest(cb) {
  */
 function update(cb) {
   return function (command, args) {
-<span class="cstat-no" title="statement not covered" >    const name = args[0];</span>
-<span class="cstat-no" title="statement not covered" >    const configFile = args[1];</span>
+<span class="cstat-no" title="statement not covered" >    const name = _.get(args, '[0]');</span>
+<span class="cstat-no" title="statement not covered" >    const configFile = _.get(args, '[1]');</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was updated successfully'), name);</span>
@@ -931,7 +934,7 @@ function update(cb) {
  */
 function _delete(cb) {
   return function (command, args) {
-<span class="cstat-no" title="statement not covered" >    const name = args[0];</span>
+<span class="cstat-no" title="statement not covered" >    const name = _.get(args, '[0]');</span>
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was deleted successfully'), name);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
@@ -952,8 +955,8 @@ function _delete(cb) {
 function build(cb) {
   // params arg is a query string like param1=value1&amp;param2=value2
   return function (command, args) {
-<span class="cstat-no" title="statement not covered" >    const name = args[0];</span>
-<span class="cstat-no" title="statement not covered" >    let paramsString = args[1];</span>
+<span class="cstat-no" title="statement not covered" >    const name = _.get(args, '[0]');</span>
+<span class="cstat-no" title="statement not covered" >    let paramsString = _.get(args, '[1]');</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    if (!command) {</span>
 <span class="cstat-no" title="statement not covered" >      command = paramsString;</span>
@@ -1036,7 +1039,7 @@ function build(cb) {
  */
 function stop(cb) {
   return function (command, args) {
-<span class="cstat-no" title="statement not covered" >    const name = args[0];</span>
+<span class="cstat-no" title="statement not covered" >    const name = _.get(args, '[0]');</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was stopped successfully'), name);</span>
@@ -1082,7 +1085,7 @@ function _console(cb) {
  */
 function enable(cb) {
   return function (command, args) {
-<span class="cstat-no" title="statement not covered" >    const name = args[0];</span>
+<span class="cstat-no" title="statement not covered" >    const name = _.get(args, '[0]');</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was enabled successfully'), name);</span>
@@ -1103,7 +1106,7 @@ function enable(cb) {
  */
 function disable(cb) {
   return function (command, args) {
-<span class="cstat-no" title="statement not covered" >    const name = args[0];</span>
+<span class="cstat-no" title="statement not covered" >    const name = _.get(args, '[0]');</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was disabled successfully'), name);</span>
@@ -1124,8 +1127,8 @@ function disable(cb) {
  */
 function copy(cb) {
   return function (command, args) {
-<span class="cstat-no" title="statement not covered" >    const existingName = args[0];</span>
-<span class="cstat-no" title="statement not covered" >    const newName = args[1];</span>
+<span class="cstat-no" title="statement not covered" >    const existingName = _.get(args, '[0]');</span>
+<span class="cstat-no" title="statement not covered" >    const newName = _.get(args, '[1]');</span>
 <span class="cstat-no" title="statement not covered" >    </span>
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(text.__('Job %s was copied to job %s'), existingName, newName);</span>
@@ -1146,7 +1149,7 @@ function copy(cb) {
  */
 function fetchConfig(cb) {
   return function (command, args) {
-<span class="cstat-no" title="statement not covered" >    const name = args[0];</span>
+<span class="cstat-no" title="statement not covered" >    const name = _.get(args, '[0]');</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    function resultCb(result) {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(result);</span>
@@ -1183,7 +1186,7 @@ export {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-08-02T14:15:14.673Z
+                at 2025-08-02T23:09:52.828Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

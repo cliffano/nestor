@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">79.98</p>
+      <p class="stat">79.86</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">371</p>
+      <p class="stat">372</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">49.46</p>
+      <p class="stat">50.24</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">2.35</p>
+      <p class="stat">2.49</p>
     </div>
   </div>
 </div>
@@ -90,6 +90,7 @@
 <div class="container">
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import _ from &#039;lodash&#039;;
 import cli from &#039;bagofcli&#039;;
 import fs from &#039;fs&#039;;
 import moment from &#039;moment&#039;;
@@ -106,8 +107,8 @@ import _util from &#039;util&#039;;
  */
 function create(cb) {
   return function (command, args) {
-    const name = args[0];
-    const configFile = args[1];
+    const name = _.get(args, &#039;[0]&#039;);
+    const configFile = _.get(args, &#039;[1]&#039;);
 
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was created successfully&#039;), name);
@@ -129,7 +130,7 @@ function create(cb) {
  */
 function read(cb) {
   return function (command, args) {
-    const name = args[0];
+    const name = _.get(args, &#039;[0]&#039;);
 
     function resultCb(result) {
       const status = util.statusByColor(result.color);
@@ -154,7 +155,7 @@ function read(cb) {
  */
 function readLatest(cb) {
   return function (command, args) {
-    const name = args[0];
+    const name = _.get(args, &#039;[0]&#039;);
 
     function resultCb(result) {
 
@@ -192,8 +193,8 @@ function readLatest(cb) {
  */
 function update(cb) {
   return function (command, args) {
-    const name = args[0];
-    const configFile = args[1];
+    const name = _.get(args, &#039;[0]&#039;);
+    const configFile = _.get(args, &#039;[1]&#039;);
 
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was updated successfully&#039;), name);
@@ -215,7 +216,7 @@ function update(cb) {
  */
 function _delete(cb) {
   return function (command, args) {
-    const name = args[0];
+    const name = _.get(args, &#039;[0]&#039;);
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was deleted successfully&#039;), name);
     }
@@ -236,8 +237,8 @@ function _delete(cb) {
 function build(cb) {
   // params arg is a query string like param1=value1&amp;param2=value2
   return function (command, args) {
-    const name = args[0];
-    let paramsString = args[1];
+    const name = _.get(args, &#039;[0]&#039;);
+    let paramsString = _.get(args, &#039;[1]&#039;);
 
     if (!command) {
       command = paramsString;
@@ -320,7 +321,7 @@ function build(cb) {
  */
 function stop(cb) {
   return function (command, args) {
-    const name = args[0];
+    const name = _.get(args, &#039;[0]&#039;);
 
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was stopped successfully&#039;), name);
@@ -366,7 +367,7 @@ function _console(cb) {
  */
 function enable(cb) {
   return function (command, args) {
-    const name = args[0];
+    const name = _.get(args, &#039;[0]&#039;);
 
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was enabled successfully&#039;), name);
@@ -387,7 +388,7 @@ function enable(cb) {
  */
 function disable(cb) {
   return function (command, args) {
-    const name = args[0];
+    const name = _.get(args, &#039;[0]&#039;);
 
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was disabled successfully&#039;), name);
@@ -408,8 +409,8 @@ function disable(cb) {
  */
 function copy(cb) {
   return function (command, args) {
-    const existingName = args[0];
-    const newName = args[1];
+    const existingName = _.get(args, &#039;[0]&#039;);
+    const newName = _.get(args, &#039;[1]&#039;);
     
     function resultCb(result) {
       console.log(text.__(&#039;Job %s was copied to job %s&#039;), existingName, newName);
@@ -430,7 +431,7 @@ function copy(cb) {
  */
 function fetchConfig(cb) {
   return function (command, args) {
-    const name = args[0];
+    const name = _.get(args, &#039;[0]&#039;);
 
     function resultCb(result) {
       console.log(result);
