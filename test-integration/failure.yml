@@ -22,12 +22,17 @@
   exitcode: 1
   output: 'Usage: nestor job <job>'
 
-- description: Command view should display forbidden error message when trying to create a view without authorization
+- description: Command create should display forbidden error message when trying to create a job without authorization
+  command: 'JENKINS_URL={jenkins_url} {nestor} create somejob ../../../../../examples/config_job.xml'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command create-job should display forbidden error message when trying to create a job without authorization
   command: 'JENKINS_URL={jenkins_url} {nestor} create-job somejob ../../../../../examples/config_job.xml'
   exitcode: 1
   output: 'Forbidden'
 
-- description: Command view should display forbidden error message when trying to create a view without authorization
+- description: Command create-view should display forbidden error message when trying to create a view without authorization
   command: 'JENKINS_URL={jenkins_url} {nestor} create-view someview ../../../../../examples/config_view.xml'
   exitcode: 1
   output: 'Forbidden'
