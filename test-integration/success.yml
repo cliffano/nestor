@@ -51,3 +51,8 @@
 - description: Command console should display job latest build console output
   command: 'JENKINS_URL={jenkins_url} {nestor} console ecf-bndtools-grpc'
   exitcode: 0
+
+- description: Command fetch-view-config should display the configuration file
+  command: 'JENKINS_URL={jenkins_url} {nestor} fetch-view-config GitHub'
+  exitcode: 0
+  output: '<hudson.model.ListView>'

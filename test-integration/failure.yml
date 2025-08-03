@@ -12,6 +12,21 @@
   exitcode: 1
   output: 'getaddrinfo ENOTFOUND|ETIMEDOUT|EAI_AGAIN'
 
+- description: Command discover with default host should display error message when there is no Jenkins instance
+  command: 'JENKINS_URL={jenkins_url} {nestor} discover'
+  exitcode: 1
+  output: 'Unable to find any Jenkins instance on localhost'
+
+- description: Command discover should display error message when there is no Jenkins instance
+  command: 'JENKINS_URL={jenkins_url} {nestor} discover localhost'
+  exitcode: 1
+  output: 'Unable to find any Jenkins instance on localhost'
+
+- description: Command discover with custom host should display error message when there is no Jenkins instance
+  command: 'JENKINS_URL={jenkins_url} {nestor} discover ci.eclipse.org'
+  exitcode: 1
+  output: 'Unable to find any Jenkins instance on ci.eclipse.org'
+  
 - description: Command job should display error message when job does not exist
   command: 'JENKINS_URL={jenkins_url} {nestor} job someinexistingjob'
   exitcode: 1
@@ -107,3 +122,7 @@
   exitcode: 1
   output: 'Forbidden'
 
+- description: Command update-view should display forbidden error message when trying to update a view without authorization
+  command: 'JENKINS_URL={jenkins_url} {nestor} update-view someview ../../../../../examples/config_view.xml'
+  exitcode: 1
+  output: 'Forbidden'
