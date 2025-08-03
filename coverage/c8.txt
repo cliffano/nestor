@@ -83,7 +83,7 @@ test | /opt/hostedtoolcache/node/22.17.1/x64/lib/node_modules/bob/node_modules/.
     [36m  - should set cert[0m
 
 
-[92m [0m[32m 64 passing[0m[90m (76ms)[0m
+[92m [0m[32m 64 passing[0m[90m (71ms)[0m
 [36m [0m[36m 1 pending[0m
 
 SUCCESS | exit code 0
