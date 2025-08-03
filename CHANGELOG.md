@@ -5,8 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
-
+## 3.0.0 - 2025-08-03
 ### Changed
 - Change module type to ESM
 - Replace lint type from jshint to eslint
@@ -37,30 +36,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 2.0.0 - 2019-02-14
 ### Changed
 - Replace request and bagofrequest modules with swaggy-jenkins
+
 ### Fixed
-- Fix job build not streaming console output when --console flag is used with build command #46
+- Fix job build not streaming console output when --console flag is used with build command [#46]
 
 ## 1.0.2 - 2016-10-25
 ### Added
-- Add optional build number argument to console command #44
+- Add optional build number argument to console command [#44]
 
 ## 1.0.1 - 2016-10-23
 ### Added
-- Add crumb request header because new Jenkins >= 2.x installation enables CSRF protection by default #40
+- Add crumb request header because new Jenkins >= 2.x installation enables CSRF protection by default [#40]
 
 ## 1.0.0 - 2016-10-19
+### Removed
+- Remove confusing reference to 'Jenkins URL' in authentication error message [#41]
+
 ### Fixed
 - Fix semver spec of node engine for compatibility with Yarn [Andreas Köhler](https://github.com/andi5)
-### Removed
-- Remove confusing reference to 'Jenkins URL' in authentication error message #41
 
 ## 0.3.6 - 2016-09-21
 ### Changed
-- Wait for build to start before streaming the console #38 [Joe Littlejohn](https://github.com/joelittlejohn)
+- Wait for build to start before streaming the console [#38] [Joe Littlejohn](https://github.com/joelittlejohn)
 
 ## 0.3.5 - 2016-08-19
 ### Added
-- Add NO_PROXY support via bagofrequest v0.1.4 for issue #36
+- Add NO_PROXY support via bagofrequest v0.1.4 for issue [#36]
 
 ## 0.3.4 - 2016-08-14
 ### Changed
@@ -68,18 +69,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update doc with triggering parameterised build with console output
 - Handle build param which includes '=' delimiter sign in the value
 - Set min node engine to >= 4.0.0
+
 ### Fixed
 - Fix missing colours on dashboard output
 
 ## 0.3.3 - 2015-11-05
 ### Added
 - Add SSL certificate support [Benedikt Arnold](https://github.com/benediktarnold)
+
 ### Changed
 - Handle job object without color property
 
 ## 0.3.2 - 2015-07-12
 ### Added
 - Add build reports to readme
+
 ### Fixed
 - Fix broken build command when no parameter is specified
 - Fix broken auth username and password prompt with interactive flag
@@ -96,6 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move ninjablocks support to http://github.com/cliffano/nestor-ninjablocks
 - Display job status in lowercase
 - Modify monitor to accept job, view, and schedule args, and return status in lowercase
+
 ### Removed
 - Remove build-all, build-fail, and irc commands
 
@@ -117,16 +122,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add update and config commands
 
 ## 0.2.2 - 2014-02-12
+### Added
+- Add blink on failure flag to buildlight command [#23]
+- Add create, copy, and delete commands [#25]
+
 ### Changed
 - Change test lib to buster-node + referee
 - Set min node engine to >= v0.8.0
-### Added
-- Add blink on failure flag to buildlight command #23
-- Add create, copy, and delete commands #25
 
 ## 0.2.1 - 2013-08-28
 ### Added
 - BuildLight notifier blinks red on build failure
+
 ### Fixed
 - Fix buildlight command memory leak
 
@@ -135,6 +142,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add l10n support, with en and id locales
 - Add discover command timeout after 5 seconds
 - Add view dashboard support
+
 ### Changed
 - Executor command collapses idle executors list into a summary
 
@@ -147,22 +155,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix command with optional flag, no longer displays help menu
 
 ## 0.1.7 - 2013-07-14
+### Changed
+- Nick argument is now mandatory for irc command
+
 ### Fixed
 - Fix unhandled response 201 on Jenkins v1.5xx when creating a job
 - Fix IllegalAccessException 500 error on Jenkins v1.5xx when stopping a job
-### Changed
-- Nick argument is now mandatory for irc command
 
 ## 0.1.6 - 2013-06-17
 ### Added
 - Add url flag
 - Add interactive flag
+
 ### Changed
 - Change default timeout from 2secs to 30secs
 
 ## 0.1.5 - 2013-05-09
 ### Added
 - Add view monitoring support
+
 ### Changed
 - Change buildlight status colour mapping, unknown displays blue, warn displays all colours to simulate yellow
 - Change feed jobName and viewName passing to use flags instead of args
@@ -171,6 +182,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 0.1.4 - 2013-04-17
 ### Added
 - Add buildlight command
+
 ### Changed
 - Ninja command's job and schedule are now flags since they are optional
 
@@ -179,13 +191,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix build trigger error on Jenkins v1.5xx when job requires auth
 
 ## 0.1.2 - 2013-04-04
-### Changed
-- Move proxy environment variable handling to bag.http.request and bag.http.proxy
 ### Added
 - Add feed command
 - Add jenkins#monitor and ninja command
 - Add jenkins#consoleStream [Whyme Lyu](https://github.com/5long)
 - Add -p/--pending flag to build command
+
+### Changed
+- Move proxy environment variable handling to bag.http.request and bag.http.proxy
 
 ## 0.1.1 - 2013-01-23
 ### Changed
@@ -195,6 +208,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 0.1.0 - 2013-01-23
 ### Added
 - Add irc command
+
 ### Changed
 - Move commands setup to conf/commands.json, cli handling to bag.cli.command
 - Move request handling to bag.http.request
@@ -213,30 +227,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add console command
 
 ## 0.0.8 - 2012-06-28
-### Fixed
-- Fix unexpected status code 405 on parameterised build
 ### Changed
 - Display error message when parameterised build is triggered without parameters
+
+### Fixed
+- Fix unexpected status code 405 on parameterised build
 
 ## 0.0.7 - 2012-06-26
 ### Changed
 - Set max node engine to < 0.9.0
 
 ## 0.0.6 - 2012-05-30
-### Fixed
-- Fix error message for status code 401 (authentication failed, instead of authentication required)
 ### Added
 - Add sample usage commands to help info nestor -h
 
+### Fixed
+- Fix error message for status code 401 (authentication failed, instead of authentication required)
+
 ## 0.0.5 - 2012-05-27
+### Added
+- Add support for Jenkins URL containing path e.g. http://host:port/path
+
 ### Changed
 - Another rewrite lib (move to bagofholding, mocha, request)
 - Replace version command with ver (version is reserved by visionmedia/commander.js)
 - Display usage on arg-less comamand
+
 ### Fixed
 - Fix undefined job status display
-### Added
-- Add support for Jenkins URL containing path e.g. http://host:port/path
 
 ## 0.0.3 - 2012-12-21
 ### Changed
@@ -246,8 +264,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add Jenkins discovery feature
 - Add multiple job names support for job command
+
 ### Changed
 - Upgrade nomnom to 1.0.0
+
 ### Fixed
 - Fix commands-flags association
 
