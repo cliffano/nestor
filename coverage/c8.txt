@@ -1,4 +1,4 @@
-test | /opt/hostedtoolcache/node/24.4.1/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+test | /opt/hostedtoolcache/node/20.19.4/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  consolestream - consolestream[0m
@@ -83,14 +83,14 @@ test | /opt/hostedtoolcache/node/24.4.1/x64/lib/node_modules/bob/node_modules/.b
     [36m  - should set cert[0m
 
 
-[92m [0m[32m 64 passing[0m[90m (75ms)[0m
+[92m [0m[32m 64 passing[0m[90m (71ms)[0m
 [36m [0m[36m 1 pending[0m
 
 SUCCESS | exit code 0
 -------------------|---------|----------|---------|---------|---------------------------------------
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                     
 -------------------|---------|----------|---------|---------|---------------------------------------
-All files          |   76.54 |    97.46 |   82.41 |   76.54 |                                       
+All files          |   76.66 |    98.07 |   82.41 |   76.66 |                                       
  lib               |   75.55 |    93.33 |      90 |   75.55 |                                       
   cli.js           |     100 |    91.66 |     100 |     100 | 14                                    
   jenkins.js       |   67.64 |    94.44 |   85.71 |   67.64 | 64-79,164-235                         
@@ -100,9 +100,9 @@ All files          |   76.54 |    97.46 |   82.41 |   76.54 |
   job.js           |     100 |    96.77 |     100 |     100 | 125                                   
   util.js          |   67.56 |      100 |       0 |   67.56 | ...0-32,41-47,55-59,68-72,80-84,92-96 
   view.js          |     100 |      100 |     100 |     100 |                                       
- lib/cli           |    71.3 |    98.85 |     100 |    71.3 |                                       
-  jenkins.js       |   98.87 |    97.82 |     100 |   98.87 | 46-47                                 
-  job.js           |   45.69 |      100 |     100 |   45.69 | ...66,279-287,300-308,321-330,343-351 
+ lib/cli           |   71.62 |      100 |     100 |   71.62 |                                       
+  jenkins.js       |     100 |      100 |     100 |     100 |                                       
+  job.js           |   45.45 |      100 |     100 |   45.45 | ...68,281-289,302-310,323-332,345-353 
   util.js          |     100 |      100 |     100 |     100 |                                       
   view.js          |     100 |      100 |     100 |     100 |                                       
 -------------------|---------|----------|---------|---------|---------------------------------------
