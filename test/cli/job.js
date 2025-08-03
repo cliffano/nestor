@@ -299,7 +299,7 @@ describe('cli - job').value(function() {
       };
     });
 
-    job.console(this.mockCb)({}, 'somejob', 123);
+    job.console(this.mockCb)({}, ['somejob', 123]);
   });
   it('console - should pass null build number when none supplied', function () {
     this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -316,7 +316,7 @@ describe('cli - job').value(function() {
       };
     });
 
-    job.console(this.mockCb)({}, 'somejob');
+    job.console(this.mockCb)({}, ['somejob']);
   });
   it('enable - should log job enabled success message', function () {
     this.mockConsole.expects('log').once().withExactArgs('Job %s was enabled successfully', 'somejob');
@@ -350,7 +350,7 @@ describe('cli - job').value(function() {
       cb();
     });
 
-    job.copy(this.mockCb)(null, 'existingjob', 'newjob');
+    job.copy(this.mockCb)(null, ['existingjob', 'newjob']);
   });
   it('fetchConfig - should log configuration', function () {
     this.mockConsole.expects('log').once().withExactArgs('<xml>some config</xml>');

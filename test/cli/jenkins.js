@@ -120,7 +120,7 @@ describe('cli - jenkins', function() {
       });
     });
 
-    jenkins.discover(this.mockCb)({}, 'somehost');
+    jenkins.discover(this.mockCb)({}, ['somehost']);
   });
   it('discover - should log host instead of url when exec discover result does not include any url', function () {
     this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. %s is running on %s', '1.2.3', 'localhost');
