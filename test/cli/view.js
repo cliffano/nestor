@@ -16,7 +16,7 @@ describe('cli - view', function() {
     this.mockFs      = sinon.mock(fs);
     this.mockProcess = sinon.mock(process);
 
-    var jenkins = new Jenkins('http://localhost:8080');
+    const jenkins = new Jenkins('http://localhost:8080');
     this.mockCb = function (command, cb) {
       cb(jenkins);
     };

@@ -4,13 +4,13 @@
 [![Security Status](https://snyk.io/test/github/cliffano/nestor/badge.svg)](https://snyk.io/test/github/cliffano/nestor)
 [![Dependencies Status](https://img.shields.io/librariesio/release/npm/nestor)](https://libraries.io/npm/nestor)
 [![Coverage Status](https://img.shields.io/coveralls/cliffano/nestor.svg)](https://coveralls.io/r/cliffano/nestor?branch=master)
-[![Published Version](https://img.shields.io/npm/v/nestor.svg)](http://www.npmjs.com/package/nestor)
+[![Published Version](https://img.shields.io/npm/v/nestor.svg)](https://www.npmjs.com/package/nestor)
 <br/>
 
 Nestor
 ------
 
-Nestor is a node.js [Jenkins](http://jenkins-ci.org) API and CLI.
+Nestor is a node.js [Jenkins](https://jenkins-ci.org) API and CLI.
 
 ![console command screenshot](https://raw.github.com/cliffano/nestor/master/screenshots/console.png)
 
@@ -138,7 +138,7 @@ then you should pass `myproject/job/releases/job/master` as `<job>`.
 
 Programmatically:
 
-    var nestor = new (require('nestor'))(
+    const nestor = new (require('nestor'))(
       'http://user:pass@host:port/path'
     );
 
@@ -252,9 +252,9 @@ Build reports:
 
 Articles:
 
-* [Nestor – A Faster And Simpler CLI For Jenkins](http://blog.cliffano.com/2011/10/22/nestor-a-faster-and-simpler-cli-for-jenkins/)
-* [Monitor Jenkins From The Terminal](http://blog.cliffano.com/2013/09/13/monitor-jenkins-from-the-terminal/)
-* [Using Node.js To Discover Jenkins On The Network](http://blog.cliffano.com/2011/08/04/using-nodejs-to-discover-jenkins-on-the-network/)
+* [Nestor – A Faster And Simpler CLI For Jenkins](https://blog.cliffano.com/2011/10/22/nestor-a-faster-and-simpler-cli-for-jenkins/)
+* [Monitor Jenkins From The Terminal](https://blog.cliffano.com/2013/09/13/monitor-jenkins-from-the-terminal/)
+* [Using Node.js To Discover Jenkins On The Network](https://blog.cliffano.com/2011/08/04/using-nodejs-to-discover-jenkins-on-the-network/)
 
 Videos:
 
@@ -267,6 +267,6 @@ Presentations:
 
 Related Projects:
 
-* [nestor-buildlight](http://github.com/cliffano/nestor-buildlight) - CLI for Jenkins build light notifier
-* [nestor-lifx](http://github.com/cliffano/nestor-lifx) - CLI for Jenkins LIFX notifier
-* [nestor-ninjablocks](http://github.com/cliffano/nestor-ninjablocks) - CLI for Jenkins Ninja Blocks notifier
+* [nestor-buildlight](https://github.com/cliffano/nestor-buildlight) - CLI for Jenkins build light notifier
+* [nestor-lifx](https://github.com/cliffano/nestor-lifx) - CLI for Jenkins LIFX notifier
+* [nestor-ninjablocks](https://github.com/cliffano/nestor-ninjablocks) - CLI for Jenkins Ninja Blocks notifier

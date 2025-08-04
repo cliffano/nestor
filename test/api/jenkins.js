@@ -43,7 +43,7 @@ describe('api - jenkins', function() {
     jenkins.crumb(done);
   });
   it('discover - should close socket and pass error to callback when socket emits error event', function (done) {
-    var closeCallCount = 0,
+    const closeCallCount = 0,
       mockSocket = {
         close, function () {
           closeCallCount++;
@@ -67,7 +67,7 @@ describe('api - jenkins', function() {
     assert.equals(closeCallCount, 1);
   });
   it('discover - should close socket and pass error to callback when an error occurs while sending a message', function (done) {
-    var closeCallCount = 0,
+    const closeCallCount = 0,
       mockSocket = {
         close, function () {
           closeCallCount++;

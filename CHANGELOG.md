@@ -101,8 +101,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Modify Jenkins module to pass Jenkins REST API as-is, update method names (NOTE: backward incompatible with <= 0.2.x)
 - Reorganise code structure
-- Move buildlight support to http://github.com/cliffano/nestor-buildlight
-- Move ninjablocks support to http://github.com/cliffano/nestor-ninjablocks
+- Move buildlight support to https://github.com/cliffano/nestor-buildlight
+- Move ninjablocks support to https://github.com/cliffano/nestor-ninjablocks
 - Display job status in lowercase
 - Modify monitor to accept job, view, and schedule args, and return status in lowercase
 

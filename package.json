@@ -10,8 +10,8 @@
     "client"
   ],
   "version": "3.0.1-pre.0",
-  "homepage": "http://github.com/cliffano/nestor",
-  "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
+  "homepage": "https://github.com/cliffano/nestor",
+  "author": "Cliffano Subagio <blah@cliffano.com> (https://blog.cliffano.com)",
   "contributors": [
     "All contributors (https://github.com/cliffano/nestor/graphs/contributors)"
   ],
@@ -22,10 +22,10 @@
   "preferGlobal": true,
   "repository": {
     "type": "git",
-    "url": "http://github.com/cliffano/nestor.git"
+    "url": "https://github.com/cliffano/nestor.git"
   },
   "bugs": {
-    "url": "http://github.com/cliffano/nestor/issues"
+    "url": "https://github.com/cliffano/nestor/issues"
   },
   "directories": {
     "bin": "./bin",

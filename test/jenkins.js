@@ -23,8 +23,8 @@ describe('jenkins - jenkins', function() {
     done();
   });
   it('should use custom url when specified', function () {
-    var jenkins = new Jenkins('http://jenkins-ci.org:8080');
-    assert.equals(jenkins.url, 'http://jenkins-ci.org:8080');
+    const jenkins = new Jenkins('https://jenkins-ci.org:8080');
+    assert.equals(jenkins.url, 'https://jenkins-ci.org:8080');
   });
   it('should use default url when url is not specified', function () {
     assert.equals(this.jenkins.url, 'http://localhost:8080');
@@ -82,9 +82,9 @@ describe('jenkins - jenkins', function() {
 
 describe('jenkins - csrf', function() {
   it('should add crumb header', function (done) {
-    var jenkins = new Jenkins('http://localhost:8080');
+    const jenkins = new Jenkins('http://localhost:8080');
     sinon.stub(Jenkins.prototype, 'crumb').value(function (cb) {
-      var result = {
+      const result = {
         '_class': 'hudson.security.csrf.DefaultCrumbIssuer',
         crumb: '7b12516ae03ff48a099aa2f32906dafa',
         crumbRequestField: 'Jenkins-Crumb'
@@ -97,7 +97,7 @@ describe('jenkins - csrf', function() {
     });
   });
   it('should pass error to callback', function (done) {
-    var jenkins = new Jenkins('http://localhost:8080');
+    const jenkins = new Jenkins('http://localhost:8080');
     sinon.stub(Jenkins.prototype, 'crumb').value(function (cb) {
       cb(new Error('some error'));
     });
@@ -113,9 +113,9 @@ describe('jenkins - monitor', function() {
     sinon.stub(cron.CronJob.prototype, 'start').value(function () {
       done();
     });
-    var jenkins = new Jenkins('http://localhost:8080');
+    const jenkins = new Jenkins('http://localhost:8080');
     sinon.stub(Jenkins.prototype, 'info').value(function (cb) {
-      var result = { jobs: [
+      const result = { jobs: [
         { color: 'blue' },
         { color: 'red' },
         { color: 'yellow' },
@@ -132,9 +132,9 @@ describe('jenkins - monitor', function() {
     sinon.stub(cron.CronJob.prototype, 'start').value(function () {
       done();
     });
-    var jenkins = new Jenkins('http://localhost:8080');
+    const jenkins = new Jenkins('http://localhost:8080');
     sinon.stub(Jenkins.prototype, 'info').value(function (cb) {
-      var result = { jobs: [
+      const result = { jobs: [
         { color: 'blue' },
         { color: 'notbuilt' },
         { color: 'blue' }
@@ -150,9 +150,9 @@ describe('jenkins - monitor', function() {
     sinon.stub(cron.CronJob.prototype, 'start').value(function () {
       done();
     });
-    var jenkins = new Jenkins('http://localhost:8080');
+    const jenkins = new Jenkins('http://localhost:8080');
     sinon.stub(Jenkins.prototype, 'info').value(function (cb) {
-      var result = { jobs: [
+      const result = { jobs: [
         { color: 'blue' },
         { color: 'green' },
         { color: 'blue' }
@@ -168,10 +168,10 @@ describe('jenkins - monitor', function() {
     sinon.stub(cron.CronJob.prototype, 'start').value(function () {
       done();
     });
-    var jenkins = new Jenkins('http://localhost:8080');
+    const jenkins = new Jenkins('http://localhost:8080');
     sinon.stub(Jenkins.prototype, 'readView').value(function (name, cb) {
       assert.equals(name, 'someview');
-      var result = { jobs: [
+      const result = { jobs: [
         { color: 'blue' },
         { color: 'yellow' }
       ]};
@@ -185,7 +185,7 @@ describe('jenkins - monitor', function() {
   it('should pass error when an error occurs while monitoring a view').value(function (done) {
     sinon.stub(cron.CronJob.prototype, 'start').value(function () {
     });
-    var jenkins = new Jenkins('http://localhost:8080');
+    const jenkins = new Jenkins('http://localhost:8080');
     sinon.stub(Jenkins.prototype, 'readView').value(function (name, cb) {
       assert.equals(name, 'someview');
       cb(new Error('some error'));
@@ -199,10 +199,10 @@ describe('jenkins - monitor', function() {
     sinon.stub(cron.CronJob.prototype, 'start').value(function () {
       done();
     });
-    var jenkins = new Jenkins('http://localhost:8080');
+    const jenkins = new Jenkins('http://localhost:8080');
     sinon.stub(Jenkins.prototype, 'readJob').value(function (name, cb) {
       assert.equals(name, 'somejob');
-      var result = { color: 'blue' };
+      const result = { color: 'blue' };
       cb(null, result);
     });
     jenkins.monitor({ job: 'somejob', schedule: '*/30 * * * * *' }, function (err, result) {
@@ -213,7 +213,7 @@ describe('jenkins - monitor', function() {
   it('should pass error when an error occurs while monitoring a job').value(function (done) {
     sinon.stub(cron.CronJob.prototype, 'start').value(function () {
     });
-    var jenkins = new Jenkins('http://localhost:8080');
+    const jenkins = new Jenkins('http://localhost:8080');
     sinon.stub(Jenkins.prototype, 'readJob').value(function (name, cb) {
       assert.equals(name, 'somejob');
       cb(new Error('some error'));
