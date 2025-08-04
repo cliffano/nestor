@@ -17,7 +17,7 @@
   ],
   "main": "./lib/nestor",
   "bin": {
-    "rtk": "./bin/nestor.js"
+    "nestor": "./bin/nestor.js"
   },
   "preferGlobal": true,
   "repository": {
