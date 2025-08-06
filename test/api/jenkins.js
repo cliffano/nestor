@@ -7,10 +7,7 @@ import referee from '@sinonjs/referee';
 import RssParser from 'rss-parser';
 import sinon from 'sinon';
 import Swaggy from 'swaggy-jenkins';
-import text from 'bagoftext';
 const assert = referee.assert;
-
-text.setLocale('en');
 
 describe('api - jenkins', function() {
   beforeEach(function (done) {
@@ -20,11 +17,9 @@ describe('api - jenkins', function() {
     jenkins.baseApi = new Swaggy.BaseApi();
 
     this.mockTimer = sinon.useFakeTimers();
-    this.mock({});
     done();
   });
   afterEach(function (done) {
-    this.mockTimer.verify();
     sinon.restore();
     delete jenkins.opts;
     done();
@@ -43,9 +38,9 @@ describe('api - jenkins', function() {
     jenkins.crumb(done);
   });
   it('discover - should close socket and pass error to callback when socket emits error event', function (done) {
-    const closeCallCount = 0,
+    let closeCallCount = 0,
       mockSocket = {
-        close, function () {
+        close: function () {
           closeCallCount++;
         },
         on: function (event, cb) {
@@ -61,15 +56,15 @@ describe('api - jenkins', function() {
     });
     jenkins.discover('somehost', function cb(err, result) {
       assert.equals(err.message, 'someerror');
-      assert.equals(result, undefined);
+      assert.isUndefined(result);
       done();
     });
     assert.equals(closeCallCount, 1);
   });
   it('discover - should close socket and pass error to callback when an error occurs while sending a message', function (done) {
-    const closeCallCount = 0,
+    let closeCallCount = 0,
       mockSocket = {
-        close, function () {
+        close: function () {
           closeCallCount++;
         },
         on: function (event, cb) {},
@@ -88,7 +83,7 @@ describe('api - jenkins', function() {
     });
     jenkins.discover('somehost', function cb(err, result) {
       assert.equals(err.message, 'someerror');
-      assert.equals(result, undefined);
+      assert.isUndefined(result);
       done();
     });
     assert.equals(closeCallCount, 1);
@@ -96,7 +91,7 @@ describe('api - jenkins', function() {
   it('discover - should close socket and pass result to callback when socket emits message event', function (done) {
     let closeCallCount = 0;
     const mockSocket = {
-        close, function () {
+        close: function () {
           closeCallCount++;
         },
         on: function (event, cb) {
@@ -122,7 +117,7 @@ describe('api - jenkins', function() {
   });
   it('discover - should timeout and pass error when no instance is discovered', function (done) {
     const mockSocket = {
-        close, function () {},
+        close: function () {},
         on: function (event, cb) {},
         send:  function (buf, offset, length, port, address, cb) {}
       };
@@ -132,7 +127,7 @@ describe('api - jenkins', function() {
     });
     jenkins.discover('somehost', function cb(err, result) {
       assert.equals(err.message, 'Unable to find any Jenkins instance on somehost');
-      assert.equals(result, undefined);
+      assert.isUndefined(result);
       done();
     });
     this.mockTimer.tick(5000);

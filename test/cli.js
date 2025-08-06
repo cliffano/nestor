@@ -5,13 +5,10 @@ import cli from '../lib/cli.js';
 import Jenkins from '../lib/jenkins.js';
 import referee from '@sinonjs/referee';
 import sinon from 'sinon';
-import text from 'bagoftext';
 const assert = referee.assert;
 const refute = referee.refute;
 
-text.setLocale('en');
-
-describe('cli - exec', function() {
+describe('cli - exec actions', function() {
   it('should contain commands with actions', function (done) {
     const mockCommand = function (base, actions) {
       refute.isUndefined(base);

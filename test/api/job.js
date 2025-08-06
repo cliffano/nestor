@@ -11,7 +11,7 @@ const assert = referee.assert;
 
 describe('api - job', function() {
   beforeEach(function (done) {
-    job.url  = 'http://localhost:8080';
+    job.url = 'http://localhost:8080';
     job.opts = { handlers: {}, headers: { jenkinsCrumb: 'somecrumb' } };
     job.remoteAccessApi = new Swaggy.RemoteAccessApi();
     done();

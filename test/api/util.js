@@ -2,10 +2,7 @@
 /* eslint no-unused-vars: 0 */
 import util from '../../lib/api/util.js';
 import referee from '@sinonjs/referee';
-import text from 'bagoftext';
 const assert = referee.assert;
-
-text.setLocale('en');
 
 describe('api - util', function() {
   it('passThroughResponse - should pass entire response', function (done) {
@@ -35,7 +32,7 @@ describe('api - util', function() {
   it('htmlError - should pass error with message parsed from Jenkins HTML error page', function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'Some Error');
-      assert.equals(result, undefined);
+      assert.isUndefined(result);
       done();
     }
     util.htmlError({ body: '<h1>Error</h1><p>Some Error</p>' }, cb);
@@ -43,7 +40,7 @@ describe('api - util', function() {
   it('jobNotFoundError - should pass job does not exist error message', function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'Job somejob does not exist');
-      assert.equals(result, undefined);
+      assert.isUndefined(result);
       done();
     }
     util.jobNotFoundError('somejob')(null, cb);
@@ -51,7 +48,7 @@ describe('api - util', function() {
   it('jobBuildNotFoundError - should pass job build does not exist error message', function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'Job somejob build 123 does not exist');
-      assert.equals(result, undefined);
+      assert.isUndefined(result);
       done();
     }
     util.jobBuildNotFoundError('somejob', 123)(null, cb);
@@ -59,7 +56,7 @@ describe('api - util', function() {
   it('jobRequireParamsError - should pass job require params error message', function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'Job somejob requires build parameters');
-      assert.equals(result, undefined);
+      assert.isUndefined(result);
       done();
     }
     util.jobRequireParamsError('somejob')(null, cb);
@@ -67,7 +64,7 @@ describe('api - util', function() {
   it('viewNotFoundError - should pass view does not exist error message', function (done) {
     function cb(err, result) {
       assert.equals(err.message, 'View someview does not exist');
-      assert.equals(result, undefined);
+      assert.isUndefined(result);
       done();
     }
     util.viewNotFoundError('someview')(null, cb);

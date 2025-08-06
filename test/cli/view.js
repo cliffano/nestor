@@ -5,15 +5,12 @@ import Jenkins from '../../lib/jenkins.js';
 import view from '../../lib/cli/view.js';
 import referee from '@sinonjs/referee';
 import sinon from 'sinon';
-import text from 'bagoftext';
 const assert = referee.assert;
-
-text.setLocale('en');
 
 describe('cli - view', function() {
   beforeEach(function (done) {
     this.mockConsole = sinon.mock(console);
-    this.mockFs      = sinon.mock(fs);
+    this.mockFs = sinon.mock(fs);
     this.mockProcess = sinon.mock(process);
 
     const jenkins = new Jenkins('http://localhost:8080');
@@ -30,7 +27,7 @@ describe('cli - view', function() {
     done();
   });
   it('create - should log view created success message', function () {
-    this.mockConsole.expects('log').once().withExactArgs('View %s was created successfully', 'someview');
+    this.mockConsole.expects('log').once().withExactArgs('View someview was created successfully');
     this.mockFs.expects('readFileSync').once().withExactArgs('config.xml').returns('<xml>some config</xml>');
     this.mockProcess.expects('exit').once().withExactArgs(0);
 
@@ -43,7 +40,7 @@ describe('cli - view', function() {
     view.create(this.mockCb)(null, ['someview', 'config.xml']);
   });
   it('update - should log view updated success message', function () {
-    this.mockConsole.expects('log').once().withExactArgs('View %s was updated successfully', 'someview');
+    this.mockConsole.expects('log').once().withExactArgs('View someview was updated successfully');
     this.mockFs.expects('readFileSync').once().withExactArgs('config.xml').returns('<xml>some config</xml>');
     this.mockProcess.expects('exit').once().withExactArgs(0);
 

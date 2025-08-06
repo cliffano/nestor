@@ -1,11 +1,8 @@
 "use strict";
 /* eslint no-unused-vars: 0 */
 import referee from '@sinonjs/referee';
-import text from 'bagoftext';
 import util from '../../lib/cli/util.js';
 const assert = referee.assert;
-
-text.setLocale('en');
 
 describe('cli - util - colorByStatus', function() {
   it('should show the correct color when Jenkins color contains non-status and not animated color', function () {

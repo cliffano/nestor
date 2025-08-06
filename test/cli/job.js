@@ -7,11 +7,8 @@ import job from '../../lib/cli/job.js';
 import proxyquire from 'proxyquire';
 import referee from '@sinonjs/referee';
 import sinon from 'sinon';
-import text from 'bagoftext';
 const assert = referee.assert;
 const refute = referee.refute;
-
-text.setLocale('en');
 
 describe('cli - job').value(function() {
   beforeEach(function (done) {
