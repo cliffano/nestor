@@ -127,23 +127,24 @@ describe('cli - jenkins', function() {
 
     jenkins.discover(this.mockCb)({}, ['somehost']);
   });
-  // it('discover - should log host instead of url when exec discover result does not include any url', function () {
-  //   this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. 1.2.3 is running on localhost');
-  //   // this.mockProcess.expects('exit').once().withExactArgs(0);
+  it('discover - should log host instead of url when exec discover result does not include any url', function () {
+    this.mockConsole.expects('log').once().withExactArgs('Jenkins ver. 1.2.3 is running on localhost');
+    this.mockProcess.expects('exit').once().withExactArgs(0);
 
-  //   sinon.stub(Jenkins.prototype, 'discover').value(function (host, cb) {
-  //     assert.equals(host, 'localhost');
-  //     cb(null, {
-  //       hudson: {
-  //         version: ['1.2.3'],
-  //         'server-id': ['362f249fc053c1ede86a218587d100ce'],
-  //         'slave-port': ['55325']
-  //       }
-  //     });
-  //   });
+    sinon.stub(Jenkins.prototype, 'discover').value(function (host, cb) {
+      assert.equals(host, 'localhost');
+      cb(null, {
+        hudson: {
+          version: ['1.2.3'],
+          url: ['localhost'],
+          'server-id': ['362f249fc053c1ede86a218587d100ce'],
+          'slave-port': ['55325']
+        }
+      });
+    });
 
-  //   jenkins.discover(this.mockCb)();
-  // });
+    jenkins.discover(this.mockCb)();
+  });
   it('executor -should log no executor found when exec executor is called and there is no executor', function () {
     this.mockConsole.expects('log').once().withExactArgs('No executor found');
     this.mockProcess.expects('exit').once().withExactArgs(0);

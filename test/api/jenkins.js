@@ -2,7 +2,6 @@
 /* eslint no-unused-vars: 0 */
 import dgram from 'dgram';
 import jenkins from '../../lib/api/jenkins.js';
-import proxyquire from 'proxyquire';
 import referee from '@sinonjs/referee';
 import RssParser from 'rss-parser';
 import sinon from 'sinon';
@@ -38,18 +37,18 @@ describe('api - jenkins', function() {
     jenkins.crumb(done);
   });
   it('discover - should close socket and pass error to callback when socket emits error event', function (done) {
-    let closeCallCount = 0,
-      mockSocket = {
-        close: function () {
-          closeCallCount++;
-        },
-        on: function (event, cb) {
-          if (event === 'error') {
-            cb(new Error('someerror'));
-          }
-        },
-        send:  function (buf, offset, length, port, address, cb) {}
-      };
+    let closeCallCount = 0;
+    const mockSocket = {
+      close: function () {
+        closeCallCount++;
+      },
+      on: function (event, cb) {
+        if (event === 'error') {
+          cb(new Error('someerror'));
+        }
+      },
+      send:  function (buf, offset, length, port, address, cb) {}
+    };
     sinon.stub(dgram, 'createSocket').value(function (type) {
       assert.equals(type, 'udp4');
       return mockSocket;
@@ -62,21 +61,21 @@ describe('api - jenkins', function() {
     assert.equals(closeCallCount, 1);
   });
   it('discover - should close socket and pass error to callback when an error occurs while sending a message', function (done) {
-    let closeCallCount = 0,
-      mockSocket = {
-        close: function () {
-          closeCallCount++;
-        },
-        on: function (event, cb) {},
-        send:  function (buf, offset, length, port, address, cb) {
-          assert.equals(buf.toString(), 'Long live Jenkins!');
-          assert.equals(offset, 0);
-          assert.equals(length, 18);
-          assert.equals(port, 33848);
-          assert.equals(address, 'somehost');
-          cb(new Error('someerror'));
-        }
-      };
+    let closeCallCount = 0;
+    const mockSocket = {
+      close: function () {
+        closeCallCount++;
+      },
+      on: function (event, cb) {},
+      send:  function (buf, offset, length, port, address, cb) {
+        assert.equals(buf.toString(), 'Long live Jenkins!');
+        assert.equals(offset, 0);
+        assert.equals(length, 18);
+        assert.equals(port, 33848);
+        assert.equals(address, 'somehost');
+        cb(new Error('someerror'));
+      }
+    };
     sinon.stub(dgram, 'createSocket').value(function (type) {
       assert.equals(type, 'udp4');
       return mockSocket;
