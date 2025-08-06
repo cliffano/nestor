@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">81.47</p>
+      <p class="stat">81.06</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">179</p>
+      <p class="stat">178</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">34.06</p>
+      <p class="stat">34.10</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">1.14</p>
+      <p class="stat">1.09</p>
     </div>
   </div>
 </div>
@@ -93,7 +93,6 @@
 import _ from &#039;lodash&#039;;
 import cli from &#039;bagofcli&#039;;
 import Jenkins from &#039;../jenkins.js&#039;;
-import text from &#039;bagoftext&#039;;
 import util from &#039;./util.js&#039;;
 
 /**
@@ -107,12 +106,12 @@ function dashboard(cb) {
     function resultCb(result) {
       const jobs = result.jobs;
       if (_.isEmpty(jobs)) {
-        console.log(text.__(&#039;Jobless Jenkins&#039;));
+        console.log(&#039;Jobless Jenkins&#039;);
       } else {
         jobs.forEach(function (job) {
           const status = util.statusByColor(job.color);
           const color  = util.colorByStatus(status, job.color);
-          console.log(&#039;%s - %s&#039;, text.__(status)[color], job.name);
+          console.log(`${status[color]} - ${job.name}`);
         });
       }
     }
@@ -138,9 +137,9 @@ function discover(cb) {
     }
 
     function resultCb(result) {
-      console.log(text.__(&#039;Jenkins ver. %s is running on %s&#039;),
-          result.hudson.version[0],
-          (result.hudson.url &amp;&amp; result.hudson.url[0]) ? result.hudson.url[0] : host);
+      const version = result.hudson.version[0];
+      const host = result.hudson.url &amp;&amp; result.hudson.url[0] ? result.hudson.url[0] : host;
+      console.log(`Jenkins ver. ${version} is running on ${host}`);
     }
     function jenkinsCb(jenkins) {
       jenkins.discover(host, cli.exitCb(null, resultCb));
@@ -162,7 +161,7 @@ function executor(cb) {
       const computers = result.computer;
 
       if (_.isEmpty(computers)) {
-        console.log(text.__(&#039;No executor found&#039;));
+        console.log(&#039;No executor found&#039;);
       } else {
 
         const data = Jenkins.executorSummary(computers);
@@ -171,7 +170,7 @@ function executor(cb) {
           console.log(&#039;+ %s | %s&#039;, computer, data[computer].summary);
           data[computer].executors.forEach(function (executor) {
             if (!executor.idle) {
-              console.log(&#039;  - %s | %s%%s&#039;, executor.name, executor.progress, (executor.stuck) ? text.__(&#039; stuck!&#039;) : &#039;&#039;);
+              console.log(&#039;  - %s | %s%%s&#039;, executor.name, executor.progress, (executor.stuck) ? &#039; stuck!&#039; : &#039;&#039;);
             }
           });
         });
@@ -224,7 +223,7 @@ function queue(cb) {
     function resultCb(result) {
       const items = result.items;
       if (_.isEmpty(items)) {
-        console.log(text.__(&#039;Queue is empty&#039;));
+        console.log(&#039;Queue is empty&#039;);
       } else {
         items.forEach(function (item) {
             console.log(&#039;- %s&#039;, item.task.name);
@@ -247,7 +246,7 @@ function queue(cb) {
 function version(cb) {
   return function (command) {
     function resultCb(result) {
-      console.log(text.__(&#039;Jenkins ver. %s&#039;, result));
+      console.log(`Jenkins ver. ${result}`);
     }
     function jenkinsCb(jenkins) {
       jenkins.version(cli.exitCb(null, resultCb));

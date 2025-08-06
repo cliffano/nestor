@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">79.62</p>
+      <p class="stat">79.52</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">374</p>
+      <p class="stat">373</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">50.98</p>
+      <p class="stat">49.54</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">2.53</p>
+      <p class="stat">2.45</p>
     </div>
   </div>
 </div>
@@ -94,7 +94,6 @@ import _ from &#039;lodash&#039;;
 import cli from &#039;bagofcli&#039;;
 import fs from &#039;fs&#039;;
 import moment from &#039;moment&#039;;
-import text from &#039;bagoftext&#039;;
 import util from &#039;./util.js&#039;;
 import _util from &#039;util&#039;;
 
@@ -111,7 +110,7 @@ function create(cb) {
     const configFile = _.get(args, &#039;[1]&#039;);
 
     function resultCb(result) {
-      console.log(text.__(&#039;Job %s was created successfully&#039;), name);
+      console.log(`Job ${name} was created successfully`);
     }
     function jenkinsCb(jenkins) {
       const config = fs.readFileSync(configFile).toString();
@@ -135,7 +134,7 @@ function read(cb) {
     function resultCb(result) {
       const status = util.statusByColor(result.color);
       const color  = util.colorByStatus(status, result.color);
-      console.log(&#039;%s | %s&#039;, name, text.__(status)[color]);
+      console.log(`${name} | ${status[color]}`);
       result.healthReport.forEach(function (report) {
         console.log(&#039; - %s&#039;, report.description);
       });
@@ -173,8 +172,8 @@ function readLatest(cb) {
         description = _util.format(&#039;Finished %s&#039;, moment(result.timestamp + result.duration).fromNow());
       }
 
-      console.log(&#039;%s | %s&#039;, name, text.__(status)[color]);
-      console.log(&#039; - %s&#039;, description);
+      console.log(`${name} | ${status[color]}`);
+      console.log(` - ${description}`);
     }
 
     function jenkinsCb(jenkins) {
@@ -197,7 +196,7 @@ function update(cb) {
     const configFile = _.get(args, &#039;[1]&#039;);
 
     function resultCb(result) {
-      console.log(text.__(&#039;Job %s was updated successfully&#039;), name);
+      console.log(`Job ${name} was updated successfully`);
     }
     function jenkinsCb(jenkins) {
       const config = fs.readFileSync(configFile).toString();
@@ -218,7 +217,7 @@ function _delete(cb) {
   return function (command, args) {
     const name = _.get(args, &#039;[0]&#039;);
     function resultCb(result) {
-      console.log(text.__(&#039;Job %s was deleted successfully&#039;), name);
+      console.log(`Job ${name} was deleted successfully`);
     }
     function jenkinsCb(jenkins) {
       jenkins.deleteJob(name, cli.exitCb(null, resultCb));
@@ -246,7 +245,7 @@ function build(cb) {
     }
 
     function resultCb(result) {
-      console.log(text.__(&#039;Job %s was triggered successfully&#039;), name);
+      console.log(`Job ${name} was triggered successfully`);
     }
 
     function jenkinsCb(jenkins) {
@@ -281,8 +280,8 @@ function build(cb) {
               });
             }, jenkinsPollIntervalMillis);
           } else {
-            console.log(text.__(&#039;Build didn\&#039;t start after %d seconds, it\&#039;s still waiting in the queue&#039;),
-                        (jenkinsPollIntervalMillis * jenkinsPollRetries) / 1000);
+            const waitTime = (jenkinsPollIntervalMillis * jenkinsPollRetries) / 1000;
+            console.log(`Build didn&#039;t start after ${waitTime} seconds, it&#039;s still waiting in the queue`);
             cli.exit({}, null);
           }
         }
@@ -324,7 +323,7 @@ function stop(cb) {
     const name = _.get(args, &#039;[0]&#039;);
 
     function resultCb(result) {
-      console.log(text.__(&#039;Job %s was stopped successfully&#039;), name);
+      console.log(`Job ${name} was stopped successfully`);
     }
     function jenkinsCb(jenkins) {
       jenkins.stopJob(name, cli.exitCb(null, resultCb));
@@ -372,7 +371,7 @@ function enable(cb) {
     const name = _.get(args, &#039;[0]&#039;);
 
     function resultCb(result) {
-      console.log(text.__(&#039;Job %s was enabled successfully&#039;), name);
+      console.log(`Job ${name} was enabled successfully`);
     }
     function jenkinsCb(jenkins) {
       jenkins.enableJob(name, cli.exitCb(null, resultCb));
@@ -393,7 +392,7 @@ function disable(cb) {
     const name = _.get(args, &#039;[0]&#039;);
 
     function resultCb(result) {
-      console.log(text.__(&#039;Job %s was disabled successfully&#039;), name);
+      console.log(`Job ${name} was disabled successfully`);
     }
     function jenkinsCb(jenkins) {
       jenkins.disableJob(name, cli.exitCb(null, resultCb));
@@ -415,7 +414,7 @@ function copy(cb) {
     const newName = _.get(args, &#039;[1]&#039;);
     
     function resultCb(result) {
-      console.log(text.__(&#039;Job %s was copied to job %s&#039;), existingName, newName);
+      console.log(`Job ${existingName} was copied to job ${newName}`);
     }
     function jenkinsCb(jenkins) {
       jenkins.copyJob(existingName, newName, cli.exitCb(null, resultCb));

@@ -3,6 +3,20 @@
 [0m  consolestream - consolestream[0m
   [32m  [32m✔[39m[0m[90m should be readable but not writable[0m
 
+[0m  api - jenkins[0m
+  [32m  [32m✔[39m[0m[90m computer - should delegate to Swaggy getComputer[0m
+  [32m  [32m✔[39m[0m[90m crumb - should delegate to Swaggy getCrumb[0m
+  [32m  [32m✔[39m[0m[90m discover - should close socket and pass error to callback when socket emits error event[0m
+  [32m  [32m✔[39m[0m[90m discover - should close socket and pass error to callback when an error occurs while sending a message[0m
+  [32m  [32m✔[39m[0m[90m discover - should close socket and pass result to callback when socket emits message event[0m
+  [32m  [32m✔[39m[0m[90m discover - should timeout and pass error when no instance is discovered[0m
+  [32m  [32m✔[39m[0m[90m info - should delegate to Swaggy getJenkins[0m
+  [32m  [32m✔[39m[0m[90m parseFeed - should parse feed from API endpoint[0m
+  [32m  [32m✔[39m[0m[90m queue - should delegate to Swaggy getQueue[0m
+  [32m  [32m✔[39m[0m[90m version - should pass version header value if exists[0m
+  [32m  [32m✔[39m[0m[90m version - should pass error if version header value does not exist[0m
+  [32m  [32m✔[39m[0m[90m version - should pass error if an error occurrs[0m
+
 [0m  api - job[0m
   [32m  [32m✔[39m[0m[90m create - should send request to API endpoint[0m
   [32m  [32m✔[39m[0m[90m read - should send request to API endpoint[0m
@@ -25,6 +39,16 @@
   [32m  [32m✔[39m[0m[90m copy - should send request to API endpoint[0m
   [32m  [32m✔[39m[0m[90m fetchConfig - should send request to API endpoint[0m
   [32m  [32m✔[39m[0m[90m parseFeed - should parse feed from API endpoint[0m
+
+[0m  api - util[0m
+  [32m  [32m✔[39m[0m[90m passThroughResponse - should pass entire response[0m
+  [32m  [32m✔[39m[0m[90m passThroughSuccess - should pass result body[0m
+  [32m  [32m✔[39m[0m[90m passThroughSuccessJson - should pass result JSON body as an object[0m
+  [32m  [32m✔[39m[0m[90m htmlError - should pass error with message parsed from Jenkins HTML error page[0m
+  [32m  [32m✔[39m[0m[90m jobNotFoundError - should pass job does not exist error message[0m
+  [32m  [32m✔[39m[0m[90m jobBuildNotFoundError - should pass job build does not exist error message[0m
+  [32m  [32m✔[39m[0m[90m jobRequireParamsError - should pass job require params error message[0m
+  [32m  [32m✔[39m[0m[90m viewNotFoundError - should pass view does not exist error message[0m
 
 [0m  api - view[0m
   [32m  [32m✔[39m[0m[90m create -should send request to API endpoint[0m
@@ -51,37 +75,66 @@
   [32m  [32m✔[39m[0m[90m version - should log version when exec ver is called and version exists[0m
 
 [0m  cli - job[0m
-[0m    cli - util - colorByStatus[0m
-    [32m  [32m✔[39m[0m[90m should show the correct color when Jenkins color contains non-status and not animated color[0m
-    [32m  [32m✔[39m[0m[90m should show the correct color when Jenkins color contains animated color[0m
-    [32m  [32m✔[39m[0m[90m should show grey color when Jenkins color is a status[0m
-    [32m  [32m✔[39m[0m[90m should show grey color when Jenkins color is undefined[0m
-    [32m  [32m✔[39m[0m[90m should show color based ons status when Jenkins color is not provided and status is known[0m
-    [32m  [32m✔[39m[0m[90m should show grey color when Jenkins color is not provided and status is unknown[0m
-[0m    cli - util - statusByColor[0m
-    [32m  [32m✔[39m[0m[90m should show the correct status for all supported colors[0m
-    [32m  [32m✔[39m[0m[90m should show the correct status for actively running build[0m
-    [32m  [32m✔[39m[0m[90m should return value as-is when status is a real status value[0m
-    [32m  [32m✔[39m[0m[90m should show the correct status for undefined job color[0m
-[0m    cli - view[0m
-    [32m  [32m✔[39m[0m[90m create - should log view created success message[0m
-    [32m  [32m✔[39m[0m[90m update - should log view updated success message[0m
-    [32m  [32m✔[39m[0m[90m fetchConfig - should log configuration[0m
-[0m    cli - exec[0m
-    [32m  [32m✔[39m[0m[90m should contain commands with actions[0m
-[0m    cli - exec[0m
-    [32m  [32m✔[39m[0m[90m should pass URL as-is when there is no interactive arg specified[0m
-    [32m  [32m✔[39m[0m[90m should use environment variable as Jenkins URL when there is no interactive arg specified and URL parameter is not specified[0m
-    [32m  [32m✔[39m[0m[90m should use default Jenkins URL when there is no interactive arg specified and no environment variable Jenkins URL[0m
-    [32m  [32m✔[39m[0m[90m should pass username and password to Jenkins URL when interactive arg is set[0m
-[0m    jenkins - jenkins[0m
-    [32m  [32m✔[39m[0m[90m should use custom url when specified[0m
-    [32m  [32m✔[39m[0m[90m should use default url when url is not specified[0m
-    [32m  [32m✔[39m[0m[90m should handle authentication failure error[0m
-    [32m  [32m✔[39m[0m[90m should handle authentication required error[0m
-    [36m  - should set cert[0m
+  [32m  [32m✔[39m[0m[90m create - should log job created success message[0m
+  [32m  [32m✔[39m[0m[90m read - should log job status with correct color and health reports[0m
+  [32m  [32m✔[39m[0m[90m read - should log status as-is in grey color when color is status value[0m
+  [32m  [32m✔[39m[0m[90m readLatest - should display yellow building status and start time description[0m
+  [32m  [32m✔[39m[0m[90m readLatest - should display completed status and finish time description[0m
+  [32m  [32m✔[39m[0m[90m update - should log job updated success message[0m
+  [32m  [32m✔[39m[0m[90m delete - should log job deleted success message[0m
+  [32m  [32m✔[39m[0m[90m build - should log job started success message with no command and no params[0m
+  [32m  [32m✔[39m[0m[90m stop - should log job stopped success message[0m
+  [32m  [32m✔[39m[0m[90m console - should pipe console output stream to stdout[0m
+  [32m  [32m✔[39m[0m[90m enable - should log job enabled success message[0m
+  [32m  [32m✔[39m[0m[90m disable - should log job disabled success message[0m
+  [32m  [32m✔[39m[0m[90m copy - should log job copy success message[0m
+  [32m  [32m✔[39m[0m[90m fetchConfig - should log configuration[0m
+
+[0m  cli - util - colorByStatus[0m
+  [32m  [32m✔[39m[0m[90m should show the correct color when Jenkins color contains non-status and not animated color[0m
+  [32m  [32m✔[39m[0m[90m should show the correct color when Jenkins color contains animated color[0m
+  [32m  [32m✔[39m[0m[90m should show grey color when Jenkins color is a status[0m
+  [32m  [32m✔[39m[0m[90m should show grey color when Jenkins color is undefined[0m
+  [32m  [32m✔[39m[0m[90m should show color based ons status when Jenkins color is not provided and status is known[0m
+  [32m  [32m✔[39m[0m[90m should show grey color when Jenkins color is not provided and status is unknown[0m
+
+[0m  cli - util - statusByColor[0m
+  [32m  [32m✔[39m[0m[90m should show the correct status for all supported colors[0m
+  [32m  [32m✔[39m[0m[90m should show the correct status for actively running build[0m
+  [32m  [32m✔[39m[0m[90m should return value as-is when status is a real status value[0m
+  [32m  [32m✔[39m[0m[90m should show the correct status for undefined job color[0m
+
+[0m  cli - view[0m
+  [32m  [32m✔[39m[0m[90m create - should log view created success message[0m
+  [32m  [32m✔[39m[0m[90m update - should log view updated success message[0m
+  [32m  [32m✔[39m[0m[90m fetchConfig - should log configuration[0m
+
+[0m  cli - exec actions[0m
+  [32m  [32m✔[39m[0m[90m should contain commands with actions[0m
+
+[0m  cli - exec[0m
+  [32m  [32m✔[39m[0m[90m should pass URL as-is when there is no interactive arg specified[0m
+  [32m  [32m✔[39m[0m[90m should use environment variable as Jenkins URL when there is no interactive arg specified and URL parameter is not specified[0m
+  [32m  [32m✔[39m[0m[90m should use default Jenkins URL when there is no interactive arg specified and no environment variable Jenkins URL[0m
+  [32m  [32m✔[39m[0m[90m should pass username and password to Jenkins URL when interactive arg is set[0m
+
+[0m  jenkins - jenkins[0m
+  [32m  [32m✔[39m[0m[90m should use custom url when specified[0m
+  [32m  [32m✔[39m[0m[90m should use default url when url is not specified[0m
+  [32m  [32m✔[39m[0m[90m should handle authentication failure error[0m
+  [32m  [32m✔[39m[0m[90m should handle authentication required error[0m
+
+[0m  jenkins - csrf[0m
+  [32m  [32m✔[39m[0m[90m should add crumb header[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback[0m
+
+[0m  jenkins - monitor[0m
+  [32m  [32m✔[39m[0m[90m should monitor all jobs on Jenkins instance when no job or view opt specified[0m
+  [32m  [32m✔[39m[0m[90m should result in status non-success when a job has non-success color but no red and yellow[0m
+  [32m  [32m✔[39m[0m[90m should result in status success when a job has all blue or green color[0m
+  [32m  [32m✔[39m[0m[90m should result in status warn when view opt is specified and a job has yellow color but no red[0m
+  [32m  [32m✔[39m[0m[90m should monitor the latest build of a job when job opt is specified[0m
 
 
-[92m [0m[32m 64 passing[0m[90m (75ms)[0m
-[36m [0m[36m 1 pending[0m
+[92m [0m[32m 105 passing[0m[90m (126ms)[0m
 

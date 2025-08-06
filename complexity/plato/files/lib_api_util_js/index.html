@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">90.83</p>
+      <p class="stat">91.23</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">111</p>
+      <p class="stat">110</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">20.68</p>
+      <p class="stat">17.74</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.32</p>
+      <p class="stat">0.28</p>
     </div>
   </div>
 </div>
@@ -90,7 +90,6 @@
 <div class="container">
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
-import text from &#039;bagoftext&#039;;
 
 /**
  * Handle success simply by passing the entire response through to callback
@@ -145,7 +144,7 @@ function htmlError(result, cb) {
  */
 function jobNotFoundError(name) {
   return function (result, cb) {
-    cb(new Error(text.__(&#039;Job %s does not exist&#039;, name)));
+    cb(new Error(`Job ${name} does not exist`));
   };
 }
 
@@ -158,7 +157,7 @@ function jobNotFoundError(name) {
  */
 function jobBuildNotFoundError(name, buildNumber) {
   return function (result, cb) {
-    cb(new Error(text.__(&#039;Job %s build %d does not exist&#039;, name, buildNumber)));
+    cb(new Error(`Job ${name} build ${buildNumber} does not exist`));
   };
 }
 
@@ -170,7 +169,7 @@ function jobBuildNotFoundError(name, buildNumber) {
  */
 function jobRequireParamsError(name) {
   return function (result, cb) {
-    cb(new Error(text.__(&#039;Job %s requires build parameters&#039;, name)));
+    cb(new Error(`Job ${name} requires build parameters`));
   };
 }
 
@@ -182,7 +181,7 @@ function jobRequireParamsError(name) {
  */
 function viewNotFoundError(name) {
   return function (result, cb) {
-    cb(new Error(text.__(&#039;View %s does not exist&#039;, name)));
+    cb(new Error(`View ${name} does not exist`));
   };
 }
 

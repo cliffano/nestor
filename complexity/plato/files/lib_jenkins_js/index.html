@@ -1,60 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>jenkins.js - Documentation</title>
+  <meta charset="utf-8">
+  <title>Plato - lib/jenkins.js</title>
 
-    <script src="scripts/prettify/prettify.js"></script>
-    <script src="scripts/prettify/lang-css.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
 </head>
+
 <body>
 
-<input type="checkbox" id="nav-trigger" class="nav-trigger" />
-<label for="nav-trigger" class="navicon-button x">
-  <div class="navicon"></div>
-</label>
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
 
-<label for="nav-trigger" class="overlay"></label>
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib/jenkins.js</h1>
+  </div>
+</div>
 
-<nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Jenkins.html">Jenkins</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#csrf">csrf</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#exec">exec</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#executorSummary">executorSummary</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#monitor">monitor</a></span></li>
-</nav>
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">64.38</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">267</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">40.76</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">2.37</p>
+    </div>
+  </div>
+</div>
 
-<div id="main">
-    
-    <h1 class="page-title">jenkins.js</h1>
-    
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
 
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>"use strict";
-import cron from 'cron';
-import jenkins from './api/jenkins.js';
-import job from './api/job.js';
-import Swaggy from 'swaggy-jenkins';
-import _url from 'url';
-import util from './cli/util.js';
-import view from './api/view.js';
-import fs from 'fs';
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import cron from &#039;cron&#039;;
+import jenkins from &#039;./api/jenkins.js&#039;;
+import job from &#039;./api/job.js&#039;;
+import Swaggy from &#039;swaggy-jenkins&#039;;
+import _url from &#039;url&#039;;
+import util from &#039;./cli/util.js&#039;;
+import view from &#039;./api/view.js&#039;;
+import fs from &#039;fs&#039;;
 
 function _authFail(result, cb) {
-  cb(new Error('Authentication failed - incorrect username and/or password'));
+  cb(new Error(&#039;Authentication failed - incorrect username and/or password&#039;));
 }
 
 function _authRequire(result, cb) {
-  cb(new Error('Jenkins requires authentication - please set username and password'));
+  cb(new Error(&#039;Jenkins requires authentication - please set username and password&#039;));
 }
 
 /**
@@ -66,13 +116,13 @@ class Jenkins {
 
   constructor(url) {
 
-    this.url = url || process.env.JENKINS_URL || 'http://localhost:8080';
+    this.url = url || process.env.JENKINS_URL || &#039;http://localhost:8080&#039;;
 
     // base URL is needed for functionalities that operate against base Jenkins path
     // this is needed for retrieving Jenkins crumb where the URL might contain paths to folders,
     // but the the Jenkins crumb retrieval still needs to be executed against the base Jenkins path
     const parsedUrl = _url.parse(this.url);
-    this.baseUrl = this.url.replace(parsedUrl.path, '');
+    this.baseUrl = this.url.replace(parsedUrl.path, &#039;&#039;);
 
     const cert = process.env.JENKINS_CERT;
     const ca = process.env.JENKINS_CA;
@@ -97,11 +147,11 @@ class Jenkins {
 
 
     if (cert) {
-      const key_path = key.split(':')[0];
-      const passphrase = key.split(':')[1];
+      const key_path = key.split(&#039;:&#039;)[0];
+      const passphrase = key.split(&#039;:&#039;)[1];
       this.opts.agentOptions = {
         passphrase: passphrase,
-        secureProtocol: 'TLSv1_method'
+        secureProtocol: &#039;TLSv1_method&#039;
       };
       if(cert &amp;&amp; fs.statSync(cert)){
         this.opts.agentOptions.cert = fs.readFileSync(cert);
@@ -163,7 +213,7 @@ function executorSummary(computers) {
         stuck: executor.likelyStuck,
         progress: executor.progress,
         name: (!executor.idle &amp;&amp; executor.currentExecutable.url) ?
-          executor.currentExecutable.url.replace(/.*\/job\//, '').replace(/\/.*/, '') :
+          executor.currentExecutable.url.replace(/.*\/job\//, &#039;&#039;).replace(/\/.*/, &#039;&#039;) :
           undefined
       });
 
@@ -175,14 +225,14 @@ function executorSummary(computers) {
     });
 
     const summary = [];
-    if (activeCount > 0) {
+    if (activeCount &gt; 0) {
       summary.push(`${activeCount} active`);
     }
-    if (idleCount > 0) {
+    if (idleCount &gt; 0) {
       summary.push(`${idleCount} idle`);
     }
 
-    data[computer.displayName].summary = summary.join(', ');
+    data[computer.displayName].summary = summary.join(&#039;, &#039;);
   });
 
   return data;
@@ -224,17 +274,17 @@ function monitor(opts, cb) {
       let nonSuccessColor;
 
       result.jobs.forEach(function (job) {
-        if (job.color === 'red') {
+        if (job.color === &#039;red&#039;) {
           hasRed = true;
         }
-        if (job.color === 'yellow') {
+        if (job.color === &#039;yellow&#039;) {
           hasYellow = true;
         }
-        if (['red', 'yellow', 'blue', 'green'].indexOf(job.color) === -1) {
+        if ([&#039;red&#039;, &#039;yellow&#039;, &#039;blue&#039;, &#039;green&#039;].indexOf(job.color) === -1) {
           hasNonSuccess   = true;
           nonSuccessColor = job.color;
         }
-        if (job.color === 'blue' || job.color === 'green') {
+        if (job.color === &#039;blue&#039; || job.color === &#039;green&#039;) {
           hasSuccess   = true;
           successColor = job.color;
         }
@@ -242,9 +292,9 @@ function monitor(opts, cb) {
 
       let resultColor;
       if (hasRed) {
-        resultColor = 'red';
+        resultColor = &#039;red&#039;;
       } else if (hasYellow) {
-        resultColor = 'yellow';
+        resultColor = &#039;yellow&#039;;
       } else if (hasNonSuccess) {
         resultColor = nonSuccessColor;
       } else {
@@ -267,7 +317,7 @@ function monitor(opts, cb) {
   }
 
   _notify();
-  new cron.CronJob(opts.schedule || '0 * * * * *', _notify).start();
+  new cron.CronJob(opts.schedule || &#039;0 * * * * *&#039;, _notify).start();
 }
 
 Jenkins.prototype.csrf = csrf;
@@ -305,23 +355,30 @@ Jenkins.executorSummary = executorSummary;
 
 export {
   Jenkins as default
-};
-</code></pre>
-        </article>
-    </section>
-
-
-
-
+};</textarea>
+  </div>
 </div>
 
-<br class="clear">
-
-<footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Wed Aug 06 2025 12:17:44 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
 </footer>
 
-<script>prettyPrint();</script>
-<script src="scripts/linenumber.js"></script>
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
 </body>
 </html>
