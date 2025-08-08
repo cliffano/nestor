@@ -15,7 +15,7 @@
   "contributors": [
     "All contributors (https://github.com/cliffano/nestor/graphs/contributors)"
   ],
-  "main": "./lib/nestor",
+  "main": "./lib/jenkins.js",
   "bin": {
     "nestor": "./bin/nestor.js"
   },
