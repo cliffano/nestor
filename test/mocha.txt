@@ -136,5 +136,5 @@
   [32m  [32m✔[39m[0m[90m should monitor the latest build of a job when job opt is specified[0m
 
 
-[92m [0m[32m 105 passing[0m[90m (127ms)[0m
+[92m [0m[32m 105 passing[0m[90m (123ms)[0m
 
