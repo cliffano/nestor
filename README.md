@@ -139,7 +139,9 @@ then you should pass `myproject/job/releases/job/master` as `<job>`.
 
 Programmatically:
 
-    const nestor = new (require('nestor'))(
+    import Nestor from "nestor";
+
+    const nestor = new Nestor(
       'http://user:pass@host:port/path'
     );
 
