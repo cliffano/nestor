@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 3.1.1
+          ref: master
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
