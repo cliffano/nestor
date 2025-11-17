@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Upgrade swaggy-jenkins to 3.2.0 with folder no-encode patch #58
+
 ## 3.1.1 - 2025-08-12
 ### Fixed
 - Fix main file reference

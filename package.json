@@ -34,13 +34,13 @@
   },
   "dependencies": {
     "async": "^3.2.6",
-    "bagofcli": "^2.4.1",
+    "bagofcli": "^2.5.0",
     "colors": "^1.4.0",
-    "cron": "^4.3.3",
+    "cron": "^4.3.4",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "rss-parser": "^3.13.0",
-    "swaggy-jenkins": "^3.1.0",
+    "swaggy-jenkins": "^3.2.0",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
