@@ -9,7 +9,7 @@
     "api",
     "client"
   ],
-  "version": "3.2.0",
+  "version": "3.2.1-pre.0",
   "homepage": "https://github.com/cliffano/nestor",
   "author": "Cliffano Subagio <blah@cliffano.com> (https://blog.cliffano.com)",
   "contributors": [
