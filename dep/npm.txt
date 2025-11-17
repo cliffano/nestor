@@ -4,14 +4,9 @@ npm warn deprecated lodash.get@4.4.2: This package is deprecated. Use the option
 npm warn deprecated formidable@1.2.6: Please upgrade to latest, formidable@v2 or formidable@v3! Check these notes: https://bit.ly/2ZEqIau
 npm warn deprecated superagent@5.3.1: Please upgrade to superagent v10.2.2+, see release notes at https://github.com/forwardemail/superagent/releases/tag/v10.2.2 - maintenance is supported by Forward Email @ https://forwardemail.net
 
-added 214 packages, and audited 215 packages in 2s
+added 202 packages, and audited 203 packages in 3s
 
-52 packages are looking for funding
+46 packages are looking for funding
   run `npm fund` for details
 
-4 low severity vulnerabilities
-
-To address all issues (including breaking changes), run:
-  npm audit fix --force
-
-Run `npm audit` for details.
+found 0 vulnerabilities

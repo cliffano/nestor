@@ -1,4 +1,4 @@
-test | /opt/hostedtoolcache/node/24.5.0/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+test | /opt/hostedtoolcache/node/20.19.5/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  consolestream - consolestream[0m
@@ -137,7 +137,7 @@ test | /opt/hostedtoolcache/node/24.5.0/x64/lib/node_modules/bob/node_modules/.b
   [32m  [32m✔[39m[0m[90m should monitor the latest build of a job when job opt is specified[0m
 
 
-[92m [0m[32m 105 passing[0m[90m (128ms)[0m
+[92m [0m[32m 105 passing[0m[90m (117ms)[0m
 
 SUCCESS | exit code 0
 -------------------|---------|----------|---------|---------|---------------------------------------
