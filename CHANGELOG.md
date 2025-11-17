@@ -1,14 +1,12 @@
 # Changelog
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
-
+## 3.2.0 - 2025-11-17
 ### Changed
-- Upgrade swaggy-jenkins to 3.2.0 with folder no-encode patch #58
+- Upgrade swaggy-jenkins to 3.2.0 with folder no-encode patch [#58]
 
 ## 3.1.1 - 2025-08-12
 ### Fixed
