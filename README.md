@@ -1,9 +1,9 @@
-<img align="right" src="https://raw.github.com/cliffano/nestor/master/avatar.jpg" alt="Avatar"/>
+<img align="right" src="https://raw.github.com/cliffano/nestor/main/avatar.jpg" alt="Avatar"/>
 
 [![Build Status](https://github.com/cliffano/nestor/workflows/CI/badge.svg)](https://github.com/cliffano/nestor/actions?query=workflow%3ACI)
 [![Dependencies Status](https://img.shields.io/librariesio/release/npm/nestor)](https://libraries.io/npm/nestor)
 [![Code Scanning Status](https://github.com/cliffano/nestor/workflows/CodeQL/badge.svg)](https://github.com/cliffano/nestor/actions?query=workflow%3ACodeQL)
-[![Coverage Status](https://img.shields.io/coveralls/cliffano/nestor.svg)](https://coveralls.io/r/cliffano/nestor?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/cliffano/nestor.svg)](https://coveralls.io/r/cliffano/nestor?branch=main)
 [![Security Status](https://snyk.io/test/github/cliffano/nestor/badge.svg)](https://snyk.io/test/github/cliffano/nestor)
 [![Published Version](https://img.shields.io/npm/v/nestor.svg)](https://www.npmjs.com/package/nestor)
 <br/>
