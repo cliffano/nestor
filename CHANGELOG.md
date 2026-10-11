@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade dependencies to latest
 - Run integration tests against a Jenkins container
 
+### Fixed
+- Fix command arguments not being passed to command handlers following bagofcli 3.1.0
+
 ## 3.2.0 - 2025-11-17
 ### Changed
 - Upgrade swaggy-jenkins to 3.2.0 with folder no-encode patch [#58]
