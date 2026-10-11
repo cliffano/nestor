@@ -3,21 +3,17 @@ name: Upgrade Dependencies
 on: [workflow_dispatch]
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           token: ${{ secrets.STUDIO_GITHUB_TOKEN }}
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
-          node-version: '24'
-      - run: git config --global user.email "blah+pakkun@cliffano.com"
-      - run: git config --global user.name "pakkunbot"
-      - run: npm install -g bob@4
+          node-version: '26'
+      - run: npm install -g bob@5.3.0
       - run: bob updep build
-      - run: git commit -am "Upgrade dependencies to latest"
-      - uses: ad-m/github-push-action@v0.8.0
+      - uses: cliffano/save-changes-action@v2.0.0
         with:
-          tags: true
+          message: "Upgrade dependencies to latest"
           github_token: ${{ secrets.STUDIO_GITHUB_TOKEN }}
-          branch: ${{ github.ref }}

@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Start using Suntory for build system
+
 ## 3.2.0 - 2025-11-17
 ### Changed
 - Upgrade swaggy-jenkins to 3.2.0 with folder no-encode patch [#58]

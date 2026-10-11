@@ -1,7 +1,10 @@
 {
-  "build": "clean dep lint complexity test coverage test-integration doc",
+  "build": "clean dep style lint complexity test coverage test-integration doc",
   "lint": {
     "type": "eslint"
+  },
+  "style": {
+    "type": "prettier"
   },
   "complexity": {
     "type": "plato"
@@ -17,8 +20,5 @@
   },
   "doc": {
     "type": "jsdoc"
-  },
-  "site": {
-    "type": "buildbranch"
   }
 }

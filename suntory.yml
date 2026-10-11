@@ -1,0 +1,15 @@
+---
+package_name: nestor
+author: Cliffano Subagio
+generator:
+  component: node-cli
+  inputs:
+    project_id: nestor
+    project_name: Nestor
+    project_desc: node.js Jenkins API and CLI
+    author_name: Cliffano Subagio
+    author_email: cliffano@gmail.com
+    author_url: https://github.com/cliffano
+    github_id: cliffano
+    github_repo: nestor
+    github_token_prefix: STUDIO

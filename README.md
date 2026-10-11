@@ -1,31 +1,29 @@
-<img align="right" src="https://raw.github.com/cliffano/nestor/main/avatar.jpg" alt="Avatar"/>
+<!-- BEGIN:AVATAR -->
+![Avatar](avatar.jpg)
+<!-- END:AVATAR -->
 
 <!-- BEGIN:BADGES -->
 [![Build Status](https://github.com/cliffano/nestor/workflows/CI/badge.svg)](https://github.com/cliffano/nestor/actions?query=workflow%3ACI)
 [![Dependencies Status](https://img.shields.io/librariesio/release/npm/nestor)](https://libraries.io/npm/nestor)
 [![Code Scanning Status](https://github.com/cliffano/nestor/workflows/CodeQL/badge.svg)](https://github.com/cliffano/nestor/actions?query=workflow%3ACodeQL)
-[![Coverage Status](https://img.shields.io/coveralls/cliffano/nestor.svg)](https://coveralls.io/r/cliffano/nestor?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/cliffano/nestor/badge.svg?branch=main)](https://coveralls.io/r/cliffano/nestor?branch=main)
 [![Security Status](https://snyk.io/test/github/cliffano/nestor/badge.svg)](https://snyk.io/test/github/cliffano/nestor)
 [![Published Version](https://img.shields.io/npm/v/nestor.svg)](https://www.npmjs.com/package/nestor)
 <!-- END:BADGES -->
-<br/>
 
-Nestor
-------
+# Nestor
 
 Nestor is a node.js [Jenkins](https://jenkins-ci.org) API and CLI.
 
 ![console command screenshot](https://raw.github.com/cliffano/nestor/master/screenshots/console.png)
 
-Installation
-------------
+## Installation
 
 ```shell
 npm install -g nestor
 ```
 
-Usage
------
+## Usage
 
 Trigger a build:
 
@@ -217,8 +215,8 @@ Check out [lib/jenkins](https://github.com/cliffano/nestor/blob/master/lib/jenki
 
 NOTE: Starting from version 2.0.0, Nestor started using [Swaggy Jenkins](https://github.com/cliffano/swaggy-jenkins) as an API client.
 
-Configuration
--------------
+## Configuration
+
 ### Jenkins URL
 
 Set Jenkins URL in JENKINS_URL environment variable (defaults to http://localhost:8080):
@@ -299,8 +297,7 @@ export JENKINS_CA=custom.ca.pem
 set JENKINS_CA=custom.ca.pem
 ```
 
-Translation
------------
+## Translation
 
 To add a new language translation:
 
@@ -308,23 +305,10 @@ To add a new language translation:
 2. Copy paste the content of the existing non-English locale file (anything other than en.json) and modify the translation values accordingly.
 3. Test by executing a command with LANG environment variable, e.g. `LANG=<code> nestor dashboard`
 
-Contribution
-------------
-
-When opening an issue to report a bug, please provide the following information:
-
-* node.js version: `node --version`
-* npm version: `npm --version`
-* Nestor version: `nestor --version`
-* Jenkins version: `nestor ver`
-
-Thanks in advance for reporting an issue, opening a feature request, or even better, a pull request!
-
-Colophon
---------
+## Colophon
 
 <!-- BEGIN:DEVELOPERS_GUIDE -->
-[Developer's Guide](https://cliffano.github.io/developers_guide.html#nodejs)
+[Developer's Guide](https://cliffano.github.io/developers-guide-nodejs.html)
 <!-- END:DEVELOPERS_GUIDE -->
 
 <!-- BEGIN:BUILD_REPORTS -->
