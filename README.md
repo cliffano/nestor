@@ -219,7 +219,7 @@ NOTE: Starting from version 2.0.0, Nestor started using [Swaggy Jenkins](https:/
 
 ### Jenkins URL
 
-Set Jenkins URL in JENKINS_URL environment variable (defaults to http://localhost:8080):
+Set Jenkins URL in JENKINS_URL environment variable (defaults to [http://localhost:8080](http://localhost:8080)):
 
 (*nix)
 
