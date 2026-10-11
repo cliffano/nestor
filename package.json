@@ -34,18 +34,18 @@
   },
   "dependencies": {
     "async": "^3.2.6",
-    "bagofcli": "^2.5.0",
+    "bagofcli": "^3.1.0",
     "colors": "^1.4.0",
-    "cron": "^4.3.4",
-    "lodash": "^4.17.21",
-    "moment": "^2.30.1",
+    "cron": "^4.4.0",
+    "lodash": "^4.18.1",
+    "moment": "^2.31.0",
     "rss-parser": "^3.13.0",
-    "swaggy-jenkins": "^3.2.0",
+    "swaggy-jenkins": "^3.4.0",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@sinonjs/referee": "^11.0.1",
-    "sinon": "^21.0.0"
+    "@sinonjs/referee": "^11.0.2",
+    "sinon": "^22.1.0"
   },
   "scripts": {},
   "engines": {
