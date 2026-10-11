@@ -1,0 +1,286 @@
+---
+# Commands that run against Jenkins containers, which are started at the beginning
+# and removed at the end of this file.
+# - jenkins_url: unsecured Jenkins, every command is expected to succeed without any credential
+# - jenkins_secured_url: secured Jenkins, commands are expected to be forbidden without any credential
+
+- params:
+    nestor: ../../../../../bin/nestor.js
+    examples: ../../../../../examples
+    fixtures: ../../../../../test-integration/fixtures
+    jenkins_url: http://localhost:8080
+    jenkins_secured_url: http://localhost:8081
+
+- description: Start Jenkins via containers using Docker Compose, and wait until they are ready
+  command: 'make -f {fixtures}/Makefile start-jenkins'
+  exitcode: 0
+
+- description: Command ver should display Jenkins version number
+  command: 'JENKINS_URL={jenkins_url} {nestor} ver'
+  exitcode: 0
+  output: 'Jenkins ver. \d+\.\d+'
+
+- description: Command dashboard should display jobless message when there is no job
+  command: 'JENKINS_URL={jenkins_url} {nestor} dashboard'
+  exitcode: 0
+  output: 'Jobless Jenkins'
+
+- description: Command dashboard with URL arg should display jobless message when there is no job
+  command: '{nestor} dashboard --url {jenkins_url}'
+  exitcode: 0
+  output: 'Jobless Jenkins'
+
+- description: Command queue should display empty queue message when there is no queued job
+  command: 'JENKINS_URL={jenkins_url} {nestor} queue'
+  exitcode: 0
+  output: 'Queue is empty'
+
+- description: Command executor should display status of the executors
+  command: 'JENKINS_URL={jenkins_url} {nestor} executor'
+  exitcode: 0
+  output: 'idle'
+
+- description: Command job should display error message when job does not exist
+  command: 'JENKINS_URL={jenkins_url} {nestor} job someinexistingjob'
+  exitcode: 1
+  output: 'Not Found'
+
+- description: Command create should create a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} create somejob {examples}/config_job.xml'
+  exitcode: 0
+  output: 'Job somejob was created successfully'
+
+- description: Command create-job should create a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} create-job someotherjob {examples}/config_job.xml'
+  exitcode: 0
+  output: 'Job someotherjob was created successfully'
+
+- description: Command job should display job details
+  command: 'JENKINS_URL={jenkins_url} {nestor} job somejob'
+  exitcode: 0
+  output: 'somejob'
+
+- description: Command read-job should display job details
+  command: 'JENKINS_URL={jenkins_url} {nestor} read-job somejob'
+  exitcode: 0
+  output: 'somejob'
+
+- description: Command config should display the job configuration file
+  command: 'JENKINS_URL={jenkins_url} {nestor} config somejob'
+  exitcode: 0
+  output: '<project>'
+
+- description: Command fetch-job-config should display the job configuration file
+  command: 'JENKINS_URL={jenkins_url} {nestor} fetch-job-config somejob'
+  exitcode: 0
+  output: '<project>'
+
+- description: Command update should update a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} update somejob {examples}/config_job.xml'
+  exitcode: 0
+  output: 'Job somejob was updated successfully'
+
+- description: Command update-job should update a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} update-job somejob {examples}/config_job.xml'
+  exitcode: 0
+  output: 'Job somejob was updated successfully'
+
+- description: Command copy should copy a job into a new job
+  command: 'JENKINS_URL={jenkins_url} {nestor} copy somejob somecopiedjob'
+  exitcode: 0
+  output: 'Job somejob was copied to job somecopiedjob'
+
+- description: Command copy-job should copy a job into a new job
+  command: 'JENKINS_URL={jenkins_url} {nestor} copy-job somejob someothercopiedjob'
+  exitcode: 0
+  output: 'Job somejob was copied to job someothercopiedjob'
+
+- description: Command disable should disable a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} disable somejob'
+  exitcode: 0
+  output: 'Job somejob was disabled successfully'
+
+- description: Command enable should enable a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} enable somejob'
+  exitcode: 0
+  output: 'Job somejob was enabled successfully'
+
+- description: Command disable-job should disable a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} disable-job somejob'
+  exitcode: 0
+  output: 'Job somejob was disabled successfully'
+
+- description: Command enable-job should enable a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} enable-job somejob'
+  exitcode: 0
+  output: 'Job somejob was enabled successfully'
+
+- description: Command build should trigger a build
+  command: 'JENKINS_URL={jenkins_url} {nestor} build somejob'
+  exitcode: 0
+  output: 'Job somejob was triggered successfully'
+
+- description: Allow the build to leave the queue and complete
+  command: 'sleep 20'
+  exitcode: 0
+
+- description: Command last should display job last build details
+  command: 'JENKINS_URL={jenkins_url} {nestor} last somejob'
+  exitcode: 0
+  output: 'Finished'
+
+- description: Command console should display job latest build console output
+  command: 'JENKINS_URL={jenkins_url} {nestor} console somejob'
+  exitcode: 0
+  output: 'END'
+
+- description: Command dashboard should display status of all jobs
+  command: 'JENKINS_URL={jenkins_url} {nestor} dashboard'
+  exitcode: 0
+  output: 'somejob'
+
+- description: Command create-view should create a view
+  command: 'JENKINS_URL={jenkins_url} {nestor} create-view someview {examples}/config_view.xml'
+  exitcode: 0
+  output: 'View someview was created successfully'
+
+- description: Command fetch-view-config should display the view configuration file
+  command: 'JENKINS_URL={jenkins_url} {nestor} fetch-view-config someview'
+  exitcode: 0
+  output: '<hudson.model.ListView>'
+
+- description: Command update-view should update a view
+  command: 'JENKINS_URL={jenkins_url} {nestor} update-view someview {examples}/config_view.xml'
+  exitcode: 0
+  output: 'View someview was updated successfully'
+
+- description: Command feed should display the RSS feed of all jobs
+  command: 'JENKINS_URL={jenkins_url} {nestor} feed'
+  exitcode: 0
+  output: 'somejob'
+
+- description: Command feed with job arg should display the RSS feed of the specified job
+  command: 'JENKINS_URL={jenkins_url} {nestor} feed --job somejob'
+  exitcode: 0
+  output: 'somejob'
+
+- description: Command feed with view arg should display the RSS feed of the jobs within the specified view
+  command: 'JENKINS_URL={jenkins_url} {nestor} feed --view someview'
+  exitcode: 0
+  output: 'somejob'
+
+- description: Command stop should stop the latest build of a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} stop somejob'
+  exitcode: 0
+  output: 'Job somejob was stopped successfully'
+
+- description: Command stop-job should stop the latest build of a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} stop-job somejob'
+  exitcode: 0
+  output: 'Job somejob was stopped successfully'
+
+- description: Command delete should delete a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} delete somejob'
+  exitcode: 0
+  output: 'Job somejob was deleted successfully'
+
+- description: Command delete-job should delete a job
+  command: 'JENKINS_URL={jenkins_url} {nestor} delete-job someotherjob'
+  exitcode: 0
+  output: 'Job someotherjob was deleted successfully'
+
+# The following commands run against the secured Jenkins container without any credential
+
+- description: Command create should display forbidden error message when trying to create a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} create somejob {examples}/config_job.xml'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command create-job should display forbidden error message when trying to create a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} create-job somejob {examples}/config_job.xml'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command delete should display forbidden error message when trying to delete a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} delete somejob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command delete-job should display forbidden error message when trying to delete a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} delete-job somejob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command build should display forbidden error message when trying to build a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} build somejob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command update should display forbidden error message when trying to update a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} update somejob {examples}/config_job.xml'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command update-job should display forbidden error message when trying to update a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} update-job somejob {examples}/config_job.xml'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command stop should display forbidden error message when trying to stop a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} stop somejob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command stop-job should display forbidden error message when trying to stop a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} stop-job somejob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command enable should display forbidden error message when trying to enable a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} enable somejob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command enable-job should display forbidden error message when trying to enable a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} enable-job somejob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command disable should display forbidden error message when trying to disable a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} disable somejob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command disable-job should display forbidden error message when trying to disable a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} disable-job somejob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command copy should display forbidden error message when trying to copy a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} copy somejob somenewjob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command copy-job should display forbidden error message when trying to copy-job a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} copy-job somejob somenewjob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command fetch-job-config should display forbidden error message when trying to fetch-job-config a job without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} fetch-job-config somejob'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command create-view should display forbidden error message when trying to create a view without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} create-view someview {examples}/config_view.xml'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Command update-view should display forbidden error message when trying to update a view without authorization
+  command: 'JENKINS_URL={jenkins_secured_url} {nestor} update-view someview {examples}/config_view.xml'
+  exitcode: 1
+  output: 'Forbidden'
+
+- description: Stop Jenkins and remove containers
+  command: 'make -f {fixtures}/Makefile stop-jenkins'
+  exitcode: 0

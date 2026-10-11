@@ -1,0 +1,35 @@
+---
+name: nestor-test-integration
+services:
+  jenkins:
+    image: jenkins/jenkins:2.580.1-lts-jdk21
+    network_mode: bridge
+    ports:
+      - '127.0.0.1:8080:8080'
+    environment:
+      # Skip the setup wizard so that Jenkins starts up unsecured and ready to use,
+      # and disable CSRF protection so that anonymous POST requests are accepted.
+      # This container is a throwaway test fixture, never use these settings elsewhere.
+      JAVA_OPTS: >-
+        -Djenkins.install.runSetupWizard=false
+        -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', '-o', '/dev/null', 'http://localhost:8080/login']
+      interval: 5s
+      timeout: 5s
+      retries: 60
+  jenkins_secured:
+    image: jenkins/jenkins:2.580.1-lts-jdk21
+    network_mode: bridge
+    ports:
+      - '127.0.0.1:8081:8080'
+    # Default settings leave Jenkins secured and waiting to be unlocked via the setup wizard,
+    # so that anonymous requests are rejected with 403 Forbidden.
+    healthcheck:
+      # Jenkins responds with 503 while starting up, any other status means it is ready
+      test:
+        - CMD-SHELL
+        - curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/login | grep -Eq '^(200|403)$$'
+      interval: 5s
+      timeout: 5s
+      retries: 60

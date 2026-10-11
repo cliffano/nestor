@@ -1,0 +1,36 @@
+---
+# Commands that do not need a running Jenkins instance.
+
+- params:
+    nestor: ../../../../../bin/nestor.js
+    jenkins_url: http://localhost:8080
+
+- description: Command help should display help information
+  command: '{nestor} --help'
+  exitcode: 0
+  output: 'Usage: nestor'
+
+- description: Command dashboard should display error when URL does not exist
+  command: 'JENKINS_URL=http://someinexistinghost {nestor} dashboard'
+  exitcode: 1
+  output: 'getaddrinfo ENOTFOUND|ETIMEDOUT|EAI_AGAIN'
+
+- description: Command discover with default host should display error message when there is no Jenkins instance
+  command: 'JENKINS_URL={jenkins_url} {nestor} discover'
+  exitcode: 1
+  output: 'Unable to find any Jenkins instance on localhost'
+
+- description: Command discover should display error message when there is no Jenkins instance
+  command: 'JENKINS_URL={jenkins_url} {nestor} discover localhost'
+  exitcode: 1
+  output: 'Unable to find any Jenkins instance on localhost'
+
+- description: Command discover with custom host should display error message when there is no Jenkins instance
+  command: 'JENKINS_URL={jenkins_url} {nestor} discover 127.0.0.1'
+  exitcode: 1
+  output: 'Unable to find any Jenkins instance on 127.0.0.1'
+
+- description: Command job should display usage info when there is no argument
+  command: 'JENKINS_URL={jenkins_url} {nestor} job'
+  exitcode: 1
+  output: 'Usage: nestor job <job>'
