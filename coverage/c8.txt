@@ -1,4 +1,4 @@
-test | /opt/hostedtoolcache/node/24.21.0/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+test | /opt/hostedtoolcache/node/26.11.1/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  consolestream - consolestream[0m
@@ -61,7 +61,7 @@ test | /opt/hostedtoolcache/node/24.21.0/x64/lib/node_modules/bob/node_modules/.
 
 [0m  cli - jenkins[0m
   [32m  [32m✔[39m[0m[90m dashboard - should log Jobless Jenkins when exec dashboard is called and there is no job[0m
-(node:2753) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(node:2763) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
 (Use `node --trace-deprecation ...` to show where the warning was created)
   [32m  [32m✔[39m[0m[90m dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs[0m
   [32m  [32m✔[39m[0m[90m dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs with animated value[0m
@@ -151,7 +151,7 @@ test | /opt/hostedtoolcache/node/24.21.0/x64/lib/node_modules/bob/node_modules/.
   [32m  [32m✔[39m[0m[90m should monitor the latest build of a job when job opt is specified[0m
 
 
-[92m [0m[32m 117 passing[0m[90m (141ms)[0m
+[92m [0m[32m 117 passing[0m[90m (134ms)[0m
 
 SUCCESS | exit code 0
 -------------------|---------|----------|---------|---------|-------------------
