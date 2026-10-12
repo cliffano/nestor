@@ -90,14 +90,14 @@
 <div class="container">
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
-import _ from &#039;lodash&#039;;
+import _ from &quot;lodash&quot;;
 
 const COLOR_STATUS = {
-  blue  : [ &#039;ok&#039; ],
-  green : [ &#039;ok&#039;, &#039;success&#039; ],
-  grey  : [ &#039;aborted&#039;, &#039;unknown&#039; ],
-  red   : [ &#039;fail&#039;, &#039;failure&#039; ],
-  yellow: [ &#039;warn&#039;, &#039;building&#039; ]
+  blue: [&quot;ok&quot;],
+  green: [&quot;ok&quot;, &quot;success&quot;],
+  grey: [&quot;aborted&quot;, &quot;unknown&quot;],
+  red: [&quot;fail&quot;, &quot;failure&quot;],
+  yellow: [&quot;warn&quot;, &quot;building&quot;],
 };
 
 /**
@@ -114,17 +114,19 @@ const COLOR_STATUS = {
  * @return the status text
  */
 function colorByStatus(status, jenkinsColor) {
-
   let color;
 
   if (jenkinsColor) {
     // Jenkins color value can contain either a color, color_anime, or status in job.color field,
     // hence to get color/status value out of the mix we need to remove the postfix _anime,
     // _anime postfix only exists on a job currently being built
-    jenkinsColor = jenkinsColor.replace(/_anime$/, &#039;&#039;);
-    color = (COLOR_STATUS[jenkinsColor] &amp;&amp; COLOR_STATUS[jenkinsColor][0]) ? jenkinsColor : &#039;grey&#039;;
+    jenkinsColor = jenkinsColor.replace(/_anime$/, &quot;&quot;);
+    color =
+      COLOR_STATUS[jenkinsColor] &amp;&amp; COLOR_STATUS[jenkinsColor][0]
+        ? jenkinsColor
+        : &quot;grey&quot;;
   } else {
-    color = &#039;grey&#039;;
+    color = &quot;grey&quot;;
     _.keys(COLOR_STATUS).forEach(function (_color) {
       COLOR_STATUS[_color].forEach(function (_status) {
         if (_status === status) {
@@ -148,18 +150,18 @@ function colorByStatus(status, jenkinsColor) {
  * @return the status text
  */
 function statusByColor(jenkinsColor) {
-
   let status;
   if (jenkinsColor) {
-
     // Jenkins color value can contain either a color, color_anime, or status in job.color field,
     // hence to get color/status value out of the mix we need to remove the postfix _anime,
     // _anime postfix only exists on a job currently being built
-    jenkinsColor = jenkinsColor.replace(/_anime$/, &#039;&#039;);
+    jenkinsColor = jenkinsColor.replace(/_anime$/, &quot;&quot;);
 
-    status = (COLOR_STATUS[jenkinsColor]) ? COLOR_STATUS[jenkinsColor][0] : jenkinsColor;
+    status = COLOR_STATUS[jenkinsColor]
+      ? COLOR_STATUS[jenkinsColor][0]
+      : jenkinsColor;
   } else {
-    status = &#039;unknown&#039;;
+    status = &quot;unknown&quot;;
   }
 
   return status;
@@ -167,12 +169,10 @@ function statusByColor(jenkinsColor) {
 
 const exports = {
   colorByStatus: colorByStatus,
-  statusByColor: statusByColor
+  statusByColor: statusByColor,
 };
 
-export {
-  exports as default
-};</textarea>
+export { exports as default };</textarea>
   </div>
 </div>
 

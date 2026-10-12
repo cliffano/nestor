@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">267</p>
+      <p class="stat">266</p>
     </div>
   </div>
   <div class="row historical">
@@ -90,21 +90,25 @@
 <div class="container">
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
-import cron from &#039;cron&#039;;
-import jenkins from &#039;./api/jenkins.js&#039;;
-import job from &#039;./api/job.js&#039;;
-import Swaggy from &#039;swaggy-jenkins&#039;;
-import _url from &#039;url&#039;;
-import util from &#039;./cli/util.js&#039;;
-import view from &#039;./api/view.js&#039;;
-import fs from &#039;fs&#039;;
+import cron from &quot;cron&quot;;
+import jenkins from &quot;./api/jenkins.js&quot;;
+import job from &quot;./api/job.js&quot;;
+import Swaggy from &quot;swaggy-jenkins&quot;;
+import _url from &quot;url&quot;;
+import util from &quot;./cli/util.js&quot;;
+import view from &quot;./api/view.js&quot;;
+import fs from &quot;fs&quot;;
 
 function _authFail(result, cb) {
-  cb(new Error(&#039;Authentication failed - incorrect username and/or password&#039;));
+  cb(new Error(&quot;Authentication failed - incorrect username and/or password&quot;));
 }
 
 function _authRequire(result, cb) {
-  cb(new Error(&#039;Jenkins requires authentication - please set username and password&#039;));
+  cb(
+    new Error(
+      &quot;Jenkins requires authentication - please set username and password&quot;,
+    ),
+  );
 }
 
 /**
@@ -113,16 +117,14 @@ function _authRequire(result, cb) {
  * @param {String} url: Jenkins URL, fallback to JENKINS_URL environment variable, otherwise default to http://localhost:8080
  */
 class Jenkins {
-
   constructor(url) {
-
-    this.url = url || process.env.JENKINS_URL || &#039;http://localhost:8080&#039;;
+    this.url = url || process.env.JENKINS_URL || &quot;http://localhost:8080&quot;;
 
     // base URL is needed for functionalities that operate against base Jenkins path
     // this is needed for retrieving Jenkins crumb where the URL might contain paths to folders,
     // but the the Jenkins crumb retrieval still needs to be executed against the base Jenkins path
     const parsedUrl = _url.parse(this.url);
-    this.baseUrl = this.url.replace(parsedUrl.path, &#039;&#039;);
+    this.baseUrl = this.url.replace(parsedUrl.path, &quot;&quot;);
 
     const cert = process.env.JENKINS_CERT;
     const ca = process.env.JENKINS_CA;
@@ -130,8 +132,8 @@ class Jenkins {
     this.opts = {
       handlers: {
         401: _authFail,
-        403: _authRequire
-      }
+        403: _authRequire,
+      },
     };
 
     this.remoteAccessApi = new Swaggy.RemoteAccessApi();
@@ -145,21 +147,20 @@ class Jenkins {
     this.baseApi = new Swaggy.BaseApi(new Swaggy.ApiClient());
     this.baseApi.apiClient.basePath = this.baseUrl;
 
-
     if (cert) {
-      const key_path = key.split(&#039;:&#039;)[0];
-      const passphrase = key.split(&#039;:&#039;)[1];
+      const key_path = key.split(&quot;:&quot;)[0];
+      const passphrase = key.split(&quot;:&quot;)[1];
       this.opts.agentOptions = {
         passphrase: passphrase,
-        secureProtocol: &#039;TLSv1_method&#039;
+        secureProtocol: &quot;TLSv1_method&quot;,
       };
-      if(cert &amp;&amp; fs.statSync(cert)){
+      if (cert &amp;&amp; fs.statSync(cert)) {
         this.opts.agentOptions.cert = fs.readFileSync(cert);
       }
-      if(key_path &amp;&amp; fs.statSync(key_path)){
+      if (key_path &amp;&amp; fs.statSync(key_path)) {
         this.opts.agentOptions.key = fs.readFileSync(key_path);
       }
-      if(ca &amp;&amp; fs.statSync(ca)){
+      if (ca &amp;&amp; fs.statSync(ca)) {
         this.opts.agentOptions.ca = fs.readFileSync(ca);
       }
     }
@@ -197,12 +198,10 @@ function csrf(cb) {
  * @return executor summary object
  */
 function executorSummary(computers) {
-
   const data = {};
 
   computers.forEach(function (computer) {
-
-    let idleCount   = 0;
+    let idleCount = 0;
     let activeCount = 0;
 
     data[computer.displayName] = { executors: [] };
@@ -212,9 +211,12 @@ function executorSummary(computers) {
         idle: executor.idle,
         stuck: executor.likelyStuck,
         progress: executor.progress,
-        name: (!executor.idle &amp;&amp; executor.currentExecutable.url) ?
-          executor.currentExecutable.url.replace(/.*\/job\//, &#039;&#039;).replace(/\/.*/, &#039;&#039;) :
-          undefined
+        name:
+          !executor.idle &amp;&amp; executor.currentExecutable.url
+            ? executor.currentExecutable.url
+                .replace(/.*\/job\//, &quot;&quot;)
+                .replace(/\/.*/, &quot;&quot;)
+            : undefined,
       });
 
       if (executor.idle) {
@@ -232,7 +234,7 @@ function executorSummary(computers) {
       summary.push(`${idleCount} idle`);
     }
 
-    data[computer.displayName].summary = summary.join(&#039;, &#039;);
+    data[computer.displayName].summary = summary.join(&quot;, &quot;);
   });
 
   return data;
@@ -264,37 +266,36 @@ function monitor(opts, cb) {
   // - success only if all jobs are either blue or green
   function multiJobsResultCb(err, result) {
     if (!err) {
-
-      let hasRed        = false;
-      let hasYellow     = false;
+      let hasRed = false;
+      let hasYellow = false;
       let hasNonSuccess = false;
-      let hasSuccess    = false;
+      let hasSuccess = false;
 
       let successColor;
       let nonSuccessColor;
 
       result.jobs.forEach(function (job) {
-        if (job.color === &#039;red&#039;) {
+        if (job.color === &quot;red&quot;) {
           hasRed = true;
         }
-        if (job.color === &#039;yellow&#039;) {
+        if (job.color === &quot;yellow&quot;) {
           hasYellow = true;
         }
-        if ([&#039;red&#039;, &#039;yellow&#039;, &#039;blue&#039;, &#039;green&#039;].indexOf(job.color) === -1) {
-          hasNonSuccess   = true;
+        if ([&quot;red&quot;, &quot;yellow&quot;, &quot;blue&quot;, &quot;green&quot;].indexOf(job.color) === -1) {
+          hasNonSuccess = true;
           nonSuccessColor = job.color;
         }
-        if (job.color === &#039;blue&#039; || job.color === &#039;green&#039;) {
-          hasSuccess   = true;
+        if (job.color === &quot;blue&quot; || job.color === &quot;green&quot;) {
+          hasSuccess = true;
           successColor = job.color;
         }
       });
 
       let resultColor;
       if (hasRed) {
-        resultColor = &#039;red&#039;;
+        resultColor = &quot;red&quot;;
       } else if (hasYellow) {
-        resultColor = &#039;yellow&#039;;
+        resultColor = &quot;yellow&quot;;
       } else if (hasNonSuccess) {
         resultColor = nonSuccessColor;
       } else {
@@ -317,7 +318,7 @@ function monitor(opts, cb) {
   }
 
   _notify();
-  new cron.CronJob(opts.schedule || &#039;0 * * * * *&#039;, _notify).start();
+  new cron.CronJob(opts.schedule || &quot;0 * * * * *&quot;, _notify).start();
 }
 
 Jenkins.prototype.csrf = csrf;
@@ -353,9 +354,7 @@ Jenkins.prototype.parseViewFeed = view.parseFeed;
 
 Jenkins.executorSummary = executorSummary;
 
-export {
-  Jenkins as default
-};</textarea>
+export { Jenkins as default };</textarea>
   </div>
 </div>
 

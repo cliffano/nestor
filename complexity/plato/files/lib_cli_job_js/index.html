@@ -44,7 +44,7 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">79.52</p>
+      <p class="stat">80.06</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">49.54</p>
+      <p class="stat">47.33</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">2.45</p>
+      <p class="stat">2.33</p>
     </div>
   </div>
 </div>
@@ -90,12 +90,12 @@
 <div class="container">
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
-import _ from &#039;lodash&#039;;
-import cli from &#039;bagofcli&#039;;
-import fs from &#039;fs&#039;;
-import moment from &#039;moment&#039;;
-import util from &#039;./util.js&#039;;
-import _util from &#039;util&#039;;
+import _ from &quot;lodash&quot;;
+import cli from &quot;bagofcli&quot;;
+import fs from &quot;fs&quot;;
+import moment from &quot;moment&quot;;
+import util from &quot;./util.js&quot;;
+import _util from &quot;util&quot;;
 
 /**
  * Get a handler that calls Jenkins API to create a job with specific configuration.
@@ -105,9 +105,9 @@ import _util from &#039;util&#039;;
  * @return Jenkins API handler function
  */
 function create(cb) {
-  return function (command, args) {
-    const name = _.get(args, &#039;[0]&#039;);
-    const configFile = _.get(args, &#039;[1]&#039;);
+  return function (command) {
+    const name = command.args[0];
+    const configFile = command.args[1];
 
     function resultCb(result) {
       console.log(`Job ${name} was created successfully`);
@@ -128,15 +128,15 @@ function create(cb) {
  * @return Jenkins API handler function
  */
 function read(cb) {
-  return function (command, args) {
-    const name = _.get(args, &#039;[0]&#039;);
+  return function (command) {
+    const name = command.args[0];
 
     function resultCb(result) {
       const status = util.statusByColor(result.color);
-      const color  = util.colorByStatus(status, result.color);
+      const color = util.colorByStatus(status, result.color);
       console.log(`${name} | ${status[color]}`);
       result.healthReport.forEach(function (report) {
-        console.log(&#039; - %s&#039;, report.description);
+        console.log(&quot; - %s&quot;, report.description);
       });
     }
     function jenkinsCb(jenkins) {
@@ -153,23 +153,28 @@ function read(cb) {
  * @return Jenkins API handler function
  */
 function readLatest(cb) {
-  return function (command, args) {
-    const name = _.get(args, &#039;[0]&#039;);
+  return function (command) {
+    const name = command.args[0];
 
     function resultCb(result) {
-
       let status;
       let color;
       let description;
 
       if (result.building) {
-        status      = &#039;building&#039;;
-        color       = util.colorByStatus(status);
-        description = _util.format(&#039;Started %s&#039;, moment(result.timestamp).fromNow());
+        status = &quot;building&quot;;
+        color = util.colorByStatus(status);
+        description = _util.format(
+          &quot;Started %s&quot;,
+          moment(result.timestamp).fromNow(),
+        );
       } else {
-        status      = result.result.toLowerCase();
-        color       = util.colorByStatus(status);
-        description = _util.format(&#039;Finished %s&#039;, moment(result.timestamp + result.duration).fromNow());
+        status = result.result.toLowerCase();
+        color = util.colorByStatus(status);
+        description = _util.format(
+          &quot;Finished %s&quot;,
+          moment(result.timestamp + result.duration).fromNow(),
+        );
       }
 
       console.log(`${name} | ${status[color]}`);
@@ -191,9 +196,9 @@ function readLatest(cb) {
  * @return Jenkins API handler function
  */
 function update(cb) {
-  return function (command, args) {
-    const name = _.get(args, &#039;[0]&#039;);
-    const configFile = _.get(args, &#039;[1]&#039;);
+  return function (command) {
+    const name = command.args[0];
+    const configFile = command.args[1];
 
     function resultCb(result) {
       console.log(`Job ${name} was updated successfully`);
@@ -214,8 +219,8 @@ function update(cb) {
  * @return Jenkins API handler function
  */
 function _delete(cb) {
-  return function (command, args) {
-    const name = _.get(args, &#039;[0]&#039;);
+  return function (command) {
+    const name = command.args[0];
     function resultCb(result) {
       console.log(`Job ${name} was deleted successfully`);
     }
@@ -235,21 +240,15 @@ function _delete(cb) {
  */
 function build(cb) {
   // params arg is a query string like param1=value1&amp;param2=value2
-  return function (command, args) {
-    const name = _.get(args, &#039;[0]&#039;);
-    let paramsString = _.get(args, &#039;[1]&#039;);
-
-    if (!command) {
-      command = paramsString;
-      paramsString = null;
-    }
+  return function (command) {
+    const name = command.args[0];
+    const paramsString = command.args[1];
 
     function resultCb(result) {
       console.log(`Job ${name} was triggered successfully`);
     }
 
     function jenkinsCb(jenkins) {
-
       // simply pass jenkins instance to the next callback
       function passThroughCb(command, jenkinsCb) {
         jenkinsCb(jenkins);
@@ -257,8 +256,8 @@ function build(cb) {
 
       const params = {};
       if (paramsString) {
-        paramsString.split(&#039;&amp;&#039;).forEach(function (paramString) {
-          const delim = paramString.indexOf(&#039;=&#039;);
+        paramsString.split(&quot;&amp;&quot;).forEach(function (paramString) {
+          const delim = paramString.indexOf(&quot;=&quot;);
           const key = paramString.substring(0, delim);
           const value = paramString.substring(delim + 1, paramString.length);
           params[key] = value;
@@ -270,18 +269,21 @@ function build(cb) {
 
       function streamIfReady(buildUrl, ready, retries) {
         if (ready) {
-          _console(passThroughCb)(name, null, command);
+          _console(passThroughCb)({ args: [name] });
         } else {
           if (retries &gt; 0) {
-            console.log(&#039;Waiting for job to start...&#039;);
+            console.log(&quot;Waiting for job to start...&quot;);
             setTimeout(function () {
               jenkins.checkBuildStarted(buildUrl, function (ready) {
                 streamIfReady(buildUrl, ready, retries - 1);
               });
             }, jenkinsPollIntervalMillis);
           } else {
-            const waitTime = (jenkinsPollIntervalMillis * jenkinsPollRetries) / 1000;
-            console.log(`Build didn&#039;t start after ${waitTime} seconds, it&#039;s still waiting in the queue`);
+            const waitTime =
+              (jenkinsPollIntervalMillis * jenkinsPollRetries) / 1000;
+            console.log(
+              `Build didn&#039;t start after ${waitTime} seconds, it&#039;s still waiting in the queue`,
+            );
             cli.exit({}, null);
           }
         }
@@ -300,7 +302,7 @@ function build(cb) {
           }, jenkinsPollIntervalMillis);
         };
 
-      // with console disabled, display result
+        // with console disabled, display result
       } else {
         cb = cli.exitCb(null, resultCb);
       }
@@ -319,8 +321,8 @@ function build(cb) {
  * @return Jenkins API handler function
  */
 function stop(cb) {
-  return function (command, args) {
-    const name = _.get(args, &#039;[0]&#039;);
+  return function (command) {
+    const name = command.args[0];
 
     function resultCb(result) {
       console.log(`Job ${name} was stopped successfully`);
@@ -339,20 +341,20 @@ function stop(cb) {
  * @return Jenkins API handler function
  */
 function _console(cb) {
-  return function (command, args) {
-    const name = _.get(args, &#039;[0]&#039;);
-    let buildNumber = _.get(args, &#039;[1]&#039;);
-
-    if (!command) {
-      command = buildNumber;
-      buildNumber = null;
-    }
+  return function (command) {
+    const name = command.args[0];
+    const buildNumber = command.args[1];
 
     function jenkinsCb(jenkins) {
       // console does not trigger any build, interval is set to 0 (no-pending delay time)
       const interval = 0;
 
-      const stream = jenkins.streamJobConsole(name, buildNumber, interval, cli.exit);
+      const stream = jenkins.streamJobConsole(
+        name,
+        buildNumber,
+        interval,
+        cli.exit,
+      );
       stream.pipe(process.stdout, { end: false });
     }
     cb(command, jenkinsCb);
@@ -367,8 +369,8 @@ function _console(cb) {
  * @return Jenkins API handler function
  */
 function enable(cb) {
-  return function (command, args) {
-    const name = _.get(args, &#039;[0]&#039;);
+  return function (command) {
+    const name = command.args[0];
 
     function resultCb(result) {
       console.log(`Job ${name} was enabled successfully`);
@@ -388,8 +390,8 @@ function enable(cb) {
  * @return Jenkins API handler function
  */
 function disable(cb) {
-  return function (command, args) {
-    const name = _.get(args, &#039;[0]&#039;);
+  return function (command) {
+    const name = command.args[0];
 
     function resultCb(result) {
       console.log(`Job ${name} was disabled successfully`);
@@ -409,10 +411,10 @@ function disable(cb) {
  * @return Jenkins API handler function
  */
 function copy(cb) {
-  return function (command, args) {
-    const existingName = _.get(args, &#039;[0]&#039;);
-    const newName = _.get(args, &#039;[1]&#039;);
-    
+  return function (command) {
+    const existingName = command.args[0];
+    const newName = command.args[1];
+
     function resultCb(result) {
       console.log(`Job ${existingName} was copied to job ${newName}`);
     }
@@ -431,8 +433,8 @@ function copy(cb) {
  * @return Jenkins API handler function
  */
 function fetchConfig(cb) {
-  return function (command, args) {
-    const name = _.get(args, &#039;[0]&#039;);
+  return function (command) {
+    const name = command.args[0];
 
     function resultCb(result) {
       console.log(result);
@@ -456,12 +458,10 @@ const exports = {
   enable: enable,
   disable: disable,
   copy: copy,
-  fetchConfig: fetchConfig
+  fetchConfig: fetchConfig,
 };
 
-export {
-  exports as default
-};</textarea>
+export { exports as default };</textarea>
   </div>
 </div>
 

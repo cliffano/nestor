@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">81.06</p>
+      <p class="stat">81.07</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">178</p>
+      <p class="stat">179</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">34.10</p>
+      <p class="stat">34.78</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">1.09</p>
+      <p class="stat">1.08</p>
     </div>
   </div>
 </div>
@@ -90,10 +90,10 @@
 <div class="container">
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
-import _ from &#039;lodash&#039;;
-import cli from &#039;bagofcli&#039;;
-import Jenkins from &#039;../jenkins.js&#039;;
-import util from &#039;./util.js&#039;;
+import _ from &quot;lodash&quot;;
+import cli from &quot;bagofcli&quot;;
+import Jenkins from &quot;../jenkins.js&quot;;
+import util from &quot;./util.js&quot;;
 
 /**
  * Get a handler that calls Jenkins API to get a list of all jobs on the Jenkins instance.
@@ -106,11 +106,11 @@ function dashboard(cb) {
     function resultCb(result) {
       const jobs = result.jobs;
       if (_.isEmpty(jobs)) {
-        console.log(&#039;Jobless Jenkins&#039;);
+        console.log(&quot;Jobless Jenkins&quot;);
       } else {
         jobs.forEach(function (job) {
           const status = util.statusByColor(job.color);
-          const color  = util.colorByStatus(status, job.color);
+          const color = util.colorByStatus(status, job.color);
           console.log(`${status[color]} - ${job.name}`);
         });
       }
@@ -129,16 +129,17 @@ function dashboard(cb) {
  * @return Jenkins API handler function
  */
 function discover(cb) {
-  return function (command, args) {
-    let host = _.get(args, &#039;[0]&#039;);
+  return function (command) {
+    let host = command.args[0];
 
     if (!host) {
-      host = &#039;localhost&#039;;
+      host = &quot;localhost&quot;;
     }
 
     function resultCb(result) {
       const version = result.hudson.version[0];
-      const host = result.hudson.url &amp;&amp; result.hudson.url[0] ? result.hudson.url[0] : host;
+      const host =
+        result.hudson.url &amp;&amp; result.hudson.url[0] ? result.hudson.url[0] : host;
       console.log(`Jenkins ver. ${version} is running on ${host}`);
     }
     function jenkinsCb(jenkins) {
@@ -157,24 +158,26 @@ function discover(cb) {
 function executor(cb) {
   return function (command) {
     function resultCb(result) {
-
       const computers = result.computer;
 
       if (_.isEmpty(computers)) {
-        console.log(&#039;No executor found&#039;);
+        console.log(&quot;No executor found&quot;);
       } else {
-
         const data = Jenkins.executorSummary(computers);
 
         _.keys(data).forEach(function (computer) {
-          console.log(&#039;+ %s | %s&#039;, computer, data[computer].summary);
+          console.log(&quot;+ %s | %s&quot;, computer, data[computer].summary);
           data[computer].executors.forEach(function (executor) {
             if (!executor.idle) {
-              console.log(&#039;  - %s | %s%%s&#039;, executor.name, executor.progress, (executor.stuck) ? &#039; stuck!&#039; : &#039;&#039;);
+              console.log(
+                &quot;  - %s | %s%%s&quot;,
+                executor.name,
+                executor.progress,
+                executor.stuck ? &quot; stuck!&quot; : &quot;&quot;,
+              );
             }
           });
         });
-
       }
     }
     function jenkinsCb(jenkins) {
@@ -223,10 +226,10 @@ function queue(cb) {
     function resultCb(result) {
       const items = result.items;
       if (_.isEmpty(items)) {
-        console.log(&#039;Queue is empty&#039;);
+        console.log(&quot;Queue is empty&quot;);
       } else {
         items.forEach(function (item) {
-            console.log(&#039;- %s&#039;, item.task.name);
+          console.log(&quot;- %s&quot;, item.task.name);
         });
       }
     }
@@ -261,12 +264,10 @@ const exports = {
   executor: executor,
   feed: feed,
   queue: queue,
-  version: version
+  version: version,
 };
 
-export {
-  exports as default
-};</textarea>
+export { exports as default };</textarea>
   </div>
 </div>
 

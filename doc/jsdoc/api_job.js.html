@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>api/job.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="ConsoleStream.html">ConsoleStream</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Jenkins.html">Jenkins</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_console">_console</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_delete">_delete</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#build">build</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#colorByStatus">colorByStatus</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#computer">computer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#copy">copy</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#create">create</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#crumb">crumb</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#csrf">csrf</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#dashboard">dashboard</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#disable">disable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#discover">discover</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#enable">enable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#exec">exec</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#executor">executor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#executorSummary">executorSummary</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#feed">feed</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#fetchConfig">fetchConfig</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#htmlError">htmlError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#info">info</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#jobBuildNotFoundError">jobBuildNotFoundError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#jobNotFoundError">jobNotFoundError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#jobRequireParamsError">jobRequireParamsError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#monitor">monitor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseFeed">parseFeed</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#passThroughResponse">passThroughResponse</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#passThroughSuccess">passThroughSuccess</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#passThroughSuccessJson">passThroughSuccessJson</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#queue">queue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#read">read</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#readLatest">readLatest</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#statusByColor">statusByColor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#stop">stop</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#streamConsole">streamConsole</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#update">update</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#version">version</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#viewNotFoundError">viewNotFoundError</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">api/job.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+import _ from "lodash";
+import async from "async";
+import ConsoleStream from "./consolestream.js";
+import RssParser from "rss-parser";
+
+/**
+ * Create a job with specified configuration.
+ *
+ * @param {String} name: Jenkins job name
+ * @param {String} config: Jenkins job config.xml
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function create(name, config, cb) {
+  const opts = {
+    body: config,
+    contentType: "application/xml",
+  };
+  this.remoteAccessApi.postCreateItem(
+    name,
+    _.merge(opts, this.opts.headers),
+    cb,
+  );
+}
+
+/**
+ * Retrieve information about a job.
+ * Information contains job status and reports among other things.
+ *
+ * @param {String} name: Jenkins job name
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function read(name, cb) {
+  this.remoteAccessApi.getJob(name, cb);
+}
+
+/**
+ * Retrieve information about the latest build of a job.
+ *
+ * @param {String} name: Jenkins job name
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function readLatest(name, cb) {
+  this.remoteAccessApi.getJobLastBuild(name, cb);
+}
+
+/**
+ * Update a job with specified configuration
+ *
+ * @param {String} name: Jenkins job name
+ * @param {String} config: Jenkins job config.xml
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function update(name, config, cb) {
+  this.remoteAccessApi.postJobConfig(name, config, this.opts.headers, cb);
+}
+
+/**
+ * Delete a job.
+ *
+ * @param {String} name: Jenkins job name
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function _delete(name, cb) {
+  this.remoteAccessApi.postJobDelete(name, this.opts.headers, cb);
+}
+
+/**
+ * Build a job.
+ *
+ * @param {String} name: Jenkins job name
+ * @param {Object|String} params: build parameters key-value pairs, passed as object or 'a=b&amp;c=d' string
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function build(name, params, cb) {
+  const body = { parameter: [] };
+  _.keys(params).forEach(function (key) {
+    body.parameter.push({ name: key, value: params[key] });
+  });
+  const opts = {
+    token: "nestor",
+  };
+  this.remoteAccessApi.postJobBuild(
+    name,
+    JSON.stringify(body),
+    _.merge(opts, this.opts.headers),
+    cb,
+  );
+}
+
+function checkStarted(buildUrl, cb) {
+  // hudson.model.Queue$WaitingItem indicates that the item is still waiting in the queue
+  // hudson.model.Queue$LeftItem indicates that the item left the queue and the build has started
+  function _cb(err, result) {
+    if (result &amp;&amp; result._class === "hudson.model.Queue$LeftItem") {
+      cb(true);
+    } else {
+      cb(false);
+    }
+  }
+  // extracts queue item number from the URL
+  // e.g. http://localhost:8080/queue/item/12/ , the queue item number is 12
+  function parseQueueItemNumber(buildUrl) {
+    const elems = buildUrl.split("/");
+    return elems[elems.length - 2];
+  }
+  this.remoteAccessApi.getQueueItem(parseQueueItemNumber(buildUrl), _cb);
+}
+
+/**
+ * Stop a running/building job.
+ *
+ * @param {String} name: Jenkins job name
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function stop(name, cb) {
+  this.remoteAccessApi.postJobLastBuildStop(name, this.opts.headers, cb);
+}
+
+/**
+ * Stream a Jenkins job console output (readable stream).
+ * Jenkins uses the following headers:
+ * - x-more-data to determine whether there are still more content coming through
+ * - x-text-size to determine the starting point of progressive text output (this was obviously badly named, but stayed there for backward compatibility reason)
+ *
+ * @param {String} name: Jenkins job name
+ * @param {Number} buildNumber: Jenkins job's build number
+ * @param {Number} interval: interval between console requests in milliseconds
+ * @param {Function} cb: standard cb(err, result) callback
+ * @return {ConsoleStream} readable console output stream
+ */
+function streamConsole(name, buildNumber, interval, cb) {
+  buildNumber = buildNumber || "lastBuild";
+
+  const stream = new ConsoleStream();
+  const self = this;
+
+  function _processMoreChunks(result, response, cb) {
+    if (response.text) {
+      stream.emit("data", response.text);
+    }
+    // stream while there are more data
+    async.whilst(
+      function (cb) {
+        cb(null, response.headers["x-more-data"] === "true");
+      },
+      function (cb) {
+        function _moreChunkCb(err, _result, _response) {
+          response = _response;
+          if (_response.text) {
+            stream.emit("data", _response.text);
+          }
+          setTimeout(cb, interval);
+        }
+        const start = parseInt(response.headers["x-text-size"], 10);
+        self.remoteAccessApi.getJobProgressiveText(
+          name,
+          buildNumber,
+          start,
+          _moreChunkCb,
+        );
+      },
+      function (err) {
+        stream.emit("end");
+        cb(err);
+      },
+    );
+  }
+
+  process.nextTick(function () {
+    // start with value 0 indicates the first chunk of the console output
+    const start = 0;
+    function _firstChunkCb(err, result, response) {
+      if (!err &amp;&amp; response.statusCode === 200) {
+        _processMoreChunks(result, response, cb);
+      } else {
+        cb(err, result);
+      }
+    }
+    self.remoteAccessApi.getJobProgressiveText(
+      name,
+      buildNumber,
+      start,
+      _firstChunkCb,
+    );
+  });
+
+  return stream;
+}
+
+/**
+ * Enable a job.
+ * If job was disabled, then it will be enabled.
+ * If job was already enabled, then it will stay as-is, no error.
+ *
+ * @param {String} name: Jenkins job name
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function enable(name, cb) {
+  this.remoteAccessApi.postJobEnable(name, this.opts.headers, cb);
+}
+
+/**
+ * Disable a job.
+ * If job was enabled, then it will be disabled.
+ * If job was already disabled, then it will stay as-is, no error.
+ *
+ * @param {String} jobName: Jenkins job name
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function disable(name, cb) {
+  this.remoteAccessApi.postJobDisable(name, this.opts.headers, cb);
+}
+
+/**
+ * Copy an existing job into a new job.
+ *
+ * @param {String} existingName: existing Jenkins job name to copy from
+ * @param {String} newName: new Jenkins job name to copy to
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function copy(existingName, newName, cb) {
+  const opts = {
+    mode: "copy",
+    from: existingName,
+    contentType: "text/plain",
+  };
+  this.remoteAccessApi.postCreateItem(
+    newName,
+    _.merge(opts, this.opts.headers),
+    cb,
+  );
+}
+
+/**
+ * Fetch a job configuration.
+ *
+ * @param {String} name: Jenkins job name
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function fetchConfig(name, cb) {
+  this.remoteAccessApi.getJobConfig(name, cb);
+}
+
+/**
+ * Parse job feed.
+ *
+ * @param {String} name: Jenkins job name
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+function parseFeed(name, cb) {
+  const url = this.url + "/job/" + name + "/rssAll";
+  new RssParser().parseURL(url, cb);
+}
+
+const exports = {
+  create: create,
+  read: read,
+  readLatest: readLatest,
+  update: update,
+  delete: _delete,
+  build: build,
+  checkStarted: checkStarted,
+  stop: stop,
+  streamConsole: streamConsole,
+  enable: enable,
+  disable: disable,
+  copy: copy,
+  fetchConfig: fetchConfig,
+  parseFeed: parseFeed,
+};
+
+export { exports as default };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Oct 12 2026 02:28:43 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

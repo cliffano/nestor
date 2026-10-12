@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>178/178</span>
+                <span class='fraction'>179/179</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>178/178</span>
+                <span class='fraction'>179/179</span>
             </div>
         
             
@@ -240,7 +240,9 @@
 <a name='L175'></a><a href='#L175'>175</a>
 <a name='L176'></a><a href='#L176'>176</a>
 <a name='L177'></a><a href='#L177'>177</a>
-<a name='L178'></a><a href='#L178'>178</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -296,35 +298,38 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -416,12 +421,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
-import _ from 'lodash';
-import cli from 'bagofcli';
-import Jenkins from '../jenkins.js';
-import util from './util.js';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+import _ from "lodash";
+import cli from "bagofcli";
+import Jenkins from "../jenkins.js";
+import util from "./util.js";
 &nbsp;
 /**
  * Get a handler that calls Jenkins API to get a list of all jobs on the Jenkins instance.
@@ -434,11 +438,11 @@ function dashboard(cb) {
     function resultCb(result) {
       const jobs = result.jobs;
       if (_.isEmpty(jobs)) {
-        console.log('Jobless Jenkins');
+        console.log("Jobless Jenkins");
       } else {
         jobs.forEach(function (job) {
           const status = util.statusByColor(job.color);
-          const color  = util.colorByStatus(status, job.color);
+          const color = util.colorByStatus(status, job.color);
           console.log(`${status[color]} - ${job.name}`);
         });
       }
@@ -457,16 +461,17 @@ function dashboard(cb) {
  * @return Jenkins API handler function
  */
 function discover(cb) {
-  return function (command, args) {
-    let host = _.get(args, '[0]');
+  return function (command) {
+    let host = command.args[0];
 &nbsp;
     if (!host) {
-      host = 'localhost';
+      host = "localhost";
     }
 &nbsp;
     function resultCb(result) {
       const version = result.hudson.version[0];
-      const host = result.hudson.url &amp;&amp; result.hudson.url[0] ? result.hudson.url[0] <span class="branch-0 cbranch-no" title="branch not covered" >: host;</span>
+      const host =
+        result.hudson.url &amp;&amp; result.hudson.url[0] ? result.hudson.url[0] <span class="branch-0 cbranch-no" title="branch not covered" >: host;</span>
       console.log(`Jenkins ver. ${version} is running on ${host}`);
     }
     function jenkinsCb(jenkins) {
@@ -485,24 +490,26 @@ function discover(cb) {
 function executor(cb) {
   return function (command) {
     function resultCb(result) {
-&nbsp;
       const computers = result.computer;
 &nbsp;
       if (_.isEmpty(computers)) {
-        console.log('No executor found');
+        console.log("No executor found");
       } else {
-&nbsp;
         const data = Jenkins.executorSummary(computers);
 &nbsp;
         _.keys(data).forEach(function (computer) {
-          console.log('+ %s | %s', computer, data[computer].summary);
+          console.log("+ %s | %s", computer, data[computer].summary);
           data[computer].executors.forEach(function (executor) {
             if (!executor.idle) {
-              console.log('  - %s | %s%%s', executor.name, executor.progress, (executor.stuck) ? ' stuck!' : '');
+              console.log(
+                "  - %s | %s%%s",
+                executor.name,
+                executor.progress,
+                executor.stuck ? " stuck!" : "",
+              );
             }
           });
         });
-&nbsp;
       }
     }
     function jenkinsCb(jenkins) {
@@ -551,10 +558,10 @@ function queue(cb) {
     function resultCb(result) {
       const items = result.items;
       if (_.isEmpty(items)) {
-        console.log('Queue is empty');
+        console.log("Queue is empty");
       } else {
         items.forEach(function (item) {
-            console.log('- %s', item.task.name);
+          console.log("- %s", item.task.name);
         });
       }
     }
@@ -589,19 +596,18 @@ const exports = {
   executor: executor,
   feed: feed,
   queue: queue,
-  version: version
+  version: version,
 };
 &nbsp;
-export {
-  exports as default
-};</pre></td></tr></table></pre>
+export { exports as default };
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-17T23:34:51.905Z
+                at 2026-10-12T02:28:41.776Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

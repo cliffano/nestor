@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">72</p>
+      <p class="stat">74</p>
     </div>
   </div>
   <div class="row historical">
@@ -90,8 +90,8 @@
 <div class="container">
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
-import _ from &#039;lodash&#039;;
-import RssParser from &#039;rss-parser&#039;;
+import _ from &quot;lodash&quot;;
+import RssParser from &quot;rss-parser&quot;;
 
 /**
  * Create a view with specified configuration.
@@ -103,9 +103,13 @@ import RssParser from &#039;rss-parser&#039;;
 function create(name, config, cb) {
   const opts = {
     body: config,
-    contentType: &#039;application/xml&#039;,
+    contentType: &quot;application/xml&quot;,
   };
-  this.remoteAccessApi.postCreateView(name, _.merge(opts, this.opts.headers), cb);
+  this.remoteAccessApi.postCreateView(
+    name,
+    _.merge(opts, this.opts.headers),
+    cb,
+  );
 }
 
 /**
@@ -146,7 +150,7 @@ function fetchConfig(name, cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function parseFeed(name, cb) {
-  const url = this.url + &#039;/view/&#039; + name + &#039;/rssAll&#039;;
+  const url = this.url + &quot;/view/&quot; + name + &quot;/rssAll&quot;;
   new RssParser().parseURL(url, cb);
 }
 
@@ -155,12 +159,10 @@ const exports = {
   read: read,
   update: update,
   fetchConfig: fetchConfig,
-  parseFeed: parseFeed
+  parseFeed: parseFeed,
 };
 
-export {
-  exports as default
-};</textarea>
+export { exports as default };</textarea>
   </div>
 </div>
 

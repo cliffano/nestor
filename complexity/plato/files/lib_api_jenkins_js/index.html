@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">127</p>
+      <p class="stat">123</p>
     </div>
   </div>
   <div class="row historical">
@@ -90,9 +90,9 @@
 <div class="container">
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
-import dgram from &#039;dgram&#039;;
-import RssParser from &#039;rss-parser&#039;;
-import xml2js from &#039;xml2js&#039;;
+import dgram from &quot;dgram&quot;;
+import RssParser from &quot;rss-parser&quot;;
+import xml2js from &quot;xml2js&quot;;
 
 /**
  * Retrieve Jenkins instance computer information.
@@ -121,21 +121,20 @@ function crumb(cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function discover(host, cb) {
-
   const TIMEOUT = 5000;
 
-  const socket = dgram.createSocket(&#039;udp4&#039;);
-  const buffer = new Buffer(&#039;Long live Jenkins!&#039;);
+  const socket = dgram.createSocket(&quot;udp4&quot;);
+  const buffer = new Buffer(&quot;Long live Jenkins!&quot;);
   const parser = new xml2js.Parser();
 
-  socket.on(&#039;error&#039;, function (err) {
+  socket.on(&quot;error&quot;, function (err) {
     socket.close();
     cb(err);
   });
 
-  socket.on(&#039;message&#039;, function (result) {
+  socket.on(&quot;message&quot;, function (result) {
     socket.close();
-    parser.addListener(&#039;end&#039;, function (result) {
+    parser.addListener(&quot;end&quot;, function (result) {
       cb(null, result);
     });
     parser.parseString(result);
@@ -168,7 +167,7 @@ function info(cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function parseFeed(cb) {
-  const url = this.url + &#039;/rssAll&#039;;
+  const url = this.url + &quot;/rssAll&quot;;
   new RssParser().parseURL(url, cb);
 }
 
@@ -190,14 +189,13 @@ function queue(cb) {
  * @param {Function} cb: standard cb(err, result) callback
  */
 function version(cb) {
-
   function _cb(err, result, response) {
     if (err) {
       cb(err);
-    } else if (response.headers[&#039;x-jenkins&#039;]) {
-      cb(null, response.headers[&#039;x-jenkins&#039;]);
+    } else if (response.headers[&quot;x-jenkins&quot;]) {
+      cb(null, response.headers[&quot;x-jenkins&quot;]);
     } else {
-      cb(new Error(&#039;Not a Jenkins server&#039;));
+      cb(new Error(&quot;Not a Jenkins server&quot;));
     }
   }
   this.remoteAccessApi.headJenkins(_cb);
@@ -210,12 +208,10 @@ const exports = {
   info: info,
   parseFeed: parseFeed,
   queue: queue,
-  version: version
+  version: version,
 };
 
-export {
-  exports as default
-};</textarea>
+export { exports as default };</textarea>
   </div>
 </div>
 

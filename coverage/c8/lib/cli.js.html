@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>88/88</span>
+                <span class='fraction'>89/89</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">90.9% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>11/12</span>
+                <span class='fraction'>10/11</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>88/88</span>
+                <span class='fraction'>89/89</span>
             </div>
         
             
@@ -151,7 +151,8 @@
 <a name='L86'></a><a href='#L86'>86</a>
 <a name='L87'></a><a href='#L87'>87</a>
 <a name='L88'></a><a href='#L88'>88</a>
-<a name='L89'></a><a href='#L89'>89</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -175,6 +176,10 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -186,9 +191,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -240,19 +242,19 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
-import bag from 'bagofcli';
-import Jenkins from './jenkins.js';
-import jenkins from './cli/jenkins.js';
-import job from './cli/job.js';
-import p from 'path';
-import _url from 'url';
-import view from './cli/view.js';
+import bag from "bagofcli";
+import Jenkins from "./jenkins.js";
+import jenkins from "./cli/jenkins.js";
+import job from "./cli/job.js";
+import p from "path";
+import _url from "url";
+import view from "./cli/view.js";
 &nbsp;
-const DIRNAME = p.dirname(import.meta.url).replace('file://', '');
+const DIRNAME = p.dirname(import.meta.url).replace("file://", "");
 &nbsp;
 function __exec(args, cb) {
   // use url flag or JENKINS_URL environment variable if provided
-  const url = (args &amp;&amp; args.parent) ? (args.parent.url || process.env.JENKINS_URL) <span class="branch-0 cbranch-no" title="branch not covered" >: undefined;</span>
+  const url = args ? args.url || process.env.JENKINS_URL <span class="branch-0 cbranch-no" title="branch not covered" >: undefined;</span>
 &nbsp;
   function init(url, cb) {
     const jenkins = new Jenkins(url);
@@ -262,14 +264,18 @@ function __exec(args, cb) {
   }
 &nbsp;
   // if URL value and interactive flag are specified, then prompt for authentication details
-  if (url &amp;&amp; args.parent &amp;&amp; args.parent.interactive) {
-    bag.lookupConfig(['Username', 'Password'], { prompt: true }, function (err, results) {
-      const parsedUrl = new URL(url);
-      parsedUrl.username = results.Username;
-      parsedUrl.password = results.Password;
-      init(parsedUrl.toString(), cb);
-    });
-  // otherwise fallback to default URL
+  if (url &amp;&amp; args.interactive) {
+    bag.lookupConfig(
+      ["Username", "Password"],
+      { prompt: true },
+      function (err, results) {
+        const parsedUrl = new URL(url);
+        parsedUrl.username = results.Username;
+        parsedUrl.password = results.Password;
+        init(parsedUrl.toString(), cb);
+      },
+    );
+    // otherwise fallback to default URL
   } else {
     init(url, cb);
   }
@@ -279,41 +285,40 @@ function __exec(args, cb) {
  * Execute Nestor CLI.
  */
 function exec() {
-&nbsp;
   const actions = {
     commands: {
-      'dashboard': { action: jenkins.dashboard(__exec) },
-      'discover': { action: jenkins.discover(__exec) },
-      'executor': { action: jenkins.executor(__exec) },
-      'feed': { action: jenkins.feed(__exec) },
-      'queue': { action: jenkins.queue(__exec) },
-      'ver': { action: jenkins.version(__exec) },
-      'create': { action: job.create(__exec) },
-      'create-job': { action: job.create(__exec) },
-      'job': { action: job.read(__exec) },
-      'read-job': { action: job.read(__exec) },
-      'last': { action: job.readLatest(__exec) },
-      'update': { action: job.update(__exec) },
-      'update-job': { action: job.update(__exec) },
-      'delete': { action: job.delete(__exec) },
-      'delete-job': { action: job.delete(__exec) },
-      'build': { action: job.build(__exec) },
-      'build-job': { action: job.build(__exec) },
-      'stop': { action: job.stop(__exec) },
-      'stop-job': { action: job.stop(__exec) },
-      'console': { action: job.console(__exec) },
-      'enable': { action: job.enable(__exec) },
-      'enable-job': { action: job.enable(__exec) },
-      'disable': { action: job.disable(__exec) },
-      'disable-job': { action: job.disable(__exec) },
-      'copy': { action: job.copy(__exec) },
-      'copy-job': { action: job.copy(__exec) },
-      'config': { action: job.fetchConfig(__exec) },
-      'fetch-job-config': { action: job.fetchConfig(__exec) },
-      'create-view': { action: view.create(__exec) },
-      'update-view': { action: view.update(__exec) },
-      'fetch-view-config': { action: view.fetchConfig(__exec) }
-    }
+      dashboard: { action: jenkins.dashboard(__exec) },
+      discover: { action: jenkins.discover(__exec) },
+      executor: { action: jenkins.executor(__exec) },
+      feed: { action: jenkins.feed(__exec) },
+      queue: { action: jenkins.queue(__exec) },
+      ver: { action: jenkins.version(__exec) },
+      create: { action: job.create(__exec) },
+      "create-job": { action: job.create(__exec) },
+      job: { action: job.read(__exec) },
+      "read-job": { action: job.read(__exec) },
+      last: { action: job.readLatest(__exec) },
+      update: { action: job.update(__exec) },
+      "update-job": { action: job.update(__exec) },
+      delete: { action: job.delete(__exec) },
+      "delete-job": { action: job.delete(__exec) },
+      build: { action: job.build(__exec) },
+      "build-job": { action: job.build(__exec) },
+      stop: { action: job.stop(__exec) },
+      "stop-job": { action: job.stop(__exec) },
+      console: { action: job.console(__exec) },
+      enable: { action: job.enable(__exec) },
+      "enable-job": { action: job.enable(__exec) },
+      disable: { action: job.disable(__exec) },
+      "disable-job": { action: job.disable(__exec) },
+      copy: { action: job.copy(__exec) },
+      "copy-job": { action: job.copy(__exec) },
+      config: { action: job.fetchConfig(__exec) },
+      "fetch-job-config": { action: job.fetchConfig(__exec) },
+      "create-view": { action: view.create(__exec) },
+      "update-view": { action: view.update(__exec) },
+      "fetch-view-config": { action: view.fetchConfig(__exec) },
+    },
   };
 &nbsp;
   bag.command(DIRNAME, actions);
@@ -321,12 +326,10 @@ function exec() {
 &nbsp;
 const exports = {
   exec: exec,
-  __exec: __exec
+  __exec: __exec,
 };
 &nbsp;
-export {
-  exports as default
-};
+export { exports as default };
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -334,7 +337,7 @@ export {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-17T23:34:51.905Z
+                at 2026-10-12T02:28:41.776Z
             </div>
         <script src="../prettify.js"></script>
         <script>

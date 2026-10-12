@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>cli/util.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="ConsoleStream.html">ConsoleStream</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Jenkins.html">Jenkins</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_console">_console</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_delete">_delete</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#build">build</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#colorByStatus">colorByStatus</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#computer">computer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#copy">copy</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#create">create</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#crumb">crumb</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#csrf">csrf</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#dashboard">dashboard</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#disable">disable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#discover">discover</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#enable">enable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#exec">exec</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#executor">executor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#executorSummary">executorSummary</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#feed">feed</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#fetchConfig">fetchConfig</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#htmlError">htmlError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#info">info</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#jobBuildNotFoundError">jobBuildNotFoundError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#jobNotFoundError">jobNotFoundError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#jobRequireParamsError">jobRequireParamsError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#monitor">monitor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseFeed">parseFeed</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#passThroughResponse">passThroughResponse</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#passThroughSuccess">passThroughSuccess</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#passThroughSuccessJson">passThroughSuccessJson</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#queue">queue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#read">read</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#readLatest">readLatest</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#statusByColor">statusByColor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#stop">stop</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#streamConsole">streamConsole</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#update">update</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#version">version</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#viewNotFoundError">viewNotFoundError</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">cli/util.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+import _ from "lodash";
+
+const COLOR_STATUS = {
+  blue: ["ok"],
+  green: ["ok", "success"],
+  grey: ["aborted", "unknown"],
+  red: ["fail", "failure"],
+  yellow: ["warn", "building"],
+};
+
+/**
+ * Get color based on status and Jenkins status color.
+ * Jenkins status color will take precedence over status because
+ * Jenkins uses either blue or green as the color for ok status.
+ *
+ * Color property can contain either color or status text.
+ * Hence the need for mapping color to status text in the case where value is really color.
+ * This is used in conjunction with statusByColor function.
+ *
+ * @param {String} status: Jenkins status
+ * @param {String} jenkinsColor: Jenkins status color
+ * @return the status text
+ */
+function colorByStatus(status, jenkinsColor) {
+  let color;
+
+  if (jenkinsColor) {
+    // Jenkins color value can contain either a color, color_anime, or status in job.color field,
+    // hence to get color/status value out of the mix we need to remove the postfix _anime,
+    // _anime postfix only exists on a job currently being built
+    jenkinsColor = jenkinsColor.replace(/_anime$/, "");
+    color =
+      COLOR_STATUS[jenkinsColor] &amp;&amp; COLOR_STATUS[jenkinsColor][0]
+        ? jenkinsColor
+        : "grey";
+  } else {
+    color = "grey";
+    _.keys(COLOR_STATUS).forEach(function (_color) {
+      COLOR_STATUS[_color].forEach(function (_status) {
+        if (_status === status) {
+          color = _color;
+        }
+      });
+    });
+  }
+
+  return color;
+}
+
+/**
+ * Get status based on the value of color property.
+ *
+ * Color property can contain either color or status text.
+ * Hence the need for mapping color to status text in the case where value is really color.
+ * This is used in conjunction with colorByStatus function.
+ *
+ * @param {String} jenkinsColor: Jenkins status color
+ * @return the status text
+ */
+function statusByColor(jenkinsColor) {
+  let status;
+  if (jenkinsColor) {
+    // Jenkins color value can contain either a color, color_anime, or status in job.color field,
+    // hence to get color/status value out of the mix we need to remove the postfix _anime,
+    // _anime postfix only exists on a job currently being built
+    jenkinsColor = jenkinsColor.replace(/_anime$/, "");
+
+    status = COLOR_STATUS[jenkinsColor]
+      ? COLOR_STATUS[jenkinsColor][0]
+      : jenkinsColor;
+  } else {
+    status = "unknown";
+  }
+
+  return status;
+}
+
+const exports = {
+  colorByStatus: colorByStatus,
+  statusByColor: statusByColor,
+};
+
+export { exports as default };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Oct 12 2026 02:28:43 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
