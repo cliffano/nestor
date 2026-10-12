@@ -1,4 +1,4 @@
-test | /opt/hostedtoolcache/node/26.11.1/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+test | /opt/hostedtoolcache/node/22.23.3/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  consolestream - consolestream[0m
@@ -30,6 +30,7 @@ test | /opt/hostedtoolcache/node/26.11.1/x64/lib/node_modules/bob/node_modules/.
   [32m  [32m✔[39m[0m[90m checkStarted - returns true when build has an executable url[0m
   [32m  [32m✔[39m[0m[90m checkStarted - returns false when build does not yet have an executable url[0m
   [32m  [32m✔[39m[0m[90m streamConsole - should send request to API endpoint[0m
+  [32m  [32m✔[39m[0m[90m streamConsole - should use last build when build number is not specified[0m
   [32m  [32m✔[39m[0m[90m streamConsole - should display console output once when there is no more text[0m
   [32m  [32m✔[39m[0m[90m streamConsole - should display no console output once when result does not have any body[0m
   [32m  [32m✔[39m[0m[90m streamConsole - should display console output once when there is more text but an error occurs[0m
@@ -60,14 +61,13 @@ test | /opt/hostedtoolcache/node/26.11.1/x64/lib/node_modules/bob/node_modules/.
 
 [0m  cli - jenkins[0m
   [32m  [32m✔[39m[0m[90m dashboard - should log Jobless Jenkins when exec dashboard is called and there is no job[0m
-(node:3022) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
-(Use `node --trace-deprecation ...` to show where the warning was created)
   [32m  [32m✔[39m[0m[90m dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs[0m
   [32m  [32m✔[39m[0m[90m dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs with animated value[0m
   [32m  [32m✔[39m[0m[90m dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs with unknown color value[0m
   [32m  [32m✔[39m[0m[90m discover - should log version and url when exec discover is called and there is a running Jenkins instance[0m
   [32m  [32m✔[39m[0m[90m discover - should log version and url when exec discover is called with specified host[0m
   [32m  [32m✔[39m[0m[90m discover - should log host instead of url when exec discover result does not include any url[0m
+  [32m  [32m✔[39m[0m[90m discover - should log host when exec discover result does not have any url[0m
   [32m  [32m✔[39m[0m[90m executor -should log no executor found when exec executor is called and there is no executor[0m
   [32m  [32m✔[39m[0m[90m executor -should pass correct idle, stuck, and progress status[0m
   [32m  [32m✔[39m[0m[90m feed -should parse job feed when job arg is provided[0m
@@ -85,9 +85,14 @@ test | /opt/hostedtoolcache/node/26.11.1/x64/lib/node_modules/bob/node_modules/.
   [32m  [32m✔[39m[0m[90m readLatest - should display completed status and finish time description[0m
   [32m  [32m✔[39m[0m[90m update - should log job updated success message[0m
   [32m  [32m✔[39m[0m[90m delete - should log job deleted success message[0m
+  [32m  [32m✔[39m[0m[90m build - should log job started success message with params[0m
+  [32m  [32m✔[39m[0m[90m build - should stream console output when console is enabled and build has started[0m
+  [32m  [32m✔[39m[0m[90m build - should wait until build starts before streaming console output[0m
+  [32m  [32m✔[39m[0m[90m build - should give up after max retries and not stream console output[0m
   [32m  [32m✔[39m[0m[90m build - should log job started success message with no command and no params[0m
   [32m  [32m✔[39m[0m[90m stop - should log job stopped success message[0m
   [32m  [32m✔[39m[0m[90m console - should pipe console output stream to stdout[0m
+  [32m  [32m✔[39m[0m[90m console - should pass undefined build number when none supplied[0m
   [32m  [32m✔[39m[0m[90m enable - should log job enabled success message[0m
   [32m  [32m✔[39m[0m[90m disable - should log job disabled success message[0m
   [32m  [32m✔[39m[0m[90m copy - should log job copy success message[0m
@@ -119,6 +124,7 @@ test | /opt/hostedtoolcache/node/26.11.1/x64/lib/node_modules/bob/node_modules/.
   [32m  [32m✔[39m[0m[90m should pass URL as-is when there is no interactive arg specified[0m
   [32m  [32m✔[39m[0m[90m should use environment variable as Jenkins URL when there is no interactive arg specified and URL parameter is not specified[0m
   [32m  [32m✔[39m[0m[90m should use default Jenkins URL when there is no interactive arg specified and no environment variable Jenkins URL[0m
+  [32m  [32m✔[39m[0m[90m should use default Jenkins URL when args is not specified[0m
   [32m  [32m✔[39m[0m[90m should pass username and password to Jenkins URL when interactive arg is set[0m
 
 [0m  jenkins - jenkins[0m
@@ -126,6 +132,9 @@ test | /opt/hostedtoolcache/node/26.11.1/x64/lib/node_modules/bob/node_modules/.
   [32m  [32m✔[39m[0m[90m should use default url when url is not specified[0m
   [32m  [32m✔[39m[0m[90m should handle authentication failure error[0m
   [32m  [32m✔[39m[0m[90m should handle authentication required error[0m
+  [32m  [32m✔[39m[0m[90m should set agent options when cert, key and ca are specified[0m
+  [32m  [32m✔[39m[0m[90m should not set cert, key and ca agent options when the files do not exist[0m
+  [32m  [32m✔[39m[0m[90m should not set key and ca agent options when key path and ca are not specified[0m
 
 [0m  jenkins - csrf[0m
   [32m  [32m✔[39m[0m[90m should add crumb header[0m
@@ -133,31 +142,32 @@ test | /opt/hostedtoolcache/node/26.11.1/x64/lib/node_modules/bob/node_modules/.
 
 [0m  jenkins - monitor[0m
   [32m  [32m✔[39m[0m[90m should monitor all jobs on Jenkins instance when no job or view opt specified[0m
+  [32m  [32m✔[39m[0m[90m should monitor every minute when schedule opt is not specified[0m
   [32m  [32m✔[39m[0m[90m should result in status non-success when a job has non-success color but no red and yellow[0m
   [32m  [32m✔[39m[0m[90m should result in status success when a job has all blue or green color[0m
   [32m  [32m✔[39m[0m[90m should result in status warn when view opt is specified and a job has yellow color but no red[0m
   [32m  [32m✔[39m[0m[90m should monitor the latest build of a job when job opt is specified[0m
 
 
-[92m [0m[32m 105 passing[0m[90m (160ms)[0m
+[92m [0m[32m 117 passing[0m[90m (175ms)[0m
 
 SUCCESS | exit code 0
--------------------|---------|----------|---------|---------|---------------------------------
-File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s               
--------------------|---------|----------|---------|---------|---------------------------------
-All files          |   96.65 |     97.1 |   97.52 |   96.65 |                                 
- lib               |   95.49 |       94 |     100 |   95.49 |                                 
-  cli.js           |     100 |     90.9 |     100 |     100 | 14                              
-  jenkins.js       |   93.98 |    94.87 |     100 |   93.98 | 60-75                           
- lib/api           |     100 |    98.57 |     100 |     100 |                                 
-  consolestream.js |     100 |      100 |     100 |     100 |                                 
-  jenkins.js       |     100 |      100 |     100 |     100 |                                 
-  job.js           |     100 |    96.77 |     100 |     100 | 133                             
-  util.js          |     100 |      100 |     100 |     100 |                                 
-  view.js          |     100 |      100 |     100 |     100 |                                 
- lib/cli           |    94.4 |    97.54 |   95.52 |    94.4 |                                 
-  jenkins.js       |     100 |    97.61 |     100 |     100 | 51                              
-  job.js           |   89.27 |    96.15 |    92.1 |   89.27 | 163-164,168-174,180-199,204-214 
-  util.js          |     100 |      100 |     100 |     100 |                                 
-  view.js          |     100 |      100 |     100 |     100 |                                 
--------------------|---------|----------|---------|---------|---------------------------------
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |     100 |      100 |     100 |     100 |                   
+ lib               |     100 |      100 |     100 |     100 |                   
+  cli.js           |     100 |      100 |     100 |     100 |                   
+  jenkins.js       |     100 |      100 |     100 |     100 |                   
+ lib/api           |     100 |      100 |     100 |     100 |                   
+  consolestream.js |     100 |      100 |     100 |     100 |                   
+  jenkins.js       |     100 |      100 |     100 |     100 |                   
+  job.js           |     100 |      100 |     100 |     100 |                   
+  util.js          |     100 |      100 |     100 |     100 |                   
+  view.js          |     100 |      100 |     100 |     100 |                   
+ lib/cli           |     100 |      100 |     100 |     100 |                   
+  jenkins.js       |     100 |      100 |     100 |     100 |                   
+  job.js           |     100 |      100 |     100 |     100 |                   
+  util.js          |     100 |      100 |     100 |     100 |                   
+  view.js          |     100 |      100 |     100 |     100 |                   
+-------------------|---------|----------|---------|---------|-------------------
