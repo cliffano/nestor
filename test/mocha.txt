@@ -60,7 +60,7 @@
 
 [0m  cli - jenkins[0m
   [32m  [32m✔[39m[0m[90m dashboard - should log Jobless Jenkins when exec dashboard is called and there is no job[0m
-(node:3007) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(node:2745) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
 (Use `node --trace-deprecation ...` to show where the warning was created)
   [32m  [32m✔[39m[0m[90m dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs[0m
   [32m  [32m✔[39m[0m[90m dashboard - should log statuses when exec dashboard is called and Jenkins has running jobs with animated value[0m
@@ -150,5 +150,5 @@
   [32m  [32m✔[39m[0m[90m should monitor the latest build of a job when job opt is specified[0m
 
 
-[92m [0m[32m 117 passing[0m[90m (200ms)[0m
+[92m [0m[32m 117 passing[0m[90m (140ms)[0m
 
