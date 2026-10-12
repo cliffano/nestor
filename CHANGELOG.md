@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Upgrade dependencies to latest
 - Run integration tests against a Jenkins container
+- Set min node engine to >= 22.0.0
 
 ### Fixed
 - Fix command arguments not being passed to command handlers following bagofcli 3.1.0
