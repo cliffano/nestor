@@ -49,7 +49,7 @@ describe("cli - job", function () {
         cb();
       });
 
-    job.create(this.mockCb)(null, ["somejob", "config.xml"]);
+    job.create(this.mockCb)({ args: ["somejob", "config.xml"] });
   });
   it("read - should log job status with correct color and health reports", function () {
     const status = "ok".blue;
@@ -76,7 +76,7 @@ describe("cli - job", function () {
       cb(null, result);
     });
 
-    job.read(this.mockCb)(null, ["somejob"]);
+    job.read(this.mockCb)({ args: ["somejob"] });
   });
   it("read - should log status as-is in grey color when color is status value", function () {
     const status = "notbuilt".grey;
@@ -103,7 +103,7 @@ describe("cli - job", function () {
       cb(null, result);
     });
 
-    job.read(this.mockCb)(null, ["somejob"]);
+    job.read(this.mockCb)({ args: ["somejob"] });
   });
   it("readLatest - should display yellow building status and start time description", function () {
     const status = "building".yellow;
@@ -123,7 +123,7 @@ describe("cli - job", function () {
       cb(null, result);
     });
 
-    job.readLatest(this.mockCb)(null, ["somejob"]);
+    job.readLatest(this.mockCb)({ args: ["somejob"] });
   });
   it("readLatest - should display completed status and finish time description", function () {
     const status = "success".green;
@@ -145,7 +145,7 @@ describe("cli - job", function () {
       cb(null, result);
     });
 
-    job.readLatest(this.mockCb)(null, ["somejob"]);
+    job.readLatest(this.mockCb)({ args: ["somejob"] });
   });
   it("update - should log job updated success message", function () {
     this.mockConsole
@@ -167,7 +167,7 @@ describe("cli - job", function () {
         cb();
       });
 
-    job.update(this.mockCb)(null, ["somejob", "config.xml"]);
+    job.update(this.mockCb)({ args: ["somejob", "config.xml"] });
   });
   it("delete - should log job deleted success message", function () {
     this.mockConsole
@@ -181,7 +181,7 @@ describe("cli - job", function () {
       cb();
     });
 
-    job.delete(this.mockCb)(null, ["somejob"]);
+    job.delete(this.mockCb)({ args: ["somejob"] });
   });
   // it('build - should log job started success message', function () {
   //   this.mockConsole.expects('log').once().withExactArgs('Job somejob was triggered successfully');
@@ -195,7 +195,7 @@ describe("cli - job", function () {
   //     cb();
   //   });
 
-  //   job.build(this.mockCb)(null, ['somejob', 'param1=value1&param2=value2&param3=value3']);
+  //   job.build(this.mockCb)({ args: ['somejob', 'param1=value1&param2=value2&param3=value3'] });
   // });
   // it('build - should pass to console call', function (done) {
   //   this.timeout = 3000;
@@ -226,7 +226,7 @@ describe("cli - job", function () {
   //     };
   //   });
 
-  //   job.build(this.mockCb)({ console: true }, ['somejob']);
+  //   job.build(this.mockCb)({ console: true, args: ['somejob'] });
   // });
   // it('build - should wait until build starts before passing to console call', function (done) {
   //   this.timeout = 10000;
@@ -260,7 +260,7 @@ describe("cli - job", function () {
   //     };
   //   });
 
-  //   job.build(this.mockCb)({ console: true }, ['somejob']);
+  //   job.build(this.mockCb)({ console: true, args: ['somejob'] });
   // });
   // it('build - should give up after max retries and not stream old console', function (done) {
   //   this.timeout = 10000;
@@ -281,7 +281,7 @@ describe("cli - job", function () {
   //     done();
   //   });
 
-  //   job.build(this.mockCb)({ console: true, poll: 1 }, ['somejob']);
+  //   job.build(this.mockCb)({ console: true, poll: 1, args: ['somejob'] });
   // });
   it("build - should log job started success message with no command and no params", function () {
     this.mockConsole
@@ -297,7 +297,7 @@ describe("cli - job", function () {
         cb();
       });
 
-    job.build(this.mockCb)({}, ["somejob"]);
+    job.build(this.mockCb)({ args: ["somejob"] });
   });
   it("stop - should log job stopped success message", function () {
     this.mockConsole
@@ -311,7 +311,7 @@ describe("cli - job", function () {
       cb();
     });
 
-    job.stop(this.mockCb)(null, ["somejob"]);
+    job.stop(this.mockCb)({ args: ["somejob"] });
   });
   it("console - should pipe console output stream to stdout", function () {
     this.mockProcess.expects("exit").once().withExactArgs(0);
@@ -330,7 +330,7 @@ describe("cli - job", function () {
         };
       });
 
-    job.console(this.mockCb)({}, ["somejob", 123]);
+    job.console(this.mockCb)({ args: ["somejob", 123] });
   });
   // it('console - should pass null build number when none supplied', function () {
   //   this.mockProcess.expects('exit').once().withExactArgs(0);
@@ -347,7 +347,7 @@ describe("cli - job", function () {
   //     };
   //   });
 
-  //   job.console(this.mockCb)({}, ['somejob']);
+  //   job.console(this.mockCb)({ args: ['somejob'] });
   // });
   it("enable - should log job enabled success message", function () {
     this.mockConsole
@@ -361,7 +361,7 @@ describe("cli - job", function () {
       cb();
     });
 
-    job.enable(this.mockCb)(null, ["somejob"]);
+    job.enable(this.mockCb)({ args: ["somejob"] });
   });
   it("disable - should log job disabled success message", function () {
     this.mockConsole
@@ -375,7 +375,7 @@ describe("cli - job", function () {
       cb();
     });
 
-    job.disable(this.mockCb)(null, ["somejob"]);
+    job.disable(this.mockCb)({ args: ["somejob"] });
   });
   it("copy - should log job copy success message", function () {
     this.mockConsole
@@ -392,7 +392,7 @@ describe("cli - job", function () {
         cb();
       });
 
-    job.copy(this.mockCb)(null, ["existingjob", "newjob"]);
+    job.copy(this.mockCb)({ args: ["existingjob", "newjob"] });
   });
   it("fetchConfig - should log configuration", function () {
     this.mockConsole
@@ -406,6 +406,6 @@ describe("cli - job", function () {
       cb(null, "<xml>some config</xml>");
     });
 
-    job.fetchConfig(this.mockCb)(null, ["somejob"]);
+    job.fetchConfig(this.mockCb)({ args: ["somejob"] });
   });
 });

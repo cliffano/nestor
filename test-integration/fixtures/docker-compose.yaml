@@ -4,8 +4,6 @@ services:
   jenkins:
     image: jenkins/jenkins:2.580.1-lts-jdk21
     network_mode: bridge
-    ports:
-      - '127.0.0.1:8080:8080'
     environment:
       # Skip the setup wizard so that Jenkins starts up unsecured and ready to use,
       # and disable CSRF protection so that anonymous POST requests are accepted.
@@ -21,8 +19,6 @@ services:
   jenkins_secured:
     image: jenkins/jenkins:2.580.1-lts-jdk21
     network_mode: bridge
-    ports:
-      - '127.0.0.1:8081:8080'
     # Default settings leave Jenkins secured and waiting to be unlocked via the setup wizard,
     # so that anonymous requests are rejected with 403 Forbidden.
     healthcheck:

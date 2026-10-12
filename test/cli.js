@@ -68,9 +68,7 @@ describe("cli - exec", function () {
   });
   it("should pass URL as-is when there is no interactive arg specified", function (done) {
     const args = {
-      parent: {
-        url: "http://someserver:8080",
-      },
+      url: "http://someserver:8080",
     };
     cli.__exec(args, function (jenkins) {
       assert.equals(jenkins.url, "http://someserver:8080");
@@ -81,9 +79,7 @@ describe("cli - exec", function () {
     sinon.stub(process, "env").value({
       JENKINS_URL: "http://someserver:8080",
     });
-    const args = {
-      parent: {},
-    };
+    const args = {};
     cli.__exec(args, function (jenkins) {
       assert.equals(jenkins.url, "http://someserver:8080");
       done();
@@ -93,9 +89,7 @@ describe("cli - exec", function () {
     sinon.stub(process, "env").value({
       JENKINS_URL: null,
     });
-    const args = {
-      parent: {},
-    };
+    const args = {};
     cli.__exec(args, function (jenkins) {
       assert.equals(jenkins.url, "http://localhost:8080");
       done();
@@ -108,10 +102,8 @@ describe("cli - exec", function () {
       .withArgs(["Username", "Password"], { prompt: true })
       .callsArgWith(2, null, { Username: "someuser", Password: "somepass" });
     const args = {
-      parent: {
-        url: "http://someserver:8080",
-        interactive: true,
-      },
+      url: "http://someserver:8080",
+      interactive: true,
     };
     cli.__exec(args, function (jenkins) {
       assert.equals(jenkins.url, "http://someuser:somepass@someserver:8080/");

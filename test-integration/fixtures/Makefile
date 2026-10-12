@@ -8,4 +8,10 @@ start-jenkins:
 stop-jenkins:
 	$(DOCKER_COMPOSE) down --volumes
 
-.PHONY: start-jenkins stop-jenkins
+get-jenkins-ip-address:
+	@docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $$($(DOCKER_COMPOSE) ps -q jenkins)
+
+get-jenkins-secured-ip-address:
+	@docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $$($(DOCKER_COMPOSE) ps -q jenkins_secured)
+
+.PHONY: start-jenkins stop-jenkins get-jenkins-ip-address get-jenkins-secured-ip-address

@@ -112,7 +112,7 @@ describe("cli - jenkins", function () {
       });
     });
 
-    jenkins.discover(this.mockCb)();
+    jenkins.discover(this.mockCb)({ args: [] });
   });
   it("discover - should log version and url when exec discover is called with specified host", function () {
     this.mockConsole
@@ -133,7 +133,7 @@ describe("cli - jenkins", function () {
       });
     });
 
-    jenkins.discover(this.mockCb)({}, ["somehost"]);
+    jenkins.discover(this.mockCb)({ args: ["somehost"] });
   });
   it("discover - should log host instead of url when exec discover result does not include any url", function () {
     this.mockConsole
@@ -154,7 +154,7 @@ describe("cli - jenkins", function () {
       });
     });
 
-    jenkins.discover(this.mockCb)();
+    jenkins.discover(this.mockCb)({ args: [] });
   });
   it("executor -should log no executor found when exec executor is called and there is no executor", function () {
     this.mockConsole.expects("log").once().withExactArgs("No executor found");

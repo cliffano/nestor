@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix command arguments not being passed to command handlers following bagofcli 3.1.0
+- Fix bad request error on job and view creation by upgrading swaggy-jenkins to 3.5.0
+- Fix url and interactive global options being ignored by upgrading bagofcli to 3.2.0
 
 ## 3.2.0 - 2025-11-17
 ### Changed
