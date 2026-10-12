@@ -4,7 +4,7 @@
 ################################################################
 
 # Suntory info
-SUNTORY_VERSION = 1.9.0
+SUNTORY_VERSION = 1.10.0
 
 UPDATE_GH_ID = cliffano
 UPDATE_MAKEFILE = suntory
@@ -109,7 +109,7 @@ install: package
 	npm link .
 
 uninstall:
-	npm unlink .
+	npm unlink -g
 
 reinstall: uninstall install
 
