@@ -44,43 +44,99 @@ describe("jenkins - jenkins", function () {
       done();
     });
   });
-  // it('should set cert').value(function (done) {
-  //   this.mockFs.expects('statSync').once().withExactArgs('certificate.pem').returns(true);
-  //   this.mockFs.expects('statSync').once().withExactArgs('custom.ca.pem').returns(true);
-  //   this.mockFs.expects('statSync').once().withExactArgs('key.pem').returns(true);
-  //   this.mockFs.expects('readFileSync').once().withExactArgs('certificate.pem').returns('somecert');
-  //   this.mockFs.expects('readFileSync').once().withExactArgs('custom.ca.pem').returns('someca');
-  //   this.mockFs.expects('readFileSync').once().withExactArgs('key.pem').returns('somekey');
-  //   sinon.stub(process, 'env').value({
-  //     JENKINS_CERT: 'certificate.pem',
-  //     JENKINS_CA: 'custom.ca.pem',
-  //     JENKINS_KEY: 'key.pem:somepassphrase'
-  //   });
-  //   this.jenkins = new Jenkins();
-  //   assert.equals(this.jenkins.opts.agentOptions.passphrase, 'somepassphrase');
-  //   assert.equals(this.jenkins.opts.agentOptions.secureProtocol, 'TLSv1_method');
-  //   assert.equals(this.jenkins.opts.agentOptions.cert, 'somecert');
-  //   assert.equals(this.jenkins.opts.agentOptions.key, 'somekey');
-  //   assert.equals(this.jenkins.opts.agentOptions.ca, 'someca');
-  //   done();
-  // });
-  // it('should not set agent options when cert files do not exist').value(function (done) {
-  //   this.mockFs.expects('statSync').once().withExactArgs('certificate.pem').returns(false);
-  //   this.mockFs.expects('statSync').once().withExactArgs('custom.ca.pem').returns(false);
-  //   this.mockFs.expects('statSync').once().withExactArgs('key.pem').returns(false);
-  //   sinon.stub(process, 'env').value({
-  //     JENKINS_CERT: 'certificate.pem',
-  //     JENKINS_CA: 'custom.ca.pem',
-  //     JENKINS_KEY: 'key.pem:somepassphrase'
-  //   });
-  //   this.jenkins = new Jenkins();
-  //   assert.equals(this.jenkins.opts.agentOptions.passphrase, 'somepassphrase');
-  //   assert.equals(this.jenkins.opts.agentOptions.secureProtocol, 'TLSv1_method');
-  //   assert.equals(this.jenkins.opts.agentOptions.cert, undefined);
-  //   assert.equals(this.jenkins.opts.agentOptions.key, undefined);
-  //   assert.equals(this.jenkins.opts.agentOptions.ca, undefined);
-  //   done();
-  // });
+  it("should set agent options when cert, key and ca are specified", function () {
+    this.mockFs
+      .expects("statSync")
+      .once()
+      .withExactArgs("certificate.pem")
+      .returns(true);
+    this.mockFs
+      .expects("statSync")
+      .once()
+      .withExactArgs("key.pem")
+      .returns(true);
+    this.mockFs
+      .expects("statSync")
+      .once()
+      .withExactArgs("custom.ca.pem")
+      .returns(true);
+    this.mockFs
+      .expects("readFileSync")
+      .once()
+      .withExactArgs("certificate.pem")
+      .returns("somecert");
+    this.mockFs
+      .expects("readFileSync")
+      .once()
+      .withExactArgs("key.pem")
+      .returns("somekey");
+    this.mockFs
+      .expects("readFileSync")
+      .once()
+      .withExactArgs("custom.ca.pem")
+      .returns("someca");
+    sinon.stub(process, "env").value({
+      JENKINS_CERT: "certificate.pem",
+      JENKINS_CA: "custom.ca.pem",
+      JENKINS_KEY: "key.pem:somepassphrase",
+    });
+    const jenkins = new Jenkins();
+    assert.equals(jenkins.opts.agentOptions.passphrase, "somepassphrase");
+    assert.equals(jenkins.opts.agentOptions.secureProtocol, "TLSv1_method");
+    assert.equals(jenkins.opts.agentOptions.cert, "somecert");
+    assert.equals(jenkins.opts.agentOptions.key, "somekey");
+    assert.equals(jenkins.opts.agentOptions.ca, "someca");
+  });
+  it("should not set cert, key and ca agent options when the files do not exist", function () {
+    this.mockFs
+      .expects("statSync")
+      .once()
+      .withExactArgs("certificate.pem")
+      .returns(false);
+    this.mockFs
+      .expects("statSync")
+      .once()
+      .withExactArgs("key.pem")
+      .returns(false);
+    this.mockFs
+      .expects("statSync")
+      .once()
+      .withExactArgs("custom.ca.pem")
+      .returns(false);
+    this.mockFs.expects("readFileSync").never();
+    sinon.stub(process, "env").value({
+      JENKINS_CERT: "certificate.pem",
+      JENKINS_CA: "custom.ca.pem",
+      JENKINS_KEY: "key.pem:somepassphrase",
+    });
+    const jenkins = new Jenkins();
+    assert.equals(jenkins.opts.agentOptions.passphrase, "somepassphrase");
+    assert.equals(jenkins.opts.agentOptions.secureProtocol, "TLSv1_method");
+    assert.isUndefined(jenkins.opts.agentOptions.cert);
+    assert.isUndefined(jenkins.opts.agentOptions.key);
+    assert.isUndefined(jenkins.opts.agentOptions.ca);
+  });
+  it("should not set key and ca agent options when key path and ca are not specified", function () {
+    this.mockFs
+      .expects("statSync")
+      .once()
+      .withExactArgs("certificate.pem")
+      .returns(true);
+    this.mockFs
+      .expects("readFileSync")
+      .once()
+      .withExactArgs("certificate.pem")
+      .returns("somecert");
+    sinon.stub(process, "env").value({
+      JENKINS_CERT: "certificate.pem",
+      JENKINS_KEY: ":somepassphrase",
+    });
+    const jenkins = new Jenkins();
+    assert.equals(jenkins.opts.agentOptions.passphrase, "somepassphrase");
+    assert.equals(jenkins.opts.agentOptions.cert, "somecert");
+    assert.isUndefined(jenkins.opts.agentOptions.key);
+    assert.isUndefined(jenkins.opts.agentOptions.ca);
+  });
 });
 
 describe("jenkins - csrf", function () {
@@ -134,6 +190,20 @@ describe("jenkins - monitor", function () {
     jenkins.monitor({ schedule: "*/30 * * * * *" }, function (err, result) {
       assert.isNull(err);
       assert.equals(result, "fail");
+    });
+  });
+  it("should monitor every minute when schedule opt is not specified", function (done) {
+    sinon.stub(cron.CronJob.prototype, "start").value(function () {
+      assert.equals(this.cronTime.source, "0 * * * * *");
+      done();
+    });
+    const jenkins = new Jenkins("http://localhost:8080");
+    sinon.stub(Jenkins.prototype, "info").value(function (cb) {
+      cb(null, { jobs: [{ color: "blue" }] });
+    });
+    jenkins.monitor({}, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result, "ok");
     });
   });
   it("should result in status non-success when a job has non-success color but no red and yellow", function (done) {

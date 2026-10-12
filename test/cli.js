@@ -95,6 +95,13 @@ describe("cli - exec", function () {
       done();
     });
   });
+  it("should use default Jenkins URL when args is not specified", function (done) {
+    sinon.stub(process, "env").value({});
+    cli.__exec(undefined, function (jenkins) {
+      assert.equals(jenkins.url, "http://localhost:8080");
+      done();
+    });
+  });
   it("should pass username and password to Jenkins URL when interactive arg is set", function (done) {
     this.mockCli
       .expects("lookupConfig")

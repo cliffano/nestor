@@ -156,6 +156,26 @@ describe("cli - jenkins", function () {
 
     jenkins.discover(this.mockCb)({ args: [] });
   });
+  it("discover - should log host when exec discover result does not have any url", function () {
+    this.mockConsole
+      .expects("log")
+      .once()
+      .withExactArgs("Jenkins ver. 1.2.3 is running on somehost");
+    this.mockProcess.expects("exit").once().withExactArgs(0);
+
+    sinon.stub(Jenkins.prototype, "discover").value(function (host, cb) {
+      assert.equals(host, "somehost");
+      cb(null, {
+        hudson: {
+          version: ["1.2.3"],
+          "server-id": ["362f249fc053c1ede86a218587d100ce"],
+          "slave-port": ["55325"],
+        },
+      });
+    });
+
+    jenkins.discover(this.mockCb)({ args: ["somehost"] });
+  });
   it("executor -should log no executor found when exec executor is called and there is no executor", function () {
     this.mockConsole.expects("log").once().withExactArgs("No executor found");
     this.mockProcess.expects("exit").once().withExactArgs(0);

@@ -151,6 +151,17 @@ describe("api - job", function () {
       });
     job.streamConsole("somejob", 123, 88000, done);
   });
+  it("streamConsole - should use last build when build number is not specified", function (done) {
+    sinon
+      .stub(job.remoteAccessApi, "getJobProgressiveText")
+      .value(function (name, number, start, cb) {
+        assert.equals(name, "somejob");
+        assert.equals(number, "lastBuild");
+        assert.equals(start, 0);
+        cb(null, null, { statusCode: 500 });
+      });
+    job.streamConsole("somejob", undefined, 0, done);
+  });
   it("streamConsole - should display console output once when there is no more text", function (done) {
     sinon.stub(ConsoleStream.prototype, "emit").value(function (event, value) {
       if (event === "data") {

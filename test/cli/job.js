@@ -183,106 +183,151 @@ describe("cli - job", function () {
 
     job.delete(this.mockCb)({ args: ["somejob"] });
   });
-  // it('build - should log job started success message', function () {
-  //   this.mockConsole.expects('log').once().withExactArgs('Job somejob was triggered successfully');
-  //   this.mockProcess.expects('exit').once().withExactArgs(0);
+  it("build - should log job started success message with params", function () {
+    this.mockConsole
+      .expects("log")
+      .once()
+      .withExactArgs("Job somejob was triggered successfully");
+    this.mockProcess.expects("exit").once().withExactArgs(0);
 
-  //   sinon.stub(Jenkins.prototype, 'buildJob').value(function (name, params, cb) {
-  //     assert.equals(name, 'somejob');
-  //     assert.equals(params.param1, 'value1');
-  //     assert.equals(params.param2, 'value2');
-  //     assert.equals(params.param3, 'value3');
-  //     cb();
-  //   });
+    sinon
+      .stub(Jenkins.prototype, "buildJob")
+      .value(function (name, params, cb) {
+        assert.equals(name, "somejob");
+        assert.equals(params.param1, "value1");
+        assert.equals(params.param2, "value2");
+        assert.equals(params.param3, "value=3");
+        cb();
+      });
 
-  //   job.build(this.mockCb)({ args: ['somejob', 'param1=value1&param2=value2&param3=value3'] });
-  // });
-  // it('build - should pass to console call', function (done) {
-  //   this.timeout = 3000;
-  //   this.mockConsole.expects('log').once().withExactArgs('Job somejob was triggered successfully');
+    job.build(this.mockCb)({
+      args: ["somejob", "param1=value1&param2=value2&param3=value=3"],
+    });
+  });
+  it("build - should stream console output when console is enabled and build has started", function () {
+    const clock = sinon.useFakeTimers();
+    this.mockConsole
+      .expects("log")
+      .once()
+      .withExactArgs("Job somejob was triggered successfully");
 
-  //   const self = this;
-  //   sinon.stub(Jenkins.prototype, 'buildJob').value(function (name, params, cb) {
-  //     assert.equals(name, 'somejob');
-  //     assert.equals(params, {});
-  //     cb(null, null, { headers: { location: 'somebuildurl' }});
-  //   });
+    sinon
+      .stub(Jenkins.prototype, "buildJob")
+      .value(function (name, params, cb) {
+        assert.equals(name, "somejob");
+        assert.equals(params, {});
+        cb(null, null, { headers: { location: "somebuildurl" } });
+      });
 
-  //   sinon.stub(Jenkins.prototype, 'checkBuildStarted').value(function (buildUrl, cb) {
-  //     assert.equals(buildUrl, 'somebuildurl');
-  //     cb(true);
-  //   });
+    const checkBuildStarted = sinon
+      .stub(Jenkins.prototype, "checkBuildStarted")
+      .callsFake(function (buildUrl, cb) {
+        assert.equals(buildUrl, "somebuildurl");
+        cb(true);
+      });
 
-  //   sinon.stub(Jenkins.prototype, 'streamJobConsole').value(function (name, buildNumber, interval, cb) {
-  //     assert.equals(name, 'somejob');
-  //     assert.equals(buildNumber, null);
-  //     assert.equals(interval, 0);
-  //     return {
-  //       pipe: function (stream, opts) {
-  //         refute.isUndefined(stream);
-  //         assert.equals(opts.end, false);
-  //         done();
-  //       }
-  //     };
-  //   });
+    const pipe = sinon.spy();
+    sinon
+      .stub(Jenkins.prototype, "streamJobConsole")
+      .value(function (name, buildNumber, interval, cb) {
+        assert.equals(name, "somejob");
+        assert.isUndefined(buildNumber);
+        assert.equals(interval, 0);
+        return { pipe: pipe };
+      });
 
-  //   job.build(this.mockCb)({ console: true, args: ['somejob'] });
-  // });
-  // it('build - should wait until build starts before passing to console call', function (done) {
-  //   this.timeout = 10000;
-  //   this.mockConsole.expects('log').once().withExactArgs('Job somejob was triggered successfully');
-  //   this.mockConsole.expects('log').twice().withExactArgs('Waiting for job to start...');
+    job.build(this.mockCb)({ console: true, args: ["somejob"] });
 
-  //   const self = this;
-  //   sinon.stub(Jenkins.prototype, 'buildJob').value(function (name, params, cb) {
-  //     assert.equals(name, 'somejob');
-  //     assert.equals(params, {});
-  //     cb(null, null, { headers: { location: 'somebuildurl' }});
-  //   });
+    // build is only checked after the poll interval
+    assert.equals(checkBuildStarted.callCount, 0);
+    clock.tick(2000);
+    assert.equals(checkBuildStarted.callCount, 1);
+    assert.equals(pipe.callCount, 1);
+    assert.equals(pipe.firstCall.args[1].end, false);
+  });
+  it("build - should wait until build starts before streaming console output", function () {
+    const clock = sinon.useFakeTimers();
+    this.mockConsole
+      .expects("log")
+      .once()
+      .withExactArgs("Job somejob was triggered successfully");
+    this.mockConsole
+      .expects("log")
+      .twice()
+      .withExactArgs("Waiting for job to start...");
 
-  //   let countdown = 3;
-  //   sinon.stub(Jenkins.prototype, 'checkBuildStarted').value(function (buildUrl, cb) {
-  //     assert.equals(buildUrl, 'somebuildurl');
-  //     countdown--;
-  //     cb(countdown === 0);
-  //   });
+    sinon
+      .stub(Jenkins.prototype, "buildJob")
+      .value(function (name, params, cb) {
+        cb(null, null, { headers: { location: "somebuildurl" } });
+      });
 
-  //   sinon.stub(Jenkins.prototype, 'streamJobConsole').value(function (name, buildNumber, interval, cb) {
-  //     assert.equals(name, 'somejob');
-  //     assert.equals(buildNumber, null);
-  //     assert.equals(interval, 0);
-  //     return {
-  //       pipe: function (stream, opts) {
-  //         refute.isUndefined(stream);
-  //         assert.equals(opts.end, false);
-  //         done();
-  //       }
-  //     };
-  //   });
+    let countdown = 3;
+    const checkBuildStarted = sinon
+      .stub(Jenkins.prototype, "checkBuildStarted")
+      .callsFake(function (buildUrl, cb) {
+        assert.equals(buildUrl, "somebuildurl");
+        countdown -= 1;
+        cb(countdown === 0);
+      });
 
-  //   job.build(this.mockCb)({ console: true, args: ['somejob'] });
-  // });
-  // it('build - should give up after max retries and not stream old console', function (done) {
-  //   this.timeout = 10000;
-  //   this.mockConsole.expects('log').once().withExactArgs('Job somejob was triggered successfully');
-  //   this.mockConsole.expects('log').once().withExactArgs('Waiting for job to start...');
-  //   this.mockConsole.expects('log').once().withExactArgs('Build didn\'t start after %d seconds, it\'s still waiting in the queue', 2);
+    const pipe = sinon.spy();
+    sinon
+      .stub(Jenkins.prototype, "streamJobConsole")
+      .value(function (name, buildNumber, interval, cb) {
+        assert.equals(name, "somejob");
+        return { pipe: pipe };
+      });
 
-  //   const self = this;
-  //   sinon.stub(Jenkins.prototype, 'buildJob').value(function (name, params, cb) {
-  //     cb(null, null, { headers: { location: 'somebuildurl' }});
-  //   });
+    job.build(this.mockCb)({ console: true, args: ["somejob"] });
 
-  //   sinon.stub(Jenkins.prototype, 'checkBuildStarted').value(function (buildUrl, cb) {
-  //     cb(false);
-  //   });
+    clock.tick(2000);
+    clock.tick(2000);
+    assert.equals(pipe.callCount, 0);
+    clock.tick(2000);
+    assert.equals(checkBuildStarted.callCount, 3);
+    assert.equals(pipe.callCount, 1);
+  });
+  it("build - should give up after max retries and not stream console output", function () {
+    const clock = sinon.useFakeTimers();
+    this.mockConsole
+      .expects("log")
+      .once()
+      .withExactArgs("Job somejob was triggered successfully");
+    this.mockConsole
+      .expects("log")
+      .once()
+      .withExactArgs("Waiting for job to start...");
+    this.mockConsole
+      .expects("log")
+      .once()
+      .withExactArgs(
+        "Build didn't start after 2 seconds, it's still waiting in the queue",
+      );
 
-  //   sinon.stub(cli, 'exit').value(function (err, result) {
-  //     done();
-  //   });
+    sinon
+      .stub(Jenkins.prototype, "buildJob")
+      .value(function (name, params, cb) {
+        cb(null, null, { headers: { location: "somebuildurl" } });
+      });
 
-  //   job.build(this.mockCb)({ console: true, poll: 1, args: ['somejob'] });
-  // });
+    sinon
+      .stub(Jenkins.prototype, "checkBuildStarted")
+      .callsFake(function (buildUrl, cb) {
+        cb(false);
+      });
+
+    const streamJobConsole = sinon.stub(Jenkins.prototype, "streamJobConsole");
+    const exit = sinon.stub(cli, "exit");
+
+    job.build(this.mockCb)({ console: true, poll: 1, args: ["somejob"] });
+
+    clock.tick(2000);
+    clock.tick(2000);
+    assert.equals(exit.callCount, 1);
+    assert.equals(exit.firstCall.args, [{}, null]);
+    assert.equals(streamJobConsole.callCount, 0);
+  });
   it("build - should log job started success message with no command and no params", function () {
     this.mockConsole
       .expects("log")
@@ -332,23 +377,25 @@ describe("cli - job", function () {
 
     job.console(this.mockCb)({ args: ["somejob", 123] });
   });
-  // it('console - should pass null build number when none supplied', function () {
-  //   this.mockProcess.expects('exit').once().withExactArgs(0);
+  it("console - should pass undefined build number when none supplied", function () {
+    this.mockProcess.expects("exit").once().withExactArgs(0);
 
-  //   sinon.stub(Jenkins.prototype, 'streamJobConsole').value(function (name, buildNumber, interval, cb) {
-  //     assert.equals(name, 'somejob');
-  //     assert.equals(buildNumber, null);
-  //     return {
-  //       pipe: function (stream, opts) {
-  //         refute.isUndefined(stream);
-  //         assert.equals(opts.end, false);
-  //         cb();
-  //       }
-  //     };
-  //   });
+    sinon
+      .stub(Jenkins.prototype, "streamJobConsole")
+      .value(function (name, buildNumber, interval, cb) {
+        assert.equals(name, "somejob");
+        assert.isUndefined(buildNumber);
+        return {
+          pipe: function (stream, opts) {
+            refute.isUndefined(stream);
+            assert.equals(opts.end, false);
+            cb();
+          },
+        };
+      });
 
-  //   job.console(this.mockCb)({ args: ['somejob'] });
-  // });
+    job.console(this.mockCb)({ args: ["somejob"] });
+  });
   it("enable - should log job enabled success message", function () {
     this.mockConsole
       .expects("log")
